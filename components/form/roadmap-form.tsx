@@ -4,175 +4,39 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  BarChart3,
-  Braces,
-  Code2,
-  Gauge,
-  Layers3,
-  Leaf,
-  Palette,
-  PencilLine,
-  Rocket,
-  Server,
-  Sprout,
-  Target,
-  X,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
+import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/form/layout/back-button";
+import { Input } from "@/components/ui/input";
+import { ChoiceGroup } from "@/components/form/controls/choice-group";
+import {
+  getChoiceTitle,
+  goalChoices,
+  levelChoices,
+  skills,
+  targetChoices,
+  timeChoices,
+} from "@/components/form/data/form-options";
 
 type FormData = {
   goal: string;
   level: string;
   skills: string[];
   weeklyTime: string;
+  customWeeklyHours: string;
   target: string;
 };
 
 type FormStep = 1 | 2 | 3 | 4 | 5;
 type Screen = FormStep | "review" | "generating" | "done";
 
-type Choice = {
-  value: string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-};
-
-const goalChoices: Choice[] = [
-  {
-    value: "frontend",
-    title: "Frontend Developer",
-    description: "Build modern web applications",
-    icon: Code2,
-  },
-  {
-    value: "backend",
-    title: "Backend Developer",
-    description: "Work with servers, databases and APIs",
-    icon: Server,
-  },
-  {
-    value: "fullstack",
-    title: "Full Stack Developer",
-    description: "Combine frontend and backend",
-    icon: Layers3,
-  },
-  {
-    value: "data",
-    title: "Data Scientist",
-    description: "Analyze data and build ML models",
-    icon: BarChart3,
-  },
-  {
-    value: "design",
-    title: "UI/UX Designer",
-    description: "Design user experiences and interfaces",
-    icon: Palette,
-  },
-  {
-    value: "custom",
-    title: "Custom goal",
-    description: "Describe what you want to learn",
-    icon: PencilLine,
-  },
-];
-
-const levelChoices: Choice[] = [
-  {
-    value: "beginner",
-    title: "Beginner",
-    description: "I am learning the fundamentals",
-    icon: Sprout,
-  },
-  {
-    value: "intermediate",
-    title: "Intermediate",
-    description: "I can build simple projects",
-    icon: Braces,
-  },
-  {
-    value: "advanced",
-    title: "Advanced",
-    description: "I can build real applications",
-    icon: Rocket,
-  },
-];
-
-const timeChoices: Choice[] = [
-  {
-    value: "light",
-    title: "1–3 hours per week",
-    description: "A light learning pace",
-    icon: Leaf,
-  },
-  {
-    value: "balanced",
-    title: "4–7 hours per week",
-    description: "A balanced learning pace",
-    icon: Gauge,
-  },
-  {
-    value: "focused",
-    title: "8–15 hours per week",
-    description: "A focused learning pace",
-    icon: Target,
-  },
-  {
-    value: "intensive",
-    title: "16+ hours per week",
-    description: "An intensive learning pace",
-    icon: Zap,
-  },
-  {
-    value: "custom",
-    title: "Custom",
-    description: "Set your own weekly hours",
-    icon: PencilLine,
-  },
-];
-
-const targetChoices: Choice[] = [
-  {
-    value: "recommended",
-    title: "Recommended",
-    description: "A balanced roadmap",
-    icon: Target,
-  },
-  {
-    value: "accelerated",
-    title: "Accelerated",
-    description: "Finish in less time",
-    icon: Zap,
-  },
-  {
-    value: "relaxed",
-    title: "Relaxed",
-    description: "Leave more room each week",
-    icon: Leaf,
-  },
-];
-
-const skills = [
-  "HTML",
-  "CSS",
-  "JavaScript",
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Git",
-  "Testing",
-];
-
 const initialForm: FormData = {
   goal: "",
   level: "",
   skills: [],
   weeklyTime: "",
+  customWeeklyHours: "",
   target: "",
 };
 
@@ -184,9 +48,8 @@ const labels: Record<string, string> = {
   target: "Target pace",
 };
 
-function getChoiceTitle(choices: Choice[], value: string) {
-  return choices.find((choice) => choice.value === value)?.title ?? value;
-}
+const customWeeklyHoursMin = 1;
+const customWeeklyHoursMax = 80;
 
 function RoadmapFrame({
   children,
@@ -263,6 +126,16 @@ export function RoadmapForm() {
   const goForward = () => {
     if (typeof screen !== "number") return;
 
+    if (screen === 4 && form.weeklyTime === "custom") {
+      const hours = Number(form.customWeeklyHours);
+      const invalidHours =
+        !Number.isInteger(hours) ||
+        hours < customWeeklyHoursMin ||
+        hours > customWeeklyHoursMax;
+
+      if (invalidHours) return;
+    }
+
     setScreen(screen === 5 ? "review" : ((screen + 1) as FormStep));
   };
 
@@ -318,7 +191,9 @@ export function RoadmapForm() {
                   : key === "level"
                     ? getChoiceTitle(levelChoices, form.level)
                     : key === "weeklyTime"
-                      ? getChoiceTitle(timeChoices, form.weeklyTime)
+                      ? form.customWeeklyHours
+                        ? `${getChoiceTitle(timeChoices, form.weeklyTime)} (${form.customWeeklyHours}h/week)`
+                        : getChoiceTitle(timeChoices, form.weeklyTime)
                       : key === "target"
                         ? getChoiceTitle(targetChoices, form.target)
                         : form.skills.join(", ") || "No skills selected";
@@ -379,6 +254,28 @@ export function RoadmapForm() {
         : screen === 4
           ? form.weeklyTime
           : form.target;
+  const choiceKey =
+    screen === 1
+      ? "goal"
+      : screen === 2
+        ? "level"
+        : screen === 4
+          ? "weeklyTime"
+          : "target";
+
+  const handleChoiceChange = (value: string) => {
+    if (choiceKey === "weeklyTime") {
+      setForm((current) => ({
+        ...current,
+        weeklyTime: value,
+        customWeeklyHours: value === "custom" ? current.customWeeklyHours : "",
+      }));
+      return;
+    }
+
+    updateForm(choiceKey, value);
+  };
+
   const title =
     screen === 1
       ? "What do you want to learn?"
@@ -389,6 +286,14 @@ export function RoadmapForm() {
           : screen === 4
             ? "How much time do you have?"
             : "What pace feels right?";
+  const customHours = Number(form.customWeeklyHours);
+  const customHoursInvalid =
+    screen === 4 &&
+    form.weeklyTime === "custom" &&
+    (form.customWeeklyHours.trim() === "" ||
+      !Number.isInteger(customHours) ||
+      customHours < customWeeklyHoursMin ||
+      customHours > customWeeklyHoursMax);
 
   return (
     <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
@@ -440,41 +345,48 @@ export function RoadmapForm() {
             ))}
           </div>
         ) : (
-          <div className="mt-8 space-y-3">
-            {choices.map((choice) => (
-              <button
-                key={choice.value}
-                type="button"
-                aria-pressed={selectedValue === choice.value}
-                className={`w-full rounded-xl border p-4 text-left transition-colors ${selectedValue === choice.value ? "border-primary bg-accent" : "border-border"}`}
-                onClick={() =>
-                  updateForm(
-                    screen === 1
-                      ? "goal"
-                      : screen === 2
-                        ? "level"
-                        : screen === 4
-                          ? "weeklyTime"
-                          : "target",
-                    choice.value,
-                  )
-                }
-              >
-                <span className="flex items-start gap-3">
-                  <choice.icon
-                    className="mt-0.5 size-5 shrink-0"
-                    aria-hidden="true"
+          <>
+            <ChoiceGroup
+              choices={choices}
+              value={selectedValue}
+              onChange={handleChoiceChange}
+            />
+            {screen === 4 && form.weeklyTime === "custom" ? (
+              <div className="mt-5">
+                <label
+                  htmlFor="custom-weekly-hours"
+                  className="text-sm font-medium"
+                >
+                  Custom weekly hours
+                </label>
+                <div className="relative mt-2">
+                  <Input
+                    id="custom-weekly-hours"
+                    type="number"
+                    min={customWeeklyHoursMin}
+                    max={customWeeklyHoursMax}
+                    step="1"
+                    inputMode="numeric"
+                    value={form.customWeeklyHours}
+                    onChange={(event) =>
+                      updateForm("customWeeklyHours", event.target.value)
+                    }
+                    placeholder="e.g. 10"
+                    className="h-11 bg-card pr-24"
                   />
-                  <span>
-                    <span className="block font-medium">{choice.title}</span>
-                    <span className="mt-1 block text-sm text-muted-foreground">
-                      {choice.description}
-                    </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-muted-foreground">
+                    hours / week
                   </span>
-                </span>
-              </button>
-            ))}
-          </div>
+                </div>
+                {customHoursInvalid ? (
+                  <p className="mt-2 text-sm text-destructive" role="alert">
+                    Enter a whole number from {customWeeklyHoursMin} to{" "}
+                    {customWeeklyHoursMax}.
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+          </>
         )}
 
         <footer className="mt-auto flex justify-between gap-3 pt-10">
