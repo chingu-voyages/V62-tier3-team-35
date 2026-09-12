@@ -10,20 +10,20 @@ export function StepProgress({ step, total = 5 }: StepProgressProps) {
 
   return (
     <div
-      className="flex items-center gap-2"
+      className="flex h-7 items-center justify-center gap-1.5 sm:gap-2"
       role="group"
       aria-label={`Step ${currentStep} of ${total}`}
     >
-      <span className="rounded-full bg-accent px-3 py-1.5 text-xs font-bold">
+      <span className="shrink-0 rounded-full bg-accent px-2.5 py-1.5 text-center text-xs leading-4 font-bold sm:px-3">
         STEP {currentStep} OF {total}
       </span>
-      <div className="flex gap-1.5" aria-hidden="true">
+      <div className="flex gap-1 sm:gap-1.5" aria-hidden="true">
         {Array.from({ length: total }, (_, index) => (
           <span
             key={index}
             className={cn(
-              "h-1.5 w-7 rounded-full bg-border",
-              index < currentStep && "bg-primary",
+              "h-1 w-6 rounded-full bg-border sm:w-8",
+              index < currentStep && "bg-success",
             )}
           />
         ))}

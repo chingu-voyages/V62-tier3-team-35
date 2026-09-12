@@ -148,6 +148,21 @@ export const skills = [
   "Testing",
 ];
 
+export const skillGroups = [
+  {
+    title: "Core knowledge",
+    skills: ["HTML", "CSS", "JavaScript", "TypeScript"],
+  },
+  {
+    title: "Frameworks & libraries",
+    skills: ["React", "Next.js", "Vue.js", "Svelte"],
+  },
+  {
+    title: "Tools & workflow",
+    skills: ["Git", "GitHub", "Vite", "Testing"],
+  },
+];
+
 export function getChoiceTitle(choices: FormOption[], value: string) {
   return choices.find((choice) => choice.value === value)?.title ?? value;
 }

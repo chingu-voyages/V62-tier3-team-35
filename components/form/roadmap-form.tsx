@@ -9,11 +9,12 @@ import { RoadmapFrame } from "@/components/form/layout/roadmap-frame";
 import { StepProgress } from "@/components/form/layout/step-progress";
 import { Input } from "@/components/ui/input";
 import { ChoiceGroup } from "@/components/form/controls/choice-group";
+import { InfoBlock } from "@/components/form/controls/field-feedback";
+import { SkillsPicker } from "@/components/form/controls/skills-picker";
 import {
   getChoiceTitle,
   goalChoices,
   levelChoices,
-  skills,
   targetChoices,
   timeChoices,
 } from "@/components/form/data/form-options";
@@ -31,7 +32,7 @@ type FormStep = 1 | 2 | 3 | 4 | 5;
 type Screen = FormStep | "review" | "generating" | "done";
 
 const initialForm: FormData = {
-  goal: "",
+  goal: "frontend",
   level: "",
   skills: [],
   weeklyTime: "",
@@ -54,6 +55,7 @@ export function RoadmapForm() {
   const router = useRouter();
   const [screen, setScreen] = useState<Screen>(1);
   const [form, setForm] = useState<FormData>(initialForm);
+  const [skillSearch, setSkillSearch] = useState("");
 
   useEffect(() => {
     if (screen !== "generating") return;
@@ -64,14 +66,6 @@ export function RoadmapForm() {
 
   const updateForm = (key: keyof FormData, value: string | string[]) => {
     setForm((current) => ({ ...current, [key]: value }));
-  };
-
-  const toggleSkill = (skill: string) => {
-    const nextSkills = form.skills.includes(skill)
-      ? form.skills.filter((item) => item !== skill)
-      : [...form.skills, skill];
-
-    updateForm("skills", nextSkills);
   };
 
   const goBack = () => {
@@ -237,7 +231,7 @@ export function RoadmapForm() {
 
   const title =
     screen === 1
-      ? "What do you want to learn?"
+      ? "What do you want to achieve?"
       : screen === 2
         ? "What is your current level?"
         : screen === 3
@@ -245,6 +239,10 @@ export function RoadmapForm() {
           : screen === 4
             ? "How much time do you have?"
             : "What pace feels right?";
+  const description =
+    screen === 1
+      ? "Choose a career direction or describe a specific learning goal. We'll tailor the roadmap around it."
+      : "Choose the answer that best describes your situation.";
   const choiceLabel =
     screen === 1
       ? "Learning goal"
@@ -275,25 +273,23 @@ export function RoadmapForm() {
           <StepProgress step={screen} />
         </div>
         <div className="mx-auto mt-8 w-full text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-          <p className="mt-3 text-muted-foreground">
-            Choose the answer that best describes your situation.
+          <h1 className="font-heading text-2xl leading-8 font-bold tracking-tight sm:text-3xl sm:leading-9">
+            {title}
+          </h1>
+          <p className="mt-2 text-sm leading-5 text-muted-foreground">
+            {description}
           </p>
         </div>
 
         {screen === 3 ? (
-          <div className="mt-8 grid grid-cols-2 gap-3 text-left">
-            {skills.map((skill) => (
-              <button
-                key={skill}
-                type="button"
-                aria-pressed={form.skills.includes(skill)}
-                className={`rounded-xl border p-4 text-left transition-colors ${form.skills.includes(skill) ? "border-primary bg-accent" : "border-border"}`}
-                onClick={() => toggleSkill(skill)}
-              >
-                {skill}
-              </button>
-            ))}
+          <div className="mt-8">
+            <SkillsPicker
+              goalTitle={getChoiceTitle(goalChoices, form.goal)}
+              search={skillSearch}
+              selectedSkills={form.skills}
+              onSearchChange={setSkillSearch}
+              onSkillsChange={(skills) => updateForm("skills", skills)}
+            />
           </div>
         ) : (
           <>
@@ -303,6 +299,13 @@ export function RoadmapForm() {
               value={selectedValue}
               onChange={handleChoiceChange}
             />
+            {screen === 2 ? (
+              <InfoBlock
+                className="mt-5"
+                title="Not sure where you fit?"
+                description="Choose the closest match. You can adjust your roadmap later."
+              />
+            ) : null}
             {screen === 4 && form.weeklyTime === "custom" ? (
               <div className="mt-5">
                 <label
@@ -337,6 +340,20 @@ export function RoadmapForm() {
                   </p>
                 ) : null}
               </div>
+            ) : null}
+            {screen === 4 ? (
+              <InfoBlock
+                className="mt-5"
+                title="Consistency beats intensity"
+                description="A realistic weekly commitment is more useful than an ambitious one."
+              />
+            ) : null}
+            {screen === 5 ? (
+              <InfoBlock
+                className="mt-5"
+                title="Your pace can change"
+                description="This setting shapes the amount of work each week, not your final destination."
+              />
             ) : null}
           </>
         )}

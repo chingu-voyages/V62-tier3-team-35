@@ -22,11 +22,11 @@ export function OptionRow({
       htmlFor={inputId}
       data-invalid={invalid ? "true" : undefined}
       className={cn(
-        "group/option flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border border-border bg-card px-3 py-2 transition-colors hover:bg-muted has-[[data-state=checked]]:border-transparent has-[[data-state=checked]]:bg-accent data-[invalid=true]:border-destructive",
+        "group/option flex min-h-14 cursor-pointer items-center gap-3 rounded-lg border border-border bg-card px-3 py-2 transition-colors duration-300 ease-in-out hover:bg-muted motion-reduce:transition-none has-[[data-state=checked]]:border-transparent has-[[data-state=checked]]:bg-accent data-[invalid=true]:border-destructive",
         className,
       )}
     >
-      <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-foreground transition-colors group-has-[[data-state=checked]]/option:bg-foreground group-has-[[data-state=checked]]/option:text-background">
+      <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-foreground transition-[background-color,color] duration-300 ease-in-out motion-reduce:transition-none group-has-[[data-state=checked]]/option:bg-foreground group-has-[[data-state=checked]]/option:text-background">
         <Icon className="size-5" aria-hidden="true" />
       </span>
       <span className="min-w-0 flex-1 leading-tight">
