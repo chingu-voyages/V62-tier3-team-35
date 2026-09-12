@@ -4,9 +4,26 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import {
+  BarChart3,
+  Braces,
+  Code2,
+  Gauge,
+  Layers3,
+  Leaf,
+  Palette,
+  PencilLine,
+  Rocket,
+  Server,
+  Sprout,
+  Target,
+  X,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/form/layout/back-button";
 
 type FormData = {
   goal: string;
@@ -23,33 +40,133 @@ type Choice = {
   value: string;
   title: string;
   description: string;
+  icon: LucideIcon;
 };
 
 const goalChoices: Choice[] = [
-  { value: "frontend", title: "Frontend Developer", description: "Build modern web applications" },
-  { value: "backend", title: "Backend Developer", description: "Work with servers, databases and APIs" },
-  { value: "fullstack", title: "Full Stack Developer", description: "Combine frontend and backend" },
+  {
+    value: "frontend",
+    title: "Frontend Developer",
+    description: "Build modern web applications",
+    icon: Code2,
+  },
+  {
+    value: "backend",
+    title: "Backend Developer",
+    description: "Work with servers, databases and APIs",
+    icon: Server,
+  },
+  {
+    value: "fullstack",
+    title: "Full Stack Developer",
+    description: "Combine frontend and backend",
+    icon: Layers3,
+  },
+  {
+    value: "data",
+    title: "Data Scientist",
+    description: "Analyze data and build ML models",
+    icon: BarChart3,
+  },
+  {
+    value: "design",
+    title: "UI/UX Designer",
+    description: "Design user experiences and interfaces",
+    icon: Palette,
+  },
+  {
+    value: "custom",
+    title: "Custom goal",
+    description: "Describe what you want to learn",
+    icon: PencilLine,
+  },
 ];
 
 const levelChoices: Choice[] = [
-  { value: "beginner", title: "Beginner", description: "I am learning the fundamentals" },
-  { value: "intermediate", title: "Intermediate", description: "I can build simple projects" },
-  { value: "advanced", title: "Advanced", description: "I can build real applications" },
+  {
+    value: "beginner",
+    title: "Beginner",
+    description: "I am learning the fundamentals",
+    icon: Sprout,
+  },
+  {
+    value: "intermediate",
+    title: "Intermediate",
+    description: "I can build simple projects",
+    icon: Braces,
+  },
+  {
+    value: "advanced",
+    title: "Advanced",
+    description: "I can build real applications",
+    icon: Rocket,
+  },
 ];
 
 const timeChoices: Choice[] = [
-  { value: "light", title: "1–3 hours per week", description: "A light learning pace" },
-  { value: "balanced", title: "4–7 hours per week", description: "A balanced learning pace" },
-  { value: "focused", title: "8–15 hours per week", description: "A focused learning pace" },
+  {
+    value: "light",
+    title: "1–3 hours per week",
+    description: "A light learning pace",
+    icon: Leaf,
+  },
+  {
+    value: "balanced",
+    title: "4–7 hours per week",
+    description: "A balanced learning pace",
+    icon: Gauge,
+  },
+  {
+    value: "focused",
+    title: "8–15 hours per week",
+    description: "A focused learning pace",
+    icon: Target,
+  },
+  {
+    value: "intensive",
+    title: "16+ hours per week",
+    description: "An intensive learning pace",
+    icon: Zap,
+  },
+  {
+    value: "custom",
+    title: "Custom",
+    description: "Set your own weekly hours",
+    icon: PencilLine,
+  },
 ];
 
 const targetChoices: Choice[] = [
-  { value: "recommended", title: "Recommended", description: "A balanced roadmap" },
-  { value: "accelerated", title: "Accelerated", description: "Finish in less time" },
-  { value: "relaxed", title: "Relaxed", description: "Leave more room each week" },
+  {
+    value: "recommended",
+    title: "Recommended",
+    description: "A balanced roadmap",
+    icon: Target,
+  },
+  {
+    value: "accelerated",
+    title: "Accelerated",
+    description: "Finish in less time",
+    icon: Zap,
+  },
+  {
+    value: "relaxed",
+    title: "Relaxed",
+    description: "Leave more room each week",
+    icon: Leaf,
+  },
 ];
 
-const skills = ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Next.js", "Git", "Testing"];
+const skills = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Next.js",
+  "Git",
+  "Testing",
+];
 
 const initialForm: FormData = {
   goal: "",
@@ -87,12 +204,17 @@ function RoadmapFrame({
           Pathway
         </Link>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" type="button" onClick={onSaveExit}>
+          <Button
+            variant="secondary"
+            size="lg"
+            type="button"
+            onClick={onSaveExit}
+          >
             Save &amp; exit
           </Button>
           <Button
             variant="secondary"
-            size="icon"
+            size="icon-lg"
             type="button"
             aria-label="Close form"
             onClick={onClose}
@@ -150,7 +272,9 @@ export function RoadmapForm() {
     return (
       <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
         <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
-          <p className="mb-3 text-sm text-muted-foreground">Pathway is working</p>
+          <p className="mb-3 text-sm text-muted-foreground">
+            Pathway is working
+          </p>
           <h1 className="text-3xl font-semibold">Building your roadmap...</h1>
         </section>
       </RoadmapFrame>
@@ -161,9 +285,16 @@ export function RoadmapForm() {
     return (
       <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
         <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
-          <p className="mb-3 text-sm text-muted-foreground">Your answers are ready</p>
+          <p className="mb-3 text-sm text-muted-foreground">
+            Your answers are ready
+          </p>
           <h1 className="text-3xl font-semibold">Your roadmap is ready</h1>
-          <Button className="mt-8" onClick={() => setScreen(1)}>
+          <Button
+            variant="primary"
+            size="lg"
+            className="mt-8"
+            onClick={() => setScreen(1)}
+          >
             Create another roadmap
           </Button>
         </section>
@@ -176,26 +307,41 @@ export function RoadmapForm() {
       <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
         <section className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 py-8 sm:px-6 sm:py-10">
           <p className="text-sm text-muted-foreground">Review your answers</p>
-          <h1 className="mt-2 text-3xl font-semibold">Ready to build your path?</h1>
+          <h1 className="mt-2 text-3xl font-semibold">
+            Ready to build your path?
+          </h1>
           <div className="mt-8 space-y-3">
             {(Object.keys(labels) as Array<keyof FormData>).map((key) => {
-              const value = key === "goal"
-                ? getChoiceTitle(goalChoices, form.goal)
-                : key === "level"
-                  ? getChoiceTitle(levelChoices, form.level)
-                  : key === "weeklyTime"
-                    ? getChoiceTitle(timeChoices, form.weeklyTime)
-                    : key === "target"
-                      ? getChoiceTitle(targetChoices, form.target)
-                      : form.skills.join(", ") || "No skills selected";
+              const value =
+                key === "goal"
+                  ? getChoiceTitle(goalChoices, form.goal)
+                  : key === "level"
+                    ? getChoiceTitle(levelChoices, form.level)
+                    : key === "weeklyTime"
+                      ? getChoiceTitle(timeChoices, form.weeklyTime)
+                      : key === "target"
+                        ? getChoiceTitle(targetChoices, form.target)
+                        : form.skills.join(", ") || "No skills selected";
 
               return (
-                <div key={key} className="flex items-center justify-between gap-4 rounded-xl border border-border p-4">
+                <div
+                  key={key}
+                  className="flex items-center justify-between gap-4 rounded-xl border border-border p-4"
+                >
                   <div>
-                    <p className="text-sm text-muted-foreground">{labels[key]}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {labels[key]}
+                    </p>
                     <p className="font-medium">{value}</p>
                   </div>
-                  <button className="text-sm font-medium underline" onClick={() => setScreen((Object.keys(labels).indexOf(key) + 1) as FormStep)}>
+                  <button
+                    className="text-sm font-medium underline"
+                    onClick={() =>
+                      setScreen(
+                        (Object.keys(labels).indexOf(key) + 1) as FormStep,
+                      )
+                    }
+                  >
                     Edit
                   </button>
                 </div>
@@ -203,25 +349,46 @@ export function RoadmapForm() {
             })}
           </div>
           <div className="mt-auto flex justify-between gap-3 pt-8">
-            <Button variant="outline" onClick={goBack}>Back</Button>
-            <Button onClick={() => setScreen("generating")}>Generate roadmap</Button>
+            <BackButton onClick={goBack} />
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => setScreen("generating")}
+            >
+              Generate roadmap
+            </Button>
           </div>
         </section>
       </RoadmapFrame>
     );
   }
 
-  const choices = screen === 1 ? goalChoices : screen === 2 ? levelChoices : screen === 4 ? timeChoices : targetChoices;
-  const selectedValue = screen === 1 ? form.goal : screen === 2 ? form.level : screen === 4 ? form.weeklyTime : form.target;
-  const title = screen === 1
-    ? "What do you want to learn?"
-    : screen === 2
-      ? "What is your current level?"
-      : screen === 3
-        ? "What do you already know?"
+  const choices =
+    screen === 1
+      ? goalChoices
+      : screen === 2
+        ? levelChoices
         : screen === 4
-          ? "How much time do you have?"
-          : "What pace feels right?";
+          ? timeChoices
+          : targetChoices;
+  const selectedValue =
+    screen === 1
+      ? form.goal
+      : screen === 2
+        ? form.level
+        : screen === 4
+          ? form.weeklyTime
+          : form.target;
+  const title =
+    screen === 1
+      ? "What do you want to learn?"
+      : screen === 2
+        ? "What is your current level?"
+        : screen === 3
+          ? "What do you already know?"
+          : screen === 4
+            ? "How much time do you have?"
+            : "What pace feels right?";
 
   return (
     <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
@@ -253,7 +420,9 @@ export function RoadmapForm() {
         </div>
         <div className="mx-auto mt-8 w-full text-center">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-          <p className="mt-3 text-muted-foreground">Choose the answer that best describes your situation.</p>
+          <p className="mt-3 text-muted-foreground">
+            Choose the answer that best describes your situation.
+          </p>
         </div>
 
         {screen === 3 ? (
@@ -278,18 +447,45 @@ export function RoadmapForm() {
                 type="button"
                 aria-pressed={selectedValue === choice.value}
                 className={`w-full rounded-xl border p-4 text-left transition-colors ${selectedValue === choice.value ? "border-primary bg-accent" : "border-border"}`}
-                onClick={() => updateForm(screen === 1 ? "goal" : screen === 2 ? "level" : screen === 4 ? "weeklyTime" : "target", choice.value)}
+                onClick={() =>
+                  updateForm(
+                    screen === 1
+                      ? "goal"
+                      : screen === 2
+                        ? "level"
+                        : screen === 4
+                          ? "weeklyTime"
+                          : "target",
+                    choice.value,
+                  )
+                }
               >
-                <span className="block font-medium">{choice.title}</span>
-                <span className="mt-1 block text-sm text-muted-foreground">{choice.description}</span>
+                <span className="flex items-start gap-3">
+                  <choice.icon
+                    className="mt-0.5 size-5 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    <span className="block font-medium">{choice.title}</span>
+                    <span className="mt-1 block text-sm text-muted-foreground">
+                      {choice.description}
+                    </span>
+                  </span>
+                </span>
               </button>
             ))}
           </div>
         )}
 
         <footer className="mt-auto flex justify-between gap-3 pt-10">
-          <Button variant="outline" type="button" disabled={screen === 1} onClick={goBack}>Back</Button>
-          <Button type="submit">{screen === 5 ? "Review answers" : "Continue"}</Button>
+          {screen === 1 ? (
+            <span aria-hidden="true" />
+          ) : (
+            <BackButton onClick={goBack} />
+          )}
+          <Button variant="primary" size="lg" type="submit">
+            {screen === 5 ? "Review answers" : "Continue"}
+          </Button>
         </footer>
       </form>
     </RoadmapFrame>
