@@ -14,9 +14,16 @@ import {
   Zap,
 } from "lucide-react";
 
-import type { ChoiceOption } from "@/components/form/controls/choice-group";
+import type { LucideIcon } from "lucide-react";
 
-export const goalChoices: ChoiceOption[] = [
+export type FormOption = {
+  value: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+};
+
+export const goalChoices: FormOption[] = [
   {
     value: "frontend",
     title: "Frontend Developer",
@@ -55,7 +62,7 @@ export const goalChoices: ChoiceOption[] = [
   },
 ];
 
-export const levelChoices: ChoiceOption[] = [
+export const levelChoices: FormOption[] = [
   {
     value: "beginner",
     title: "Beginner",
@@ -76,7 +83,7 @@ export const levelChoices: ChoiceOption[] = [
   },
 ];
 
-export const timeChoices: ChoiceOption[] = [
+export const timeChoices: FormOption[] = [
   {
     value: "light",
     title: "1–3 hours per week",
@@ -109,7 +116,7 @@ export const timeChoices: ChoiceOption[] = [
   },
 ];
 
-export const targetChoices: ChoiceOption[] = [
+export const targetChoices: FormOption[] = [
   {
     value: "recommended",
     title: "Recommended",
@@ -141,6 +148,6 @@ export const skills = [
   "Testing",
 ];
 
-export function getChoiceTitle(choices: ChoiceOption[], value: string) {
+export function getChoiceTitle(choices: FormOption[], value: string) {
   return choices.find((choice) => choice.value === value)?.title ?? value;
 }

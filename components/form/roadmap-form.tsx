@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/form/layout/back-button";
+import { RoadmapFrame } from "@/components/form/layout/roadmap-frame";
+import { StepProgress } from "@/components/form/layout/step-progress";
 import { Input } from "@/components/ui/input";
 import { ChoiceGroup } from "@/components/form/controls/choice-group";
 import {
@@ -50,46 +49,6 @@ const labels: Record<string, string> = {
 
 const customWeeklyHoursMin = 1;
 const customWeeklyHoursMax = 80;
-
-function RoadmapFrame({
-  children,
-  onClose,
-  onSaveExit,
-}: {
-  children: ReactNode;
-  onClose: () => void;
-  onSaveExit: () => void;
-}) {
-  return (
-    <div className="flex min-h-svh flex-col bg-background">
-      <header className="flex h-16 items-center justify-between gap-3 px-4 sm:h-18 sm:px-7">
-        <Link href="/" className="text-xl font-bold tracking-tight">
-          Pathway
-        </Link>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="lg"
-            type="button"
-            onClick={onSaveExit}
-          >
-            Save &amp; exit
-          </Button>
-          <Button
-            variant="secondary"
-            size="icon-lg"
-            type="button"
-            aria-label="Close form"
-            onClick={onClose}
-          >
-            <X aria-hidden="true" />
-          </Button>
-        </div>
-      </header>
-      <main className="flex flex-1 flex-col">{children}</main>
-    </div>
-  );
-}
 
 export function RoadmapForm() {
   const router = useRouter();
@@ -286,6 +245,14 @@ export function RoadmapForm() {
           : screen === 4
             ? "How much time do you have?"
             : "What pace feels right?";
+  const choiceLabel =
+    screen === 1
+      ? "Learning goal"
+      : screen === 2
+        ? "Experience level"
+        : screen === 4
+          ? "Weekly learning time"
+          : "Target pace";
   const customHours = Number(form.customWeeklyHours);
   const customHoursInvalid =
     screen === 4 &&
@@ -305,23 +272,7 @@ export function RoadmapForm() {
         }}
       >
         <div className="flex justify-center">
-          <div
-            className="flex items-center gap-2"
-            role="group"
-            aria-label={`Step ${screen} of 5`}
-          >
-            <span className="rounded-full bg-accent px-3 py-1.5 text-xs font-bold">
-              STEP {screen} OF 5
-            </span>
-            <div className="flex gap-1.5" aria-hidden="true">
-              {Array.from({ length: 5 }, (_, index) => (
-                <span
-                  key={index}
-                  className={`h-1.5 w-7 rounded-full ${index < screen ? "bg-primary" : "bg-border"}`}
-                />
-              ))}
-            </div>
-          </div>
+          <StepProgress step={screen} />
         </div>
         <div className="mx-auto mt-8 w-full text-center">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
@@ -348,6 +299,7 @@ export function RoadmapForm() {
           <>
             <ChoiceGroup
               choices={choices}
+              label={choiceLabel}
               value={selectedValue}
               onChange={handleChoiceChange}
             />
