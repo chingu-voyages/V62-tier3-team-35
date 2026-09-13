@@ -9,7 +9,6 @@ import {
 } from "@/components/form/controls/skill-controls";
 import { skillGroups } from "@/components/form/data/form-options";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 type SkillsPickerProps = {
   goalTitle: string;
@@ -58,69 +57,74 @@ export function SkillsPicker({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="relative">
-        <Search
-          className="pointer-events-none absolute top-1/2 left-4 z-10 size-4 -translate-y-1/2 text-muted-foreground"
-          aria-hidden="true"
-        />
-        <SearchField
-          value={search}
-          onChange={onSearchChange}
-          inputProps={{
-            id: "skill-search",
-            role: "combobox",
-            "aria-label": "Search skills",
-            "aria-autocomplete": "list",
-            "aria-expanded": Boolean(normalizedSearch),
-            className: "pl-11",
-            onKeyDown: (event) => {
-              if (event.key === "Enter" && canAddCustomSkill) {
-                event.preventDefault();
-                addCustomSkill();
-              }
-            },
-          }}
-        />
-        {normalizedSearch ? (
-          <div
-            className="absolute top-full right-0 left-0 z-20 mt-2 rounded-lg border border-border bg-card p-1 shadow-lg"
-            role="listbox"
-            aria-label="Skill search results"
-          >
-            {matchingSkills.map((skill) => (
-              <Button
-                key={skill}
-                type="button"
-                variant="ghost"
-                size="sm"
-                role="option"
-                className="h-10 w-full justify-start rounded-md px-3"
-                onClick={() => addSkill(skill)}
-              >
-                {skill}
-              </Button>
-            ))}
-            {canAddCustomSkill ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                role="option"
-                className="h-10 w-full justify-start rounded-md px-3"
-                onClick={addCustomSkill}
-              >
-                Add &quot;{normalizedSearch}&quot;
-              </Button>
-            ) : null}
-            {!matchingSkills.length && !canAddCustomSkill ? (
-              <p className="px-3 py-2 text-sm text-muted-foreground">
-                {hasExactSkill
-                  ? `${normalizedSearch} is already selected.`
-                  : "No matching skills."}
-              </p>
-            ) : null}
-          </div>
-        ) : null}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="skill-search" className="text-xs font-semibold">
+          Search or add skills
+        </label>
+        <div className="relative">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-4 z-10 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <SearchField
+            value={search}
+            onChange={onSearchChange}
+            inputProps={{
+              id: "skill-search",
+              role: "combobox",
+              placeholder: "Search or add a skill...",
+              "aria-autocomplete": "list",
+              "aria-expanded": Boolean(normalizedSearch),
+              className: "pl-11",
+              onKeyDown: (event) => {
+                if (event.key === "Enter" && canAddCustomSkill) {
+                  event.preventDefault();
+                  addCustomSkill();
+                }
+              },
+            }}
+          />
+          {normalizedSearch ? (
+            <div
+              className="absolute top-full right-0 left-0 z-20 mt-2 rounded-lg border border-border bg-card p-1 shadow-lg"
+              role="listbox"
+              aria-label="Skill search results"
+            >
+              {matchingSkills.map((skill) => (
+                <Button
+                  key={skill}
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  role="option"
+                  className="h-10 w-full justify-start rounded-md px-3"
+                  onClick={() => addSkill(skill)}
+                >
+                  {skill}
+                </Button>
+              ))}
+              {canAddCustomSkill ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  role="option"
+                  className="h-10 w-full justify-start rounded-md px-3"
+                  onClick={addCustomSkill}
+                >
+                  Add &quot;{normalizedSearch}&quot;
+                </Button>
+              ) : null}
+              {!matchingSkills.length && !canAddCustomSkill ? (
+                <p className="px-3 py-2 text-sm text-muted-foreground">
+                  {hasExactSkill
+                    ? `${normalizedSearch} is already selected.`
+                    : "No matching skills."}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <section aria-labelledby="selected-skills-label">
@@ -191,7 +195,7 @@ export function SkillsPicker({
       <InfoBlock
         title="Starting from scratch?"
         description="You can continue without selecting anything."
-        className={cn("mt-1")}
+        className="mt-1"
       />
     </div>
   );

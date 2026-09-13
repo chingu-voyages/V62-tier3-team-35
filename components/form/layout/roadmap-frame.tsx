@@ -41,7 +41,7 @@ export function RoadmapFrame({
           </Button>
         </div>
       </header>
-      <main className="flex flex-1 flex-col">{children}</main>
+      <main className="flex flex-1 flex-col overflow-x-hidden">{children}</main>
     </div>
   );
 }

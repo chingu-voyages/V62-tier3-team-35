@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CheckCircle2, LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/form/layout/back-button";
@@ -46,6 +47,14 @@ const labels: Record<string, string> = {
   skills: "Known skills",
   weeklyTime: "Weekly time",
   target: "Target pace",
+};
+
+const stepDescriptions: Record<FormStep, string> = {
+  1: "Choose a career direction or describe a specific learning goal. We'll tailor the roadmap around it.",
+  2: "Tell us where you're starting so we can set the right level of challenge.",
+  3: "Select the skills you already know. You can skip this if you're starting from scratch.",
+  4: "Choose a weekly commitment that fits your routine.",
+  5: "Set the pace that feels sustainable for your learning journey.",
 };
 
 const customWeeklyHoursMin = 1;
@@ -97,11 +106,25 @@ export function RoadmapForm() {
   if (screen === "generating") {
     return (
       <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
-        <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
+        <section
+          className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center"
+          aria-live="polite"
+        >
+          <span className="mb-6 grid size-16 place-items-center rounded-2xl bg-accent">
+            <LoaderCircle
+              className="size-8 animate-spin text-foreground"
+              aria-hidden="true"
+            />
+          </span>
           <p className="mb-3 text-sm text-muted-foreground">
             Pathway is working
           </p>
-          <h1 className="text-3xl font-semibold">Building your roadmap...</h1>
+          <h1 className="font-heading text-3xl leading-9 font-bold tracking-tight">
+            Building your roadmap...
+          </h1>
+          <p className="mt-3 max-w-sm text-sm leading-5 text-muted-foreground">
+            We&apos;re turning your answers into a practical learning plan.
+          </p>
         </section>
       </RoadmapFrame>
     );
@@ -111,10 +134,18 @@ export function RoadmapForm() {
     return (
       <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
         <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
+          <span className="mb-6 grid size-16 place-items-center rounded-2xl bg-success-bg text-success">
+            <CheckCircle2 className="size-8" aria-hidden="true" />
+          </span>
           <p className="mb-3 text-sm text-muted-foreground">
             Your answers are ready
           </p>
-          <h1 className="text-3xl font-semibold">Your roadmap is ready</h1>
+          <h1 className="font-heading text-3xl leading-9 font-bold tracking-tight">
+            Your roadmap is ready
+          </h1>
+          <p className="mt-3 max-w-sm text-sm leading-5 text-muted-foreground">
+            Your plan is tailored to your goal, experience, skills, and pace.
+          </p>
           <Button
             variant="primary"
             size="lg"
@@ -133,10 +164,16 @@ export function RoadmapForm() {
       <RoadmapFrame onClose={closeForm} onSaveExit={closeForm}>
         <section className="mx-auto flex w-full max-w-xl flex-1 flex-col px-4 py-8 sm:px-6 sm:py-10">
           <p className="text-sm text-muted-foreground">Review your answers</p>
-          <h1 className="mt-2 text-3xl font-semibold">
-            Ready to build your path?
+          <h1 className="mt-2 font-heading text-2xl leading-8 font-bold tracking-tight sm:text-3xl sm:leading-9">
+            Review your plan
           </h1>
+          <p className="mt-2 text-sm leading-5 text-muted-foreground">
+            Make sure everything looks right before we build your roadmap.
+          </p>
           <div className="mt-8 space-y-3">
+            <p className="text-xs leading-4 font-semibold tracking-wider text-muted-foreground uppercase">
+              Your inputs
+            </p>
             {(Object.keys(labels) as Array<keyof FormData>).map((key) => {
               const value =
                 key === "goal"
@@ -154,16 +191,21 @@ export function RoadmapForm() {
               return (
                 <div
                   key={key}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-border p-4"
+                  className="flex min-h-14 items-center justify-between gap-4 rounded-lg border border-border bg-card px-3.5 py-3 transition-colors hover:border-foreground/20"
                 >
-                  <div>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs leading-4 text-muted-foreground">
                       {labels[key]}
                     </p>
-                    <p className="font-medium">{value}</p>
+                    <p className="break-words text-sm leading-5 font-medium">
+                      {value}
+                    </p>
                   </div>
-                  <button
-                    className="text-sm font-medium underline"
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    className="h-11 w-16 shrink-0 rounded-full border-input bg-card px-4 shadow-none hover:bg-muted"
                     onClick={() =>
                       setScreen(
                         (Object.keys(labels).indexOf(key) + 1) as FormStep,
@@ -171,11 +213,16 @@ export function RoadmapForm() {
                     }
                   >
                     Edit
-                  </button>
+                  </Button>
                 </div>
               );
             })}
           </div>
+          <InfoBlock
+            className="mt-5"
+            title="You are in control"
+            description="You can edit any answer before generating your roadmap."
+          />
           <div className="mt-auto flex justify-between gap-3 pt-8">
             <BackButton onClick={goBack} />
             <Button
@@ -239,10 +286,7 @@ export function RoadmapForm() {
           : screen === 4
             ? "How much time do you have?"
             : "What pace feels right?";
-  const description =
-    screen === 1
-      ? "Choose a career direction or describe a specific learning goal. We'll tailor the roadmap around it."
-      : "Choose the answer that best describes your situation.";
+  const description = stepDescriptions[screen];
   const choiceLabel =
     screen === 1
       ? "Learning goal"
