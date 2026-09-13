@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, KeyboardEventHandler, ReactNode } from "react";
 import { Check, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -59,20 +59,33 @@ export function SkillChip({
 type SearchFieldProps = {
   value: string;
   onChange: (value: string) => void;
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
+  placeholder?: string;
+  label?: string;
   inputProps?: Omit<
     ComponentProps<typeof Input>,
-    "type" | "value" | "onChange"
+    "type" | "value" | "onChange" | "onKeyDown" | "placeholder"
   >;
 };
 
-export function SearchField({ value, onChange, inputProps }: SearchFieldProps) {
+export function SearchField({
+  value,
+  onChange,
+  onKeyDown,
+  placeholder,
+  label,
+  inputProps,
+}: SearchFieldProps) {
   return (
     <Input
       {...inputProps}
       type="search"
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className={cn("h-12 bg-card px-4", inputProps?.className)}
+      onKeyDown={onKeyDown}
+      placeholder={placeholder}
+      aria-label={label ?? "Search"}
+      className={cn("h-12 bg-card px-4 pl-11", inputProps?.className)}
     />
   );
 }

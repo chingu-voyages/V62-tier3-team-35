@@ -7,9 +7,15 @@ type InfoBlockProps = {
   title: string;
   description: string;
   className?: string;
+  iconClassName?: string;
 };
 
-export function InfoBlock({ title, description, className }: InfoBlockProps) {
+export function InfoBlock({
+  title,
+  description,
+  className,
+  iconClassName,
+}: InfoBlockProps) {
   return (
     <aside
       className={cn(
@@ -18,7 +24,7 @@ export function InfoBlock({ title, description, className }: InfoBlockProps) {
       )}
     >
       <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-card">
-        <Lightbulb className="size-5" aria-hidden="true" />
+        <Lightbulb className={cn("size-5", iconClassName)} aria-hidden="true" />
       </span>
       <span className="flex min-w-0 flex-col gap-1.5">
         <span className="block text-xs leading-4 font-bold">{title}</span>
