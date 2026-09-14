@@ -116,27 +116,6 @@ export const timeChoices: FormOption[] = [
   },
 ];
 
-export const targetChoices: FormOption[] = [
-  {
-    value: "recommended",
-    title: "Recommended",
-    description: "A balanced roadmap",
-    icon: Target,
-  },
-  {
-    value: "accelerated",
-    title: "Accelerated",
-    description: "Finish in less time",
-    icon: Zap,
-  },
-  {
-    value: "relaxed",
-    title: "Relaxed",
-    description: "Leave more room each week",
-    icon: Leaf,
-  },
-];
-
 export const skills = [
   "HTML",
   "CSS",

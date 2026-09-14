@@ -5,7 +5,7 @@ type StepProgressProps = {
   total?: number;
 };
 
-export function StepProgress({ step, total = 5 }: StepProgressProps) {
+export function StepProgress({ step, total = 4 }: StepProgressProps) {
   const currentStep = Math.min(Math.max(step, 1), total);
 
   return (
