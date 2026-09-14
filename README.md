@@ -39,3 +39,42 @@ coding!
 
    ...
 - Teammate name #n: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
+
+## Architecture Overview
+
+- **Reads that build a page** (dashboard list, a single path's detail view) - handled directly in server components calling `lib/data/`, no route handler involved.
+- **Any user-triggered mutation** (generating a path, toggling a step, deleting a path) - goes through a route handler in `app/api/`.
+- Route handlers only orchestrate: validate input, call one function from `lib/ai/` or `lib/data/`, return a response. All AI-specific logic (including its own validation step) stays inside `lib/ai`; all DB logic stays inside `lib/data`.
+
+Two example flows below show this in practice - one slow/external (AI-backed), one fast/local (DB-only).
+
+## Request Flow: Generating a Path
+
+1. **Client** - form input validated with Zod (`lib/schemas/path.ts`)
+2. **Client** - Zustand sets `isGenerating = true`, sends `POST /api/paths`
+3. **Route handler** (`app/api/paths/route.ts`):
+   - Parses request body
+   - Revalidates with the same Zod schema
+   - Calls `generatePath(input)` from `lib/ai/`
+   - Calls `createPath(userId, steps)` from `lib/data/`
+   - Returns the saved path as JSON
+4. **`lib/ai/generate-path.ts`** (called from step 3):
+   - Builds prompt from validated input
+   - Calls AI provider, awaits response
+   - Strips/cleans the raw text
+   - Parses it as JSON
+   - **Validates the parsed result against `aiPathResponseSchema`** - wrong output throws error
+5. **`lib/data/paths.ts`** (called from step 3) - saves the validated `Path` + `Step` rows via Prisma
+6. **Client** - Zustand receives the response, sets `currentPath`, `isGenerating = false`
+7. **Client** - components subscribed to the store re-render with the new path
+
+## Request Flow: Toggling a Step Complete
+
+1. **Client** - checkbox `onChange` calls a Zustand store action, `toggleStep(stepId)`
+2. **Zustand** - optimistically flips step's `completed` value in local state immediately (UI updates instantly - no waiting on the network)
+3. **Zustand** - fires `PATCH /api/steps/[id]`
+4. **Route handler** (`app/api/steps/[id]/route.ts`):
+   - Calls `toggleStepCompletion(stepId)` from `lib/data/steps.ts`
+   - Returns a success response
+5. **`lib/data/steps.ts`** - flips `completed` in the DB
+6. **Client** - if success, nothing further needed. **On failure**, Zustand reverts the optimistic update and shows an error.
