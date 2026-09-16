@@ -1,15 +1,9 @@
-import { ai } from "@/lib/ai/gemini";
+import { generatePath } from "@/lib/ai/generate-path";
 
-// Request to Gemini
 export async function POST() {
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents:
-      "Generate a short learning path for a beginner frontend developer.",
-  });
+  const result = await generatePath();
 
-  // Return the generated learning path
   return Response.json({
-    result: response.text,
+    result,
   });
 }
