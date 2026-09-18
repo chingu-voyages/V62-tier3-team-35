@@ -1,25 +1,35 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Google, Github } from "./icons";
-
-
-export default function AuthFooter() {
+function AuthProviderButton() {
 	return (
-		<div className="">
-			<Link
-				href="/forgot-password"
-				className="block ml-auto w-fit text-sm/5 text-right mb-6 font-medium"
+		<div className="flex gap-5 flex-wrap sm:wrap-0">
+			<Button
+				variant="secondary"
+				className="flex-1 rounded-lg gap-4"
+				size="lg"
+				type="button"
 			>
-				Forgot password?
-			</Link>
+				<Google className="size-6" />
+				Google
+			</Button>
 
 			<Button
-				variant="primary"
-				className="w-full"
+				variant="secondary"
+				className="flex-1 rounded-lg gap-4"
 				size="lg"
+				type="button"
 			>
-				Log in
+				<Github className="size-6" />
+				GitHub
 			</Button>
+		</div>
+	)
+}
+
+export default function AuthFooter({ variant }: { variant: "signup" | "login" }) {
+	return (
+		<div>
 
 			<div className="flex justify-center items-center gap-4 py-7">
 				<div className="bg-muted h-px w-full" />
@@ -27,37 +37,34 @@ export default function AuthFooter() {
 				<div className="bg-muted h-px w-full" />
 			</div>
 
-			<div className="flex gap-5 flex-wrap sm:wrap-0">
-				<Button
-					variant="secondary"
-					className="flex-1 rounded-lg gap-4"
-					size="lg"
-					type="button"
-				>
-					<Google className="size-6" />
-					Google
-				</Button>
+			<AuthProviderButton />
 
-				<Button
-					variant="secondary"
-					className="flex-1 rounded-lg gap-4"
-					size="lg"
-					type="button"
-				>
-					<Github className="size-6" />
-					GitHub
-				</Button>
-			</div>
+			{variant === "login"
+				?
+				(
+					<p className="text-sm pt-12 text-muted-foreground">
+						Don&apos;t have an account ?
+						<Link
+							href="/sign-up"
+							className="text-sm font-semibold text-foreground pl-2"
+						>
+							Sign up
+						</Link>
+					</p>
+				)
+				:
+				(
+					<p className="text-sm pt-12 text-muted-foreground">
+						Already have an account ?
+						<Link
+							href="/login"
+							className="text-sm font-semibold text-foreground pl-2"
+						>
+							Log in
+						</Link>
+					</p>
+				)}
 
-			<p className="text-sm pt-12 text-muted-foreground">
-				Don&apos;t have an account ?
-				<Link
-					href="/sign-up"
-					className="text-sm font-semibold text-foreground pl-2"
-				>
-					Sign up
-				</Link>
-			</p>
 		</div>
 	);
 }
