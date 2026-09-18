@@ -27,7 +27,6 @@ import {
   getChoiceTitle,
   goalChoices,
   levelChoices,
-  targetChoices,
   timeChoices,
 } from "@/components/form/data/form-options";
 
@@ -37,10 +36,9 @@ type FormData = {
   skills: string[];
   weeklyTime: string;
   customWeeklyHours: string;
-  target: string;
 };
 
-type FormStep = 1 | 2 | 3 | 4 | 5;
+type FormStep = 1 | 2 | 3 | 4;
 type Screen = FormStep | "review" | "generating" | "done";
 
 const initialForm: FormData = {
@@ -49,7 +47,6 @@ const initialForm: FormData = {
   skills: [],
   weeklyTime: "",
   customWeeklyHours: "",
-  target: "",
 };
 
 const labels: Record<string, string> = {
@@ -57,7 +54,6 @@ const labels: Record<string, string> = {
   level: "Experience level",
   skills: "Known skills",
   weeklyTime: "Weekly time",
-  target: "Target pace",
 };
 
 const stepDescriptions: Record<FormStep, string> = {
@@ -65,7 +61,6 @@ const stepDescriptions: Record<FormStep, string> = {
   2: "Tell us where you're starting so we can set the right level of challenge.",
   3: "Select the skills you already know. You can skip this if you're starting from scratch.",
   4: "Choose a weekly commitment that fits your routine.",
-  5: "Set the pace that feels sustainable for your learning journey.",
 };
 
 const customWeeklyHoursMin = 1;
@@ -190,7 +185,7 @@ export function RoadmapForm() {
 
   const goBack = () => {
     if (screen === "review") {
-      setScreen(5);
+      setScreen(4);
     } else if (typeof screen === "number" && screen > 1) {
       setScreen((screen - 1) as FormStep);
     }
@@ -209,7 +204,7 @@ export function RoadmapForm() {
       if (invalidHours) return;
     }
 
-    setScreen(screen === 5 ? "review" : ((screen + 1) as FormStep));
+    setScreen(screen === 4 ? "review" : ((screen + 1) as FormStep));
   };
 
   const closeForm = () => router.push("/");
@@ -348,7 +343,8 @@ export function RoadmapForm() {
             Your roadmap is ready
           </h1>
           <p className="mt-3 max-w-sm text-sm leading-5 text-muted-foreground">
-            Your plan is tailored to your goal, experience, skills, and pace.
+            Your plan is tailored to your goal, experience, skills, and
+            schedule.
           </p>
           <Button
             variant="primary"
@@ -388,9 +384,7 @@ export function RoadmapForm() {
                       ? form.customWeeklyHours
                         ? `${getChoiceTitle(timeChoices, form.weeklyTime)} (${form.customWeeklyHours}h/week)`
                         : getChoiceTitle(timeChoices, form.weeklyTime)
-                      : key === "target"
-                        ? getChoiceTitle(targetChoices, form.target)
-                        : form.skills.join(", ") || "No skills selected";
+                      : form.skills.join(", ") || "No skills selected";
 
               return (
                 <div
@@ -439,29 +433,11 @@ export function RoadmapForm() {
   }
 
   const choices =
-    screen === 1
-      ? goalChoices
-      : screen === 2
-        ? levelChoices
-        : screen === 4
-          ? timeChoices
-          : targetChoices;
+    screen === 1 ? goalChoices : screen === 2 ? levelChoices : timeChoices;
   const selectedValue =
-    screen === 1
-      ? form.goal
-      : screen === 2
-        ? form.level
-        : screen === 4
-          ? form.weeklyTime
-          : form.target;
+    screen === 1 ? form.goal : screen === 2 ? form.level : form.weeklyTime;
   const choiceKey =
-    screen === 1
-      ? "goal"
-      : screen === 2
-        ? "level"
-        : screen === 4
-          ? "weeklyTime"
-          : "target";
+    screen === 1 ? "goal" : screen === 2 ? "level" : "weeklyTime";
 
   const handleChoiceChange = (value: string) => {
     if (choiceKey === "weeklyTime") {
@@ -483,18 +459,14 @@ export function RoadmapForm() {
         ? "What is your current level?"
         : screen === 3
           ? "What do you already know?"
-          : screen === 4
-            ? "How much time do you have?"
-            : "What pace feels right?";
+          : "How much time do you have?";
   const description = stepDescriptions[screen];
   const choiceLabel =
     screen === 1
       ? "Learning goal"
       : screen === 2
         ? "Experience level"
-        : screen === 4
-          ? "Weekly learning time"
-          : "Target pace";
+        : "Weekly learning time";
   const customHours = Number(form.customWeeklyHours);
   const customHoursInvalid =
     screen === 4 &&
@@ -592,13 +564,6 @@ export function RoadmapForm() {
                 description="A realistic weekly commitment is more useful than an ambitious one."
               />
             ) : null}
-            {screen === 5 ? (
-              <InfoBlock
-                className="mt-5"
-                title="Your pace can change"
-                description="This setting shapes the amount of work each week, not your final destination."
-              />
-            ) : null}
           </>
         )}
 
@@ -609,7 +574,7 @@ export function RoadmapForm() {
             <BackButton onClick={goBack} />
           )}
           <Button variant="primary" size="lg" type="submit">
-            <span>{screen === 5 ? "Review answers" : "Continue"}</span>
+            <span>{screen === 4 ? "Review answers" : "Continue"}</span>
             <ArrowRight className="size-6" aria-hidden="true" />
           </Button>
         </footer>
