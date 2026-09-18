@@ -7,6 +7,7 @@ type ChoiceGroupProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  errorId?: string;
 };
 
 export function ChoiceGroup({
@@ -14,12 +15,14 @@ export function ChoiceGroup({
   label,
   value,
   onChange,
+  errorId,
 }: ChoiceGroupProps) {
   return (
     <RadioGroup
       value={value}
       onValueChange={onChange}
       aria-label={label}
+      aria-describedby={errorId}
       className="mt-8 gap-3"
     >
       {choices.map((choice) => (

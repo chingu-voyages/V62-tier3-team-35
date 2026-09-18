@@ -173,7 +173,7 @@ export function SkillsPicker({
           <PopoverContent
             id="skill-search-results"
             align="start"
-            className="w-[var(--radix-popover-trigger-width)] min-w-64 p-1"
+            className="w-(--radix-popover-trigger-width) min-w-64 p-1"
             onOpenAutoFocus={(event) => event.preventDefault()}
           >
             <div
