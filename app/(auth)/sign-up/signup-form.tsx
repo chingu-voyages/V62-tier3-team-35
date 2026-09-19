@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Mail, Lock, Eye, EyeOff, User, TriangleAlert } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   InputGroup,
   InputGroupAddon,
@@ -18,12 +19,12 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { signUpSchema, type signUpType } from "@/lib/schemas/auth";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
-export default function SignUpForm({
-  action,
-}: {
-  action?: (data: signUpType) => void | Promise<void>;
-}) {
+export default function SignUpForm() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const form = useForm<signUpType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -35,12 +36,53 @@ export default function SignUpForm({
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit = async (data: signUpType) => {
-    // TODO: implement action logic.
-    if (action) {
-      return action(data);
-    }
-    console.log("Data:", data);
+  const onSubmit = (data: signUpType) => {
+    startTransition(async () => {
+      await authClient.signUp.email(
+        {
+          name: data.fullName,
+          email: data.email,
+          password: data.password,
+          callbackURL: "/",
+        },
+        {
+          onSuccess: () => {
+            router.push(
+              `/verify-email?email=${encodeURIComponent(data.email)}`,
+            );
+          },
+          onError: (ctx) => {
+            const errorMsg = ctx.error.message?.toLowerCase() || "";
+            if (ctx.error.status === 422 || errorMsg.includes("email")) {
+              form.setError("email", {
+                message:
+                  "An account with this email already exists. Try logging in.",
+              });
+              return;
+            }
+            if (errorMsg.includes("password")) {
+              form.setError("password", {
+                message: ctx.error.message,
+              });
+              return;
+            }
+
+            if (errorMsg.includes("name")) {
+              form.setError("fullName", {
+                message: ctx.error.message,
+              });
+              return;
+            }
+
+            form.setError("root", {
+              message:
+                ctx.error.message ||
+                "An unexpected error occurred. Please try again.",
+            });
+          },
+        },
+      );
+    });
   };
 
   return (
@@ -138,14 +180,26 @@ export default function SignUpForm({
         />
       </FieldGroup>
 
+      {/* TODO: banner placeholder */}
+      {form.formState.errors.root?.message && (
+        <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/10 p-3.5 text-destructive">
+          <TriangleAlert className="size-5 shrink-0" />
+          <p className="text-sm text-pretty">{form.formState.errors.root.message}</p>
+        </div>
+      )}
+
       <Button
         variant="primary"
-        className="w-full"
+        className="w-full gap-2"
         size="lg"
         type="submit"
-        disabled={form.formState.isSubmitting}
+        disabled={isPending || form.formState.isSubmitting}
       >
-        Create account
+        {isPending ? (
+          <Spinner />
+        ) : (
+          "Create account"
+        )}
       </Button>
     </form>
   );

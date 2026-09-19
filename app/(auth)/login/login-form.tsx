@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Mail, Lock, Eye, EyeOff, TriangleAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   InputGroup,
   InputGroupAddon,
@@ -19,12 +21,12 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type loginType } from "@/lib/schemas/auth";
+import { authClient } from "@/lib/auth-client";
 
-export default function LoginForm({
-  action,
-}: {
-  action?: (data: loginType) => void | Promise<void>;
-}) {
+export default function LoginForm() {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
   const form = useForm<loginType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -34,12 +36,31 @@ export default function LoginForm({
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit = async (data: loginType) => {
-    // TODO: implement action logic.
-    if (action) {
-      return action(data);
-    }
-    console.log("Data:", data);
+  const onSubmit = (data: loginType) => {
+    startTransition(async () => {
+      await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+          callbackURL: "/",
+        },
+        {
+          onSuccess: () => {
+            // TODO: change with the user dashboard
+            router.push("/");
+          },
+          onError: (ctx) => {
+            console.log("Ctx:", ctx);
+            form.setError("root", {
+              message:
+                ctx.error.code === "INVALID_EMAIL_OR_PASSWORD"
+                  ? "Email or password is incorrect. Try again or reset your password"
+                  : ctx.error.message,
+            });
+          },
+        },
+      );
+    });
   };
 
   return (
@@ -121,8 +142,29 @@ export default function LoginForm({
           )}
         />
       </FieldGroup>
-      <Button variant="primary" className="w-full" size="lg" type="submit">
-        Log in
+
+      {/* TODO: banner placeholder */}
+      {form.formState.errors.root?.message && (
+        <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/10 p-3.5 text-destructive">
+          <TriangleAlert className="size-5 shrink-0" />
+          <p className="text-sm text-pretty">
+            {form.formState.errors.root.message}
+          </p>
+        </div>
+      )}
+
+      <Button
+        variant="primary"
+        className="w-full gap-2"
+        size="lg"
+        type="submit"
+        disabled={isPending || form.formState.isSubmitting}
+      >
+        {isPending ? (
+          <Spinner />
+        ) : (
+          "Log in"
+        )}
       </Button>
     </form>
   );
