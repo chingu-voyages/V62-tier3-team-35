@@ -41,14 +41,6 @@ export default async function page({
     );
   }
 
-  return (
-    <div className="min-h-[500px]">
-      <AuthHeader
-        title="Create a new password"
-        description="Make sure both passwords match and meet the requirements."
-      />
-      <ResetPasswordForm token={token} />
-    </div>
-  );
+  return <ResetPasswordForm token={token} />
 }
 
