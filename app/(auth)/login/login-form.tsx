@@ -50,7 +50,6 @@ export default function LoginForm() {
             router.push("/");
           },
           onError: (ctx) => {
-            console.log("Ctx:", ctx);
             form.setError("root", {
               message:
                 ctx.error.code === "INVALID_EMAIL_OR_PASSWORD"

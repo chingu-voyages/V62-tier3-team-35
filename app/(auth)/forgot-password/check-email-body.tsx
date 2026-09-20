@@ -8,13 +8,16 @@ import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import AuthBodyIcon from "@/components/auth-body-icon";
 
-export default function CheckEmailBody({ email }: { email?: string | null }) {
+interface CheckEmailBodyProps {
+  email: string;
+}
+
+export default function CheckEmailBody({ email }: CheckEmailBodyProps) {
   const [isPending, startTransition] = useTransition();
   const [isResent, setIsResent] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleResend = () => {
-    if (!email) return;
     setError(null);
     startTransition(async () => {
       await authClient.requestPasswordReset(
