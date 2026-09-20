@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Google, Github } from "./icons";
 import { authClient } from "@/lib/auth-client";
 
+// TODO: handle this better
 function AuthProviderButton() {
   const handleSocialSignIn = async (provider: "google" | "github") => {
     await authClient.signIn.social({
@@ -21,6 +22,7 @@ function AuthProviderButton() {
         size="lg"
         type="button"
         onClick={() => handleSocialSignIn("google")}
+        aria-label="Sign in with Google"
       >
         <Google className="size-6" />
         Google
@@ -32,6 +34,7 @@ function AuthProviderButton() {
         size="lg"
         type="button"
         onClick={() => handleSocialSignIn("github")}
+        aria-label="Sign in with Github"
       >
         <Github className="size-6" />
         GitHub
