@@ -1,5 +1,84 @@
 import { test, expect } from "@playwright/test";
 
+/* -------------------------------------------------------------------------- */
+/*                         Route Protection (Proxy)                           */
+/* -------------------------------------------------------------------------- */
+
+test.describe("Route Protection (Proxy)", () => {
+  test.describe("Protected routes (unauthenticated access)", () => {
+    test("redirects /create-path to /login", async ({ page }) => {
+      await page.goto("/create-path");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test("redirects nested /create-path/sub-page to /login", async ({ page }) => {
+      await page.goto("/create-path/sub-page");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test("redirects /dashboard to /login", async ({ page }) => {
+      await page.goto("/dashboard");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test("redirects nested /dashboard/analytics to /login", async ({ page }) => {
+      await page.goto("/dashboard/analytics");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test("redirects /settings to /login", async ({ page }) => {
+      await page.goto("/settings");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test("redirects nested /settings/security to /login", async ({ page }) => {
+      await page.goto("/settings/security");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+  });
+
+  test.describe("Public & guest routes (unauthenticated access)", () => {
+    test("allows direct access to home page /", async ({ page }) => {
+      await page.goto("/");
+      await expect(page).toHaveURL("/");
+    });
+
+    test("allows direct access to /login", async ({ page }) => {
+      await page.goto("/login");
+      await expect(page).toHaveURL(/\/login$/);
+    });
+
+    test("allows direct access to /sign-up", async ({ page }) => {
+      await page.goto("/sign-up");
+      await expect(page).toHaveURL(/\/sign-up$/);
+    });
+
+    test("allows direct access to /forgot-password", async ({ page }) => {
+      await page.goto("/forgot-password");
+      await expect(page).toHaveURL(/\/forgot-password$/);
+    });
+
+    test("allows direct access to /verify-email", async ({ page }) => {
+      await page.goto("/verify-email?email=test@example.com");
+      await expect(page).toHaveURL(/\/verify-email\?email=/);
+    });
+
+    test("allows direct access to /reset-password", async ({ page }) => {
+      await page.goto("/reset-password");
+      await expect(page).toHaveURL(/\/reset-password$/);
+    });
+
+    test("allows direct access to /email-verified", async ({ page }) => {
+      await page.goto("/email-verified");
+      await expect(page).toHaveURL(/\/email-verified$/);
+    });
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*                                Login Flow                                  */
+/* -------------------------------------------------------------------------- */
+
 test.describe("Login Flow", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/login");
@@ -66,6 +145,10 @@ test.describe("Login Flow", () => {
   });
 });
 
+/* -------------------------------------------------------------------------- */
+/*                               Sign Up Flow                                 */
+/* -------------------------------------------------------------------------- */
+
 test.describe("Sign Up Flow", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/sign-up");
@@ -122,6 +205,10 @@ test.describe("Sign Up Flow", () => {
   });
 });
 
+/* -------------------------------------------------------------------------- */
+/*                           Forgot Password Flow                             */
+/* -------------------------------------------------------------------------- */
+
 test.describe("Forgot Password Flow", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/forgot-password");
@@ -160,6 +247,10 @@ test.describe("Forgot Password Flow", () => {
   });
 });
 
+/* -------------------------------------------------------------------------- */
+/*                            Verify Email Flow                               */
+/* -------------------------------------------------------------------------- */
+
 test.describe("Verify Email Flow", () => {
   test("shows invalid request state when email param is missing", async ({ page }) => {
     await page.goto("/verify-email");
@@ -179,6 +270,10 @@ test.describe("Verify Email Flow", () => {
     await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
   });
 });
+
+/* -------------------------------------------------------------------------- */
+/*                            Reset Password Flow                             */
+/* -------------------------------------------------------------------------- */
 
 test.describe("Reset Password Flow", () => {
   test("shows invalid link state when token param is missing", async ({ page }) => {
@@ -250,6 +345,10 @@ test.describe("Reset Password Flow", () => {
     await expect(page.getByText("Token has expired or is invalid")).toBeVisible();
   });
 });
+
+/* -------------------------------------------------------------------------- */
+/*                           Email Verified Page                              */
+/* -------------------------------------------------------------------------- */
 
 test.describe("Email Verified Page", () => {
   test("renders email verified confirmation elements", async ({ page }) => {
