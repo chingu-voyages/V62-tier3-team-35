@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { headers } from "next/headers";
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
@@ -50,3 +51,10 @@ export const auth = betterAuth({
     },
   },
 });
+
+export async function getServerSession() {
+  return await auth.api.getSession({
+    headers: await headers(),
+  });
+}
+
