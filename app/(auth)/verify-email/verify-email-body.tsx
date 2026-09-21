@@ -32,7 +32,7 @@ export default function VerifyEmailBody({ email }: { email: string }) {
 
       {/* TODO: banner placeholder */}
       {isResent && (
-        <div className="mb-4 flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/10 p-3.5 text-sm text-primary">
+        <div className="mb-4 flex items-center gap-3 rounded-lg border border-green-100 bg-green-100 text-green-800 p-3.5 text-sm">
           <CheckCircle2 className="size-5 shrink-0" />
           <p className="text-sm text-pretty">Verification email resent successfully!</p>
         </div>

@@ -1,11 +1,17 @@
 import { betterAuth } from "better-auth";
 import { headers } from "next/headers";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import prisma from "./prisma";
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
     async sendResetPassword({ user, url }) {
       console.log(`Reset password link for ${user.email}, ${url}`)
       // await sendEmail({
