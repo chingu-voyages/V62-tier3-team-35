@@ -4,11 +4,18 @@ import { useState } from "react"
 import AuthHeader from "@/components/auth-header";
 import ForgotPasswordForm from "./forgot-password-form";
 import CheckEmailBody from "./check-email-body";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
 
+  if (session) {
+    router.push("/")
+  }
 
   if (isSubmitted && email) {
     return (
