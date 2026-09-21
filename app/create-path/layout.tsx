@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { RoadmapShell } from "@/components/form/roadmap-shell";
+import { RoadmapShell } from "@/features/create-path/components/roadmap-shell";
 
 export const metadata: Metadata = {
   title: "Create a roadmap | Pathway",
