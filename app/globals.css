@@ -40,6 +40,7 @@
 }
 
 :root {
+  --navbar-height: 3.5rem;
   --background: #f1f2ee;
   --foreground: #111211;
   --card: #ffffff;
