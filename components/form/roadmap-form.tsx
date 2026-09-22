@@ -214,9 +214,30 @@ export function RoadmapForm() {
 
   const closeForm = () => router.push("/");
 
-  const startGeneration = () => {
+  const startGeneration = async () => {
     setGenerationProgress(0);
     setScreen("generating");
+
+    //Generate roadmap
+    try {
+      const response = await fetch("/api/generate-path", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate roadmap");
+      }
+
+      const roadmap = await response.json();
+
+      console.log("Generated roadmap:", roadmap);
+    } catch (error) {
+      console.error("Failed to generate roadmap:", error);
+    }
   };
 
   if (screen === "generating") {
