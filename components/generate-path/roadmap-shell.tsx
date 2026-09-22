@@ -14,16 +14,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { clearDraft, saveDraft } from "@/features/create-path/draft-storage";
-import { RoadmapFormProvider } from "@/features/create-path/components/roadmap-form-provider";
-import { RoadmapFrame } from "@/features/create-path/layout/roadmap-frame";
-import type { RoadmapFormValues } from "@/features/create-path/schema";
+import { clearDraft, saveDraft } from "@/lib/generate-path/draft-storage";
+import { GeneratePathFormProvider } from "@/components/generate-path/generate-path-form-provider";
+import { RoadmapFrame } from "@/components/generate-path/layout/roadmap-frame";
+import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 export function RoadmapShell({ children }: { children: ReactNode }) {
   return (
-    <RoadmapFormProvider>
+    <GeneratePathFormProvider>
       <RoadmapShellInner>{children}</RoadmapShellInner>
-    </RoadmapFormProvider>
+    </GeneratePathFormProvider>
   );
 }
 

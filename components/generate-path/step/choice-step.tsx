@@ -2,11 +2,11 @@
 
 import { useController, useFormContext } from "react-hook-form";
 
-import { ChoiceGroup } from "@/features/create-path/controls/choice-group";
-import { FieldError } from "@/features/create-path/controls/field-feedback";
-import { formLabels } from "@/features/create-path/steps";
-import type { FormOption } from "@/features/create-path/options/form-options";
-import type { RoadmapFormKey, RoadmapFormValues } from "@/features/create-path/schema";
+import { ChoiceGroup } from "@/components/generate-path/controls/choice-group";
+import { FieldError } from "@/components/generate-path/controls/field-feedback";
+import { formLabels } from "@/components/generate-path/step-config";
+import type { FormOption } from "@/components/generate-path/data/form-options";
+import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 type ChoiceFormKey = Exclude<RoadmapFormKey, "skills" | "hoursPerWeek">;
 

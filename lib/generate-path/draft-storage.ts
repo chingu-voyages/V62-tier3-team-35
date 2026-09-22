@@ -1,9 +1,9 @@
 import {
   roadmapFormSchema,
   type RoadmapFormValues,
-} from "@/features/create-path/schema";
+} from "@/lib/schemas/generate-path.schema";
 
-const DRAFT_KEY = "pathway:create-path-draft";
+const DRAFT_KEY = "pathway:generate-path-draft";
 
 export function readDraft(): Partial<RoadmapFormValues> | null {
   if (typeof window === "undefined") return null;

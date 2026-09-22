@@ -4,8 +4,8 @@ import { Search } from "lucide-react";
 import {
   SearchField,
   SkillChip,
-} from "@/features/create-path/controls/skill-controls";
-import { skillGroups } from "@/features/create-path/options/form-options";
+} from "@/components/generate-path/controls/skill-controls";
+import { skillGroups } from "@/components/generate-path/data/form-options";
 import { Button } from "@/components/ui/button";
 import {
   Popover,

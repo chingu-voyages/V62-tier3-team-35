@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { firstStepPath } from "@/features/create-path/steps";
+import { firstStepPath } from "@/components/generate-path/step-config";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {

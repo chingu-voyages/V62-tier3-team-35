@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { StepShell } from "@/features/create-path/components/step-shell";
-import { isStepId } from "@/features/create-path/steps";
+import { StepShell } from "@/components/generate-path/step-shell";
+import { isStepId } from "@/components/generate-path/step-config";
 
 type StepPageProps = {
   params: Promise<{ stepId: string }>;

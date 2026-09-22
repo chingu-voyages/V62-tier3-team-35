@@ -6,8 +6,8 @@ import type { FormEvent } from "react";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { BackButton } from "@/features/create-path/layout/back-button";
-import { StepProgress } from "@/features/create-path/layout/step-progress";
+import { BackButton } from "@/components/generate-path/layout/back-button";
+import { StepProgress } from "@/components/generate-path/layout/step-progress";
 import {
   firstUnansweredStepIndex,
   getStep,
@@ -15,11 +15,11 @@ import {
   stepPathForIndex,
   steps,
   type StepId,
-} from "@/features/create-path/steps";
-import { readDraft } from "@/features/create-path/draft-storage";
-import type { RoadmapFormValues } from "@/features/create-path/schema";
+} from "@/components/generate-path/step-config";
+import { readDraft } from "@/lib/generate-path/draft-storage";
+import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 import { Button } from "@/components/ui/button";
-import { InfoBlock } from "../controls/field-feedback";
+import { InfoBlock } from "./controls/field-feedback";
 
 type StepShellProps = {
   stepId: StepId;
@@ -52,8 +52,8 @@ export function StepShell({ stepId }: StepShellProps) {
 
     router.push(
       isLastStep
-        ? "/create-path/review"
-        : `/create-path/${steps[index + 1].id}`,
+        ? "/generate-path/review"
+        : `/generate-path/${steps[index + 1].id}`,
     );
   };
 

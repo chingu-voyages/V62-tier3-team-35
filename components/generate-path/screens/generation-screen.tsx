@@ -13,20 +13,20 @@ import {
 import { useRouter } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 
-import { InfoBlock } from "@/features/create-path/controls/field-feedback";
-import { clearDraft, readDraft } from "@/features/create-path/draft-storage";
+import { InfoBlock } from "@/components/generate-path/controls/field-feedback";
+import { clearDraft, readDraft } from "@/lib/generate-path/draft-storage";
 import {
   getChoiceTitle,
   goalChoices,
   levelChoices,
-} from "@/features/create-path/options/form-options";
-import { GenerationArtwork } from "@/features/create-path/screens/generation-artwork";
-import { getTimeCommitmentLabel } from "@/features/create-path/options/time-commitment";
+} from "@/components/generate-path/data/form-options";
+import { GenerationArtwork } from "@/components/generate-path/screens/generation-artwork";
+import { getTimeCommitmentLabel } from "@/components/generate-path/data/time-commitment";
 import {
   firstUnansweredStepIndex,
   stepPathForIndex,
-} from "@/features/create-path/steps";
-import type { RoadmapFormValues } from "@/features/create-path/schema";
+} from "@/components/generate-path/step-config";
+import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 const generationStepDurationMs = 1400;
 
@@ -86,7 +86,7 @@ export function GenerationScreen() {
   useEffect(() => {
     if (generationProgress >= generationSteps.length) {
       clearDraft();
-      router.replace("/create-path/done");
+      router.replace("/generate-path/done");
       return;
     }
 

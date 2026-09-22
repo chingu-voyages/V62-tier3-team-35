@@ -8,10 +8,10 @@ import {
   initialForm,
   roadmapFormSchema,
   type RoadmapFormValues,
-} from "@/features/create-path/schema";
-import { readDraft, saveDraft } from "@/features/create-path/draft-storage";
+} from "@/lib/schemas/generate-path.schema";
+import { readDraft, saveDraft } from "@/lib/generate-path/draft-storage";
 
-export function RoadmapFormProvider({ children }: { children: ReactNode }) {
+export function GeneratePathFormProvider({ children }: { children: ReactNode }) {
   const methods = useForm<RoadmapFormValues>({
     resolver: zodResolver(roadmapFormSchema),
     defaultValues: initialForm,

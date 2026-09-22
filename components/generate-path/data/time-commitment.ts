@@ -1,7 +1,7 @@
 import {
   getChoiceTitle,
   timeChoices,
-} from "@/features/create-path/options/form-options";
+} from "@/components/generate-path/data/form-options";
 
 export const PRESET_HOURS_PER_WEEK = {
   light: 2,

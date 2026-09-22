@@ -1,4 +1,4 @@
-import type { FormOption } from "@/features/create-path/options/form-options";
+import type { FormOption } from "@/components/generate-path/data/form-options";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 

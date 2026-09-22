@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { RoadmapShell } from "@/features/create-path/components/roadmap-shell";
+import { RoadmapShell } from "@/components/generate-path/roadmap-shell";
 
 export const metadata: Metadata = {
   title: "Create a roadmap | Pathway",
   description: "Tell Pathway what you want to learn and build a focused plan.",
 };
 
-export default function CreatePathLayout({ children }: { children: ReactNode }) {
+export default function GeneratePathLayout({ children }: { children: ReactNode }) {
   return <RoadmapShell>{children}</RoadmapShell>;
 }

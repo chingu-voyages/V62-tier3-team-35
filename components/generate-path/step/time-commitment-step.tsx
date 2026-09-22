@@ -3,18 +3,18 @@
 import { useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
-import { ChoiceGroup } from "@/features/create-path/controls/choice-group";
-import { FieldError } from "@/features/create-path/controls/field-feedback";
-import { timeChoices } from "@/features/create-path/options/form-options";
-import { formLabels } from "@/features/create-path/steps";
+import { ChoiceGroup } from "@/components/generate-path/controls/choice-group";
+import { FieldError } from "@/components/generate-path/controls/field-feedback";
+import { timeChoices } from "@/components/generate-path/data/form-options";
+import { formLabels } from "@/components/generate-path/step-config";
 import { Input } from "@/components/ui/input";
 import {
   getPresetForHours,
   PRESET_HOURS_PER_WEEK,
   type TimeCommitmentPreset,
-} from "@/features/create-path/options/time-commitment";
-import { customHoursMax, customHoursMin } from "@/features/create-path/schema";
-import type { RoadmapFormValues } from "@/features/create-path/schema";
+} from "@/components/generate-path/data/time-commitment";
+import { customHoursMax, customHoursMin } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 export function TimeCommitmentStep() {
   const { field } = useController<RoadmapFormValues, "hoursPerWeek">({

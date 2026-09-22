@@ -4,12 +4,12 @@ import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 
-import { steps } from "@/features/create-path/steps";
+import { firstStepPath } from "@/components/generate-path/step-config";
 import { Button } from "@/components/ui/button";
 import {
   initialForm,
   type RoadmapFormValues,
-} from "@/features/create-path/schema";
+} from "@/lib/schemas/generate-path.schema";
 
 export function DoneScreen() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export function DoneScreen() {
 
   const startOver = () => {
     reset(initialForm);
-    router.push(`/create-path/${steps[0].id}`);
+    router.push(firstStepPath);
   };
 
   return (

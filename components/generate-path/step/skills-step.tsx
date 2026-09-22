@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
-import { SkillsPicker } from "@/features/create-path/controls/skills-picker";
+import { SkillsPicker } from "@/components/generate-path/controls/skills-picker";
 import {
   getChoiceTitle,
   goalChoices,
-} from "@/features/create-path/options/form-options";
-import type { RoadmapFormValues } from "@/features/create-path/schema";
+} from "@/components/generate-path/data/form-options";
+import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 export function SkillsStep() {
   const [skillSearch, setSkillSearch] = useState("");

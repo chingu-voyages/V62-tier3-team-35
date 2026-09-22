@@ -1,6 +1,6 @@
 import { RadioGroup } from "@/components/ui/radio-group";
-import { OptionRow } from "@/features/create-path/controls/option-row";
-import type { FormOption } from "@/features/create-path/options/form-options";
+import { OptionRow } from "@/components/generate-path/controls/option-row";
+import type { FormOption } from "@/components/generate-path/data/form-options";
 
 type ChoiceGroupProps = {
   choices: readonly FormOption[];

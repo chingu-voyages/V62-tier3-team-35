@@ -1,14 +1,14 @@
 import type { ComponentType } from "react";
 
-import { ChoiceStep } from "@/features/create-path/components/choice-step";
-import { SkillsStep } from "@/features/create-path/components/skills-step";
-import { TimeCommitmentStep } from "@/features/create-path/components/time-commitment-step";
+import { ChoiceStep } from "@/components/generate-path/step/choice-step";
+import { SkillsStep } from "@/components/generate-path/step/skills-step";
+import { TimeCommitmentStep } from "@/components/generate-path/step/time-commitment-step";
 import {
   goalChoices,
   levelChoices,
   targetChoices,
-} from "@/features/create-path/options/form-options";
-import type { RoadmapFormKey, RoadmapFormValues } from "@/features/create-path/schema";
+} from "@/components/generate-path/data/form-options";
+import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 export type StepId =
   | "career-goal"
@@ -92,7 +92,7 @@ export const steps: Step[] = [
   },
 ];
 
-export const firstStepPath = `/create-path/${steps[0].id}`;
+export const firstStepPath = `/generate-path/${steps[0].id}`;
 
 export const formLabels: Record<RoadmapFormKey, string> = {
   careerGoal: "Learning goal",
@@ -140,5 +140,5 @@ export function firstUnansweredStepIndex(
 }
 
 export function stepPathForIndex(index: number): string {
-  return `/create-path/${steps[index].id}`;
+  return `/generate-path/${steps[index].id}`;
 }

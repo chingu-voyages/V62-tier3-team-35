@@ -4,25 +4,25 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { InfoBlock } from "@/features/create-path/controls/field-feedback";
+import { InfoBlock } from "@/components/generate-path/controls/field-feedback";
 import {
   getChoiceTitle,
   goalChoices,
   levelChoices,
   targetChoices,
-} from "@/features/create-path/options/form-options";
-import { BackButton } from "@/features/create-path/layout/back-button";
+} from "@/components/generate-path/data/form-options";
+import { BackButton } from "@/components/generate-path/layout/back-button";
 import {
   firstUnansweredStepIndex,
   formLabels,
   stepPathForIndex,
   steps,
-} from "@/features/create-path/steps";
-import { readDraft } from "@/features/create-path/draft-storage";
+} from "@/components/generate-path/step-config";
+import { readDraft } from "@/lib/generate-path/draft-storage";
 import { Button } from "@/components/ui/button";
-import { getTimeCommitmentLabel } from "@/features/create-path/options/time-commitment";
+import { getTimeCommitmentLabel } from "@/components/generate-path/data/time-commitment";
 
-import type { RoadmapFormKey, RoadmapFormValues } from "@/features/create-path/schema";
+import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
 export function ReviewScreen() {
   const router = useRouter();
@@ -85,7 +85,7 @@ export function ReviewScreen() {
                 size="sm"
                 type="button"
                 className="h-11 w-16 shrink-0 rounded-full border-input bg-card px-4 shadow-none hover:bg-muted"
-                onClick={() => router.push(`/create-path/${step.id}`)}
+                onClick={() => router.push(`/generate-path/${step.id}`)}
               >
                 Edit
               </Button>
@@ -103,7 +103,7 @@ export function ReviewScreen() {
         <Button
           variant="primary"
           size="lg"
-          onClick={() => router.push("/create-path/generating")}
+          onClick={() => router.push("/generate-path/generating")}
         >
           Generate roadmap
         </Button>
