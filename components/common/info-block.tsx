@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { Lightbulb } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -33,18 +32,5 @@ export function InfoBlock({
         </span>
       </span>
     </aside>
-  );
-}
-
-type FieldErrorProps = {
-  id: string;
-  children: ReactNode;
-};
-
-export function FieldError({ id, children }: FieldErrorProps) {
-  return (
-    <p id={id} role="alert" className="text-xs leading-4 text-destructive">
-      {children}
-    </p>
   );
 }

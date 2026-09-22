@@ -1,13 +1,11 @@
 import { useState, type KeyboardEventHandler } from "react";
 
 import { Search } from "lucide-react";
-
-import { InfoBlock } from "@/components/form/controls/field-feedback";
 import {
   SearchField,
   SkillChip,
-} from "@/components/form/controls/skill-controls";
-import { skillGroups } from "@/components/form/data/form-options";
+} from "@/components/generate-path/controls/skill-controls";
+import { skillGroups } from "@/components/generate-path/data/form-options";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -173,7 +171,7 @@ export function SkillsPicker({
           <PopoverContent
             id="skill-search-results"
             align="start"
-            className="w-[var(--radix-popover-trigger-width)] min-w-64 p-1"
+            className="w-(--radix-popover-trigger-width) min-w-64 p-1"
             onOpenAutoFocus={(event) => event.preventDefault()}
           >
             <div
@@ -295,11 +293,6 @@ export function SkillsPicker({
           </div>
         ))}
       </section>
-
-      <InfoBlock
-        title="Starting from scratch?"
-        description="You can continue without selecting anything."
-      />
     </div>
   );
 }
