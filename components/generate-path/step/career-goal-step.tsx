@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
 import { ChoiceGroup } from "@/components/generate-path/controls/choice-group";
-import { FieldError } from "@/components/generate-path/controls/field-feedback";
+import { ErrorMessage } from "@/components/common/error-message";
 import { goalChoices } from "@/components/generate-path/data/form-options";
 import { formLabels } from "@/components/generate-path/step-config";
 import { Input } from "@/components/ui/input";
@@ -72,7 +72,7 @@ export function CareerGoalStep() {
           </div>
         </div>
       ) : null}
-      {error?.message && <FieldError id={errorId}>{error.message}</FieldError>}
+      {error?.message && <ErrorMessage id={errorId}>{error.message}</ErrorMessage>}
     </>
   );
 }

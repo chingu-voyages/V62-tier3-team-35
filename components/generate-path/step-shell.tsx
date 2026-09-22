@@ -19,7 +19,7 @@ import {
 import { readDraft } from "@/lib/generate-path/draft-storage";
 import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 import { Button } from "@/components/ui/button";
-import { InfoBlock } from "./controls/field-feedback";
+import { InfoBlock } from "@/components/common/info-block";
 
 type StepShellProps = {
   stepId: StepId;

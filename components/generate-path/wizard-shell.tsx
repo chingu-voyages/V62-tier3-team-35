@@ -4,30 +4,21 @@ import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { clearDraft, saveDraft } from "@/lib/generate-path/draft-storage";
 import { GeneratePathFormProvider } from "@/components/generate-path/generate-path-form-provider";
 import { RoadmapFrame } from "@/components/generate-path/layout/roadmap-frame";
 import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
-export function RoadmapShell({ children }: { children: ReactNode }) {
+export function WizardShell({ children }: { children: ReactNode }) {
   return (
     <GeneratePathFormProvider>
-      <RoadmapShellInner>{children}</RoadmapShellInner>
+      <WizardShellInner>{children}</WizardShellInner>
     </GeneratePathFormProvider>
   );
 }
 
-function RoadmapShellInner({ children }: { children: ReactNode }) {
+function WizardShellInner({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { getValues } = useFormContext<RoadmapFormValues>();
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
@@ -50,26 +41,13 @@ function RoadmapShellInner({ children }: { children: ReactNode }) {
       >
         {children}
       </RoadmapFrame>
-      <AlertDialog
+      <ConfirmDialog
         open={confirmingDiscard}
         onOpenChange={setConfirmingDiscard}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Discard this roadmap?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Your answers haven&apos;t been saved. Leaving now will lose
-              them.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDiscard}>
-              Leave anyway
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleDiscard}
+        title="Discard this path?"
+        description="Your answers haven't been saved. Leaving now will lose them."
+      />
     </>
   );
 }

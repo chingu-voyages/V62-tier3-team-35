@@ -13,7 +13,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 
-import { InfoBlock } from "@/components/generate-path/controls/field-feedback";
+import { InfoBlock } from "@/components/common/info-block";
 import { clearDraft, readDraft } from "@/lib/generate-path/draft-storage";
 import {
   getChoiceTitle,

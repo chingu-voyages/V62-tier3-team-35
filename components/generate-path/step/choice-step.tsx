@@ -3,7 +3,7 @@
 import { useController, useFormContext } from "react-hook-form";
 
 import { ChoiceGroup } from "@/components/generate-path/controls/choice-group";
-import { FieldError } from "@/components/generate-path/controls/field-feedback";
+import { ErrorMessage } from "@/components/common/error-message";
 import { formLabels } from "@/components/generate-path/step-config";
 import type { FormOption } from "@/components/generate-path/data/form-options";
 import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
@@ -32,7 +32,7 @@ export function ChoiceStep({ formKey, choices }: ChoiceStepProps) {
         onChange={field.onChange}
         errorId={error?.message ? errorId : undefined}
       />
-      {error?.message && <FieldError id={errorId}>{error.message}</FieldError>}
+      {error?.message && <ErrorMessage id={errorId}>{error.message}</ErrorMessage>}
     </>
   );
 }

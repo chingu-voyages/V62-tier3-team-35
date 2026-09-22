@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { InfoBlock } from "@/components/generate-path/controls/field-feedback";
+import { InfoBlock } from "@/components/common/info-block";
 import {
   getChoiceTitle,
   goalChoices,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import { RoadmapShell } from "@/components/generate-path/roadmap-shell";
+import { WizardShell } from "@/components/generate-path/wizard-shell";
 
 export const metadata: Metadata = {
   title: "Create a roadmap | Pathway",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function GeneratePathLayout({ children }: { children: ReactNode }) {
-  return <RoadmapShell>{children}</RoadmapShell>;
+  return <WizardShell>{children}</WizardShell>;
 }
