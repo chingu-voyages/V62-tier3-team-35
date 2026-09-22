@@ -1,10 +1,10 @@
 import type { ComponentType } from "react";
 
+import { CareerGoalStep } from "@/components/generate-path/step/career-goal-step";
 import { ChoiceStep } from "@/components/generate-path/step/choice-step";
 import { SkillsStep } from "@/components/generate-path/step/skills-step";
 import { TimeCommitmentStep } from "@/components/generate-path/step/time-commitment-step";
 import {
-  goalChoices,
   levelChoices,
   targetChoices,
 } from "@/components/generate-path/data/form-options";
@@ -36,7 +36,7 @@ export const steps: Step[] = [
     description:
       "Choose a career direction or describe a specific learning goal. We'll tailor the roadmap around it.",
     formKeys: ["careerGoal"],
-    Component: () => <ChoiceStep formKey="careerGoal" choices={goalChoices} />,
+    Component: CareerGoalStep,
   },
   {
     id: "skill-level",
