@@ -13,7 +13,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 
-import { InfoBlock } from "@/components/common/info-block";
 import { clearDraft, readDraft } from "@/lib/generate-path/draft-storage";
 import {
   getChoiceTitle,
@@ -27,6 +26,7 @@ import {
   stepPathForIndex,
 } from "@/components/generate-path/step-config";
 import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import { Banner } from "@/components/common/banner";
 
 const generationStepDurationMs = 1400;
 
@@ -79,7 +79,9 @@ export function GenerationScreen() {
     const blockingStep = firstUnansweredStepIndex(values);
     const draftBlockingStep = firstUnansweredStepIndex(readDraft() ?? {});
     if (blockingStep !== null && draftBlockingStep !== null) {
-      router.replace(stepPathForIndex(Math.min(blockingStep, draftBlockingStep)));
+      router.replace(
+        stepPathForIndex(Math.min(blockingStep, draftBlockingStep)),
+      );
     }
   }, [router, values]);
 
@@ -124,6 +126,12 @@ export function GenerationScreen() {
           We&apos;re using your goal, experience, known skills, and schedule to
           build a path that fits you.
         </p>
+
+        <Banner
+          variant="destructive"
+          title="Something went wrong"
+          description="We couldn't generate your roadmap. Please try again."
+        />
       </div>
 
       <div className="mt-6 flex h-12 w-full items-center overflow-x-auto rounded-full border border-border bg-card px-3.5 text-left shadow-sm">
@@ -136,7 +144,10 @@ export function GenerationScreen() {
               </span>
             </div>
             {index < summaryItems.length - 1 ? (
-              <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
+              <span
+                className="h-6 w-px shrink-0 bg-border"
+                aria-hidden="true"
+              />
             ) : null}
           </div>
         ))}
@@ -184,11 +195,7 @@ export function GenerationScreen() {
                 <span
                   className={`w-20 shrink-0 pt-3 text-right text-xs leading-4 ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}
                 >
-                  {completed
-                    ? "Completed"
-                    : active
-                      ? "In progress"
-                      : "Waiting"}
+                  {completed ? "Completed" : active ? "In progress" : "Waiting"}
                 </span>
               </div>
             );
@@ -196,9 +203,9 @@ export function GenerationScreen() {
         </div>
       </div>
 
-      <InfoBlock
+      <Banner
+        variant="info"
         className="mt-7 w-full max-w-lg text-left"
-        iconClassName="text-info"
         title="What Pathway found"
         description={`${(values.skills ?? []).length} existing skills will count as known while we focus the roadmap on your next useful gaps.`}
       />

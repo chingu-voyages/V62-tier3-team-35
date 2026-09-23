@@ -1,16 +1,23 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
-import { CircleCheck, CircleAlert, Info } from "lucide-react";
+import {
+  CircleCheck,
+  TriangleAlert,
+  Info,
+  Lightbulb,
+  type LucideIcon,
+} from "lucide-react";
 
 const alertVariants = cva(
-  "group/alert relative grid w-full gap-0.5 rounded-lg border px-4 py-3 items-center text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-11 [&>svg]:bg-accent [&>svg]:rounded-xl [&>svg]:p-2 [&>svg]:stroke-1",
+  "group/alert relative grid w-full gap-0.5 rounded-lg p-3 items-center text-left text-xs has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2.5 *:[svg]:row-span-2 *:[svg:not([class*='size-'])]:size-10 [&>svg]:bg-card [&>svg]:rounded-xl [&>svg]:p-2.5 [&>svg]:stroke-[1.8]",
   {
     variants: {
       variant: {
-        default: "bg-info-background border-info/30 text-info",
-        destructive: "bg-destructive/10 border-destructive/30 text-destructive",
-        success: "bg-success/10 border-success/30 text-success",
+        default: "bg-muted",
+        info: "bg-info-background",
+        destructive: "bg-destructive-bg",
+        success: "bg-success-bg",
       },
     },
     defaultVariants: {
@@ -22,23 +29,38 @@ const alertVariants = cva(
 function Alert({
   className,
   variant,
+  icon,
   children,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
+}: React.ComponentProps<"div"> &
+  VariantProps<typeof alertVariants> & {
+    icon?: LucideIcon;
+  }) {
+  const role =
+    variant === "destructive"
+      ? "alert"
+      : variant === "success"
+        ? "status"
+        : "note";
+
+  const Icon =
+    icon ??
+    (variant === "destructive"
+      ? TriangleAlert
+      : variant === "success"
+        ? CircleCheck
+        : variant === "info"
+          ? Lightbulb
+          : Info);
+
   return (
     <div
       data-slot="alert"
-      role="alert"
+      role={role}
       className={cn(alertVariants({ variant }), className)}
       {...props}
     >
-      {variant === "destructive" ? (
-        <CircleAlert />
-      ) : variant === "success" ? (
-        <CircleCheck />
-      ) : (
-        <Info />
-      )}
+      <Icon aria-hidden="true" />
       {children}
     </div>
   );
@@ -65,7 +87,7 @@ function AlertDescription({
     <div
       data-slot="alert-description"
       className={cn(
-        "text-xs text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        "text-balance text-muted-foreground md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
         className,
       )}
       {...props}
