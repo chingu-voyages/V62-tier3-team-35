@@ -1,29 +1,28 @@
 import { ai } from "@/lib/ai/gemini";
+import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 
-type GeneratePathData = {
-  goal: string;
-  level: string;
-  skills: string[];
-  weeklyTime: string;
-  customWeeklyHours?: number;
-  target: string;
-};
-
-export async function generatePath(data: GeneratePathData) {
-  const weeklyTime =
-    data.weeklyTime === "custom"
-      ? `${data.customWeeklyHours} hours per week`
-      : data.weeklyTime;
-
+export async function generatePath({
+  careerGoal,
+  skillLevel,
+  skills,
+  hoursPerWeek,
+  learningPace,
+}: RoadmapFormValues) {
   const prompt = `
         Create a personalized learning roadmap using the user's information.
 
         User:
-        - Goal: ${data.goal}
-        - Experience level: ${data.level}
-        - Known technologies/skills: ${data.skills.length > 0 ? data.skills.join(", ") : "Not specified"}
-        - Weekly learning time: ${weeklyTime}
-        - Target pace: ${data.target}
+        - Goal: ${careerGoal}
+        - Experience level: ${skillLevel}
+        - Known technologies/skills: ${skills.length > 0 ? skills.join(", ") : "Not specified"}
+        - Weekly learning time:  ${hoursPerWeek}
+        - Target pace: ${learningPace}
+
+        Use weekly learning time and target pace together to determine the course duration.
+        - Weekly learning time is the maximum hours available per week.
+        - Target pace controls how quickly the course progresses.
+        - Do not exceed the weekly time limit.
+        - Calculate estimatedWeeks from estimatedHours and weekly learning time.
 
         Use your expertise to fill missing information based on the user's goal, level, and available time.
         Create a practical and realistic roadmap. Start from the user's current level and order technologies logically.
@@ -86,5 +85,9 @@ export async function generatePath(data: GeneratePathData) {
     contents: prompt,
   });
 
-  return response.text;
+  if (!response.text) {
+    throw new Error("Gemini returned an empty response");
+  }
+
+  return JSON.parse(response.text);
 }
