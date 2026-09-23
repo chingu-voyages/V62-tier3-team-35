@@ -86,25 +86,25 @@ export const levelChoices: FormOption[] = [
 export const timeChoices: FormOption[] = [
   {
     value: "light",
-    title: "1–3 hours per week",
+    title: "~2 hours per week",
     description: "A light learning pace",
     icon: Leaf,
   },
   {
     value: "balanced",
-    title: "4–7 hours per week",
+    title: "~5 hours per week",
     description: "A balanced learning pace",
     icon: Gauge,
   },
   {
     value: "focused",
-    title: "8–15 hours per week",
+    title: "~11 hours per week",
     description: "A focused learning pace",
     icon: Target,
   },
   {
     value: "intensive",
-    title: "16+ hours per week",
+    title: "~20 hours per week",
     description: "An intensive learning pace",
     icon: Zap,
   },
