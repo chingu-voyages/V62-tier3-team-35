@@ -74,14 +74,46 @@ export function GenerationScreen() {
   const values = getValues();
   const [generationProgress, setGenerationProgress] = useState(0);
   const generationSteps = getGenerationSteps(values);
+  // const hasGenerated = useRef(false);
 
   useEffect(() => {
     const blockingStep = firstUnansweredStepIndex(values);
     const draftBlockingStep = firstUnansweredStepIndex(readDraft() ?? {});
     if (blockingStep !== null && draftBlockingStep !== null) {
-      router.replace(stepPathForIndex(Math.min(blockingStep, draftBlockingStep)));
+      router.replace(
+        stepPathForIndex(Math.min(blockingStep, draftBlockingStep)),
+      );
     }
   }, [router, values]);
+
+  // useEffect(() => {
+  //   if (hasGenerated.current) return;
+  //   hasGenerated.current = true;
+
+  //   const generateRoadmap = async () => {
+  //     try {
+  //       const response = await fetch("/api/generate-path", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(values),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to generate roadmap");
+  //       }
+
+  //       const roadmap = await response.json();
+
+  //       console.log("Generated roadmap:", roadmap);
+  //     } catch (error) {
+  //       console.error("Failed to generate roadmap:", error);
+  //     }
+  //   };
+
+  //   generateRoadmap();
+  // }, []);
 
   useEffect(() => {
     if (generationProgress >= generationSteps.length) {
@@ -136,7 +168,10 @@ export function GenerationScreen() {
               </span>
             </div>
             {index < summaryItems.length - 1 ? (
-              <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
+              <span
+                className="h-6 w-px shrink-0 bg-border"
+                aria-hidden="true"
+              />
             ) : null}
           </div>
         ))}
@@ -184,11 +219,7 @@ export function GenerationScreen() {
                 <span
                   className={`w-20 shrink-0 pt-3 text-right text-xs leading-4 ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}
                 >
-                  {completed
-                    ? "Completed"
-                    : active
-                      ? "In progress"
-                      : "Waiting"}
+                  {completed ? "Completed" : active ? "In progress" : "Waiting"}
                 </span>
               </div>
             );
