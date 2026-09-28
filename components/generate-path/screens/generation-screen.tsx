@@ -74,6 +74,7 @@ export function GenerationScreen() {
   const values = getValues();
   const [generationProgress, setGenerationProgress] = useState(0);
   const generationSteps = getGenerationSteps(values);
+  // const hasGenerated = useRef(false);
 
   useEffect(() => {
     const blockingStep = firstUnansweredStepIndex(values);
@@ -84,6 +85,35 @@ export function GenerationScreen() {
       );
     }
   }, [router, values]);
+
+  // useEffect(() => {
+  //   if (hasGenerated.current) return;
+  //   hasGenerated.current = true;
+
+  //   const generateRoadmap = async () => {
+  //     try {
+  //       const response = await fetch("/api/generate-path", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(values),
+  //       });
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to generate roadmap");
+  //       }
+
+  //       const roadmap = await response.json();
+
+  //       console.log("Generated roadmap:", roadmap);
+  //     } catch (error) {
+  //       console.error("Failed to generate roadmap:", error);
+  //     }
+  //   };
+
+  //   generateRoadmap();
+  // }, []);
 
   useEffect(() => {
     if (generationProgress >= generationSteps.length) {
