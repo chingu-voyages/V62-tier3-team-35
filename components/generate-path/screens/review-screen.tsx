@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 
-import { InfoBlock } from "@/components/common/info-block";
 import {
   getChoiceTitle,
   goalChoices,
@@ -22,7 +21,11 @@ import { readDraft } from "@/lib/generate-path/draft-storage";
 import { Button } from "@/components/ui/button";
 import { getTimeCommitmentLabel } from "@/components/generate-path/data/time-commitment";
 
-import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type {
+  RoadmapFormKey,
+  RoadmapFormValues,
+} from "@/lib/schemas/generate-path.schema";
+import { Banner } from "@/components/common/banner";
 
 export function ReviewScreen() {
   const router = useRouter();
@@ -33,7 +36,9 @@ export function ReviewScreen() {
     const blockingStep = firstUnansweredStepIndex(values);
     const draftBlockingStep = firstUnansweredStepIndex(readDraft() ?? {});
     if (blockingStep !== null && draftBlockingStep !== null) {
-      router.replace(stepPathForIndex(Math.min(blockingStep, draftBlockingStep)));
+      router.replace(
+        stepPathForIndex(Math.min(blockingStep, draftBlockingStep)),
+      );
     }
   }, [router, values]);
 
@@ -93,7 +98,8 @@ export function ReviewScreen() {
           );
         })}
       </div>
-      <InfoBlock
+      <Banner
+        variant="info"
         className="mt-5"
         title="You are in control"
         description="You can edit any answer before generating your roadmap."
