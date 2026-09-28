@@ -19,7 +19,7 @@ import {
 import { readDraft } from "@/lib/generate-path/draft-storage";
 import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
 import { Button } from "@/components/ui/button";
-import { InfoBlock } from "@/components/common/info-block";
+import { Banner } from "../common/banner";
 
 type StepShellProps = {
   stepId: StepId;
@@ -42,7 +42,9 @@ export function StepShell({ stepId }: StepShellProps) {
       draftBlockingStep !== null &&
       draftBlockingStep < index
     ) {
-      router.replace(stepPathForIndex(Math.min(blockingStep, draftBlockingStep)));
+      router.replace(
+        stepPathForIndex(Math.min(blockingStep, draftBlockingStep)),
+      );
     }
   }, [getValues, index, router]);
 
@@ -80,16 +82,15 @@ export function StepShell({ stepId }: StepShellProps) {
       </div>
       <step.Component />
       {step.infoBlock && (
-        <InfoBlock
+        <Banner
+          variant="info"
           className="mt-6"
           title={step.infoBlock.title}
           description={step.infoBlock.description}
         />
       )}
       <footer className="mt-auto flex justify-between gap-3 pt-10">
-        {!isFirstStep && (
-          <BackButton onClick={() => router.back()} />
-        )}
+        {!isFirstStep && <BackButton onClick={() => router.back()} />}
         <Button
           variant="primary"
           size="lg"
