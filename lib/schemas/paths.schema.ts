@@ -1,25 +1,36 @@
 import { z } from "zod";
-import {
-  LearningPace,
-  PathStatus,
-  SkillLevel,
-} from "@/lib/generated/prisma/client";
+import type { DefaultValues } from "react-hook-form";
 
-const skillLevelSchema = z.enum(
-  Object.values(SkillLevel) as [SkillLevel, ...SkillLevel[]],
-);
-const learningPaceSchema = z.enum(
-  Object.values(LearningPace) as [LearningPace, ...LearningPace[]],
-);
-const pathStatusSchema = z.enum(
-  Object.values(PathStatus) as [PathStatus, ...PathStatus[]],
-);
+export const customHoursMin = 1;
+export const customHoursMax = 80;
+
+const skillLevelValues = ["beginner", "intermediate", "advanced"] as const;
+const learningPaceValues = ["recommended", "accelerated", "relaxed"] as const;
+const pathStatusValues = ["draft", "active", "completed"] as const;
+
+const skillLevelSchema = z.enum(skillLevelValues, {
+  error: "Choose your experience level",
+});
+const learningPaceSchema = z.enum(learningPaceValues, {
+  error: "Choose a target pace",
+});
+const pathStatusSchema = z.enum(pathStatusValues);
 
 export const createPathSchema = z.object({
-  careerGoal: z.string().min(1).max(300),
+  careerGoal: z.string().min(1, "Choose a learning goal").max(300),
   skillLevel: skillLevelSchema,
   skills: z.array(z.string()),
-  hoursPerWeek: z.int().positive(),
+  hoursPerWeek: z
+    .number("Choose a weekly time commitment")
+    .int(`Enter a whole number from ${customHoursMin} to ${customHoursMax}`)
+    .min(
+      customHoursMin,
+      `Enter a whole number from ${customHoursMin} to ${customHoursMax}`,
+    )
+    .max(
+      customHoursMax,
+      `Enter a whole number from ${customHoursMin} to ${customHoursMax}`,
+    ),
   learningPace: learningPaceSchema,
 });
 
@@ -29,3 +40,15 @@ export const updatePathSchema = createPathSchema
 
 export type CreatePathInput = z.infer<typeof createPathSchema>;
 export type UpdatePathInput = z.infer<typeof updatePathSchema>;
+
+export type RoadmapFormValues = z.infer<typeof createPathSchema>;
+
+export type RoadmapFormKey = keyof RoadmapFormValues;
+
+export const initialForm: DefaultValues<RoadmapFormValues> = {
+  careerGoal: "",
+  skillLevel: undefined,
+  skills: [],
+  hoursPerWeek: undefined,
+  learningPace: undefined,
+};

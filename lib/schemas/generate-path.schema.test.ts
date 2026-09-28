@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
-  roadmapFormSchema,
+  createPathSchema,
   customHoursMin,
   customHoursMax,
-} from "./generate-path.schema";
+} from "./paths.schema";
 
 const validInput = {
   careerGoal: "frontend",
@@ -13,19 +13,19 @@ const validInput = {
   learningPace: "relaxed",
 };
 
-describe("roadmapFormSchema", () => {
+describe("createPathSchema", () => {
   it("accepts fully valid input", () => {
-    expect(roadmapFormSchema.safeParse(validInput).success).toBe(true);
+    expect(createPathSchema.safeParse(validInput).success).toBe(true);
   });
 
   it("accepts an empty skills array", () => {
-    const result = roadmapFormSchema.safeParse({ ...validInput, skills: [] });
+    const result = createPathSchema.safeParse({ ...validInput, skills: [] });
     expect(result.success).toBe(true);
   });
 
   describe("careerGoal", () => {
     it("rejects an empty string", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         careerGoal: "",
       });
@@ -35,7 +35,7 @@ describe("roadmapFormSchema", () => {
 
   describe("skillLevel", () => {
     it("rejects an empty string", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         skillLevel: "",
       });
@@ -45,7 +45,7 @@ describe("roadmapFormSchema", () => {
 
   describe("learningPace", () => {
     it("rejects an empty string", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         learningPace: "",
       });
@@ -55,7 +55,7 @@ describe("roadmapFormSchema", () => {
 
   describe("hoursPerWeek", () => {
     it("rejects a non-integer", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         hoursPerWeek: 1.5,
       });
@@ -63,7 +63,7 @@ describe("roadmapFormSchema", () => {
     });
 
     it("accepts the minimum boundary", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         hoursPerWeek: customHoursMin,
       });
@@ -71,7 +71,7 @@ describe("roadmapFormSchema", () => {
     });
 
     it("accepts the maximum boundary", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         hoursPerWeek: customHoursMax,
       });
@@ -79,7 +79,7 @@ describe("roadmapFormSchema", () => {
     });
 
     it("rejects below the minimum boundary", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         hoursPerWeek: customHoursMin - 1,
       });
@@ -87,7 +87,7 @@ describe("roadmapFormSchema", () => {
     });
 
     it("rejects above the maximum boundary", () => {
-      const result = roadmapFormSchema.safeParse({
+      const result = createPathSchema.safeParse({
         ...validInput,
         hoursPerWeek: customHoursMax + 1,
       });

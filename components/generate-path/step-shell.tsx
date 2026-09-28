@@ -17,7 +17,7 @@ import {
   type StepId,
 } from "@/components/generate-path/step-config";
 import { readDraft } from "@/lib/generate-path/draft-storage";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 import { Button } from "@/components/ui/button";
 import { Banner } from "../common/banner";
 

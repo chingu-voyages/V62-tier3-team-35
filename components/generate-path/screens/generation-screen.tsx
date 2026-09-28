@@ -25,7 +25,7 @@ import {
   firstUnansweredStepIndex,
   stepPathForIndex,
 } from "@/components/generate-path/step-config";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 import { Banner } from "@/components/common/banner";
 
 const generationStepDurationMs = 1400;

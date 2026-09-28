@@ -1,5 +1,5 @@
 import { ai } from "@/lib/ai/gemini";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 export async function generatePath({
   careerGoal,
