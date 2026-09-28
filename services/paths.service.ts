@@ -3,7 +3,7 @@ import { AppError } from "@/lib/errors/app-error";
 import {
   createPathSchema,
   updatePathSchema,
-} from "@/schemas/paths.schema";
+} from "@/lib/schemas/paths.schema";
 
 async function getUserOrThrow(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId } });

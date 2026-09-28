@@ -3,7 +3,7 @@ import { AppError } from "@/lib/errors/app-error";
 import {
   createStepsRequestSchema,
   updateStepSchema,
-} from "@/schemas/steps.schema";
+} from "@/lib/schemas/steps.schema";
 
 export async function createSteps(input: unknown) {
   const { learningPathId, steps } = createStepsRequestSchema.parse(input);
