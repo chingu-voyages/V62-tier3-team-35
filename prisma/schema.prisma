@@ -4,7 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../lib/generated/prisma"
 }
 
@@ -13,10 +13,66 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
+  id       String @id @default(uuid())
   username String
-  email String @unique
+  email    String @unique
   password String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  learningPaths LearningPath[]
+}
+
+enum SkillLevel {
+  beginner
+  intermediate
+  advanced
+}
+
+enum PathStatus {
+  draft
+  active
+  completed
+}
+
+enum LearningPace {
+  recommended
+  accelerated
+  relaxed
+}
+
+model LearningPath {
+  id          String        @id @default(uuid())
+  userId      String        @map("user_id")
+  user        User          @relation(fields: [userId], references: [id])
+  careerGoal  String        @map("career_goal") @db.VarChar(300)
+  skillLevel  SkillLevel    @map("skill_level")
+  skills      String[]      @default([])
+  hoursPerWeek Int          @map("hours_per_week")
+  learningPace LearningPace @map("learning_pace")
+  status      PathStatus    @default(draft)
+  steps       Step[]
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("learning_paths")
+}
+
+model Step {
+  id             String       @id @default(uuid())
+  learningPathId String       @map("learning_path_id")
+  learningPath   LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  order          Int
+  title          String       @db.VarChar(200)
+  description    String
+  estimatedTime  String       @map("estimated_time")
+  isCompleted    Boolean      @default(false) @map("is_completed")
+  completedAt    DateTime?    @map("completed_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@unique([learningPathId, order])
+  @@map("steps")
 }

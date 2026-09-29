@@ -24,7 +24,7 @@ import { getTimeCommitmentLabel } from "@/components/generate-path/data/time-com
 import type {
   RoadmapFormKey,
   RoadmapFormValues,
-} from "@/lib/schemas/generate-path.schema";
+} from "@/lib/schemas/paths.schema";
 import { Banner } from "@/components/common/banner";
 
 export function ReviewScreen() {

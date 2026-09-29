@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import {
   initialForm,
   type RoadmapFormValues,
-} from "@/lib/schemas/generate-path.schema";
+} from "@/lib/schemas/paths.schema";
 
 export function DoneScreen() {
   const router = useRouter();
