@@ -1,5 +1,6 @@
 import { ai } from "@/lib/ai/gemini";
 import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
+import { generatePathResponseSchema } from "../schemas/generate-path.schema";
 
 export async function generatePath({
   careerGoal,
@@ -89,5 +90,6 @@ export async function generatePath({
     throw new Error("Gemini returned an empty response");
   }
 
-  return JSON.parse(response.text);
+  const parsed = JSON.parse(response.text);
+  return generatePathResponseSchema.parse(parsed);
 }
