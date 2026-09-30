@@ -70,7 +70,7 @@ model Step {
   estimatedTime  String       @map("estimated_time")
   isCompleted    Boolean      @default(false) @map("is_completed")
   completedAt    DateTime?    @map("completed_at")
-  topic          Topic[]
+  topics         Topic[]
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 

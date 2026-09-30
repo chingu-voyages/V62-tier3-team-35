@@ -18,7 +18,7 @@ export const createStepsRequestSchema = z.object({
   steps: createStepsSchema,
 });
 
-export const updateStepSchema = stepSchema.partial();
+export const updateStepSchema = stepSchema.omit({ topics: true }).partial();
 
 export type GeneratedStepInput = z.infer<typeof stepSchema>;
 export type UpdateStepInput = z.infer<typeof updateStepSchema>;

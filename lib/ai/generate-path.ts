@@ -103,6 +103,10 @@ export function mapRoadmapToSteps(data: GeneratePathResponse) {
     title: step.technology,
     description: step.description,
     estimatedTime: step.estimatedHours.toString(),
+    topics: step.topics.map((topic) => ({
+      name: topic.name,
+      resources: topic.resources,
+    })),
   }));
   return steps;
 }

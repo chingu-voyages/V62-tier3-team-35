@@ -15,17 +15,46 @@ export async function createSteps(input: unknown) {
     throw new AppError("Path not found", 404);
   }
 
-  await prisma.step.createMany({
-    data: steps.map((step) => ({
-      learningPathId,
-      ...step,
-    })),
-  });
+  // await prisma.step.createMany({
+  //   data: steps.map((step) => ({
+  //     learningPathId,
+  //     ...step,
+  //   })),
+  // });
 
-  return prisma.step.findMany({
-    where: { learningPathId },
-    orderBy: { order: "asc" },
-  });
+  // return prisma.step.findMany({
+  //   where: { learningPathId },
+  //   orderBy: { order: "asc" },
+  // });
+
+  const createdSteps = await prisma.$transaction(
+    steps.map((step) =>
+      prisma.step.create({
+        data: {
+          learningPathId,
+          order: step.order,
+          title: step.title,
+          description: step.description,
+          estimatedTime: step.estimatedTime,
+          isCompleted: step.isCompleted,
+          completedAt: step.completedAt,
+          topics: {
+            create: step.topics.map((topic) => ({
+              name: topic.name,
+              resources: topic.resources,
+              isCompleted: topic.isCompleted,
+              completedAt: topic.completedAt,
+            })),
+          },
+        },
+        include: {
+          topics: true,
+        },
+      }),
+    ),
+  );
+
+  return createdSteps;
 }
 
 export async function updateStep(id: string, input: unknown) {
