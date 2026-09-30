@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { topicSchema } from "./topics.schema";
 
 export const stepSchema = z.object({
   order: z.int().nonnegative(),
@@ -7,6 +8,7 @@ export const stepSchema = z.object({
   estimatedTime: z.string(),
   isCompleted: z.boolean().default(false),
   completedAt: z.coerce.date().nullable().default(null),
+  topics: z.array(topicSchema),
 });
 
 export const createStepsSchema = z.array(stepSchema);

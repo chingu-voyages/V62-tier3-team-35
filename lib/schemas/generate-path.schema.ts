@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const resourceSchema = z.object({
+export const resourceSchema = z.object({
   title: z.string(),
   type: z.string(),
   description: z.string(),
