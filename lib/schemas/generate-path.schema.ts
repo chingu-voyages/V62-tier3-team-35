@@ -25,4 +25,4 @@ export const generatePathResponseSchema = z.object({
   roadmap: z.array(technologySchema),
 });
 
-export type generatePathResponse = z.infer<typeof generatePathResponseSchema>;
+export type GeneratePathResponse = z.infer<typeof generatePathResponseSchema>;

@@ -1,6 +1,9 @@
 import { ai } from "@/lib/ai/gemini";
 import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
-import { generatePathResponseSchema } from "../schemas/generate-path.schema";
+import {
+  generatePathResponseSchema,
+  GeneratePathResponse,
+} from "../schemas/generate-path.schema";
 
 export async function generatePath({
   careerGoal,
@@ -92,4 +95,14 @@ export async function generatePath({
 
   const parsed = JSON.parse(response.text);
   return generatePathResponseSchema.parse(parsed);
+}
+
+export function mapRoadmapToSteps(data: GeneratePathResponse) {
+  const steps = data.roadmap.map((step, i) => ({
+    order: i,
+    title: step.technology,
+    description: step.description,
+    estimatedTime: step.estimatedHours.toString(),
+  }));
+  return steps;
 }

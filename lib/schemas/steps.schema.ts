@@ -5,8 +5,8 @@ export const stepSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string(),
   estimatedTime: z.string(),
-  isCompleted: z.boolean(),
-  completedAt: z.coerce.date().nullable(),
+  isCompleted: z.boolean().default(false),
+  completedAt: z.coerce.date().nullable().default(null),
 });
 
 export const createStepsSchema = z.array(stepSchema);
