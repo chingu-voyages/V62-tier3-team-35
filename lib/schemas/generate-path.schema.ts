@@ -1,35 +1,28 @@
 import { z } from "zod";
-import type { DefaultValues } from "react-hook-form";
 
-export const customHoursMin = 1;
-export const customHoursMax = 80;
-
-export const roadmapFormSchema = z.object({
-  careerGoal: z.string().min(1, "Choose a learning goal"),
-  skillLevel: z.string().min(1, "Choose your experience level"),
-  skills: z.array(z.string()),
-  hoursPerWeek: z
-    .number("Choose a weekly time commitment")
-    .int(`Enter a whole number from ${customHoursMin} to ${customHoursMax}`)
-    .min(
-      customHoursMin,
-      `Enter a whole number from ${customHoursMin} to ${customHoursMax}`,
-    )
-    .max(
-      customHoursMax,
-      `Enter a whole number from ${customHoursMin} to ${customHoursMax}`,
-    ),
-  learningPace: z.string().min(1, "Choose a target pace"),
+export const resourceSchema = z.object({
+  title: z.string(),
+  type: z.string(),
+  description: z.string(),
+  url: z.string(),
 });
 
-export type RoadmapFormValues = z.infer<typeof roadmapFormSchema>;
+const topicSchema = z.object({
+  name: z.string(),
+  resources: z.array(resourceSchema).min(1).max(3),
+});
 
-export type RoadmapFormKey = keyof RoadmapFormValues;
+const technologySchema = z.object({
+  technology: z.string(),
+  keyTopics: z.string(),
+  description: z.string(),
+  estimatedHours: z.number(),
+  estimatedWeeks: z.number(),
+  topics: z.array(topicSchema).min(1),
+});
 
-export const initialForm: DefaultValues<RoadmapFormValues> = {
-  careerGoal: "",
-  skillLevel: "",
-  skills: [],
-  hoursPerWeek: undefined,
-  learningPace: "",
-};
+export const generatePathResponseSchema = z.object({
+  roadmap: z.array(technologySchema),
+});
+
+export type GeneratePathResponse = z.infer<typeof generatePathResponseSchema>;

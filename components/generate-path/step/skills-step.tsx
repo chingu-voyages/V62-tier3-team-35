@@ -8,7 +8,7 @@ import {
   getChoiceTitle,
   goalChoices,
 } from "@/components/generate-path/data/form-options";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 export function SkillsStep() {
   const [skillSearch, setSkillSearch] = useState("");

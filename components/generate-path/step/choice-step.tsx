@@ -6,7 +6,7 @@ import { ChoiceGroup } from "@/components/generate-path/controls/choice-group";
 import { ErrorMessage } from "@/components/common/error-message";
 import { formLabels } from "@/components/generate-path/step-config";
 import type { FormOption } from "@/components/generate-path/data/form-options";
-import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 type ChoiceFormKey = Exclude<RoadmapFormKey, "skills" | "hoursPerWeek">;
 

@@ -11,7 +11,7 @@ import {
 import type {
   RoadmapFormKey,
   RoadmapFormValues,
-} from "@/lib/schemas/generate-path.schema";
+} from "@/lib/schemas/paths.schema";
 
 export type StepId =
   | "career-goal"
