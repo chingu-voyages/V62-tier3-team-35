@@ -30,12 +30,15 @@ export async function generatePath({
         Include relevant known technologies with only the essential fundamentals needed for the goal, without repeating advanced material they already know.
         For each technology include:
         - technology
+        - icon
         - keyTopics: 3-5 key technologies or concepts, comma-separated
         - description: 2-3 sentences
         - estimatedHours
         - estimatedWeeks
         - include 4 or more topics for each technology. Use as many topics as necessary to cover the technology comprehensively based on its complexity and the user's level; do not stop at 4 if more distinct topics are needed. For known technologies, include only the essential fundamentals.
         - topics must cover distinct practical concepts from basic to advanced without unnecessary overlap
+
+        The "icon" must be the exact name of an existing lucide-react icon that best represents the technology; do not invent icon names.
 
         Each topic must contain ONLY:
         - name
@@ -57,6 +60,7 @@ export async function generatePath({
           "roadmap": [
             {
               "technology": "JavaScript",
+              "icon": "Braces",
               "keyTopics": "ES6+, DOM, Events",
               "description": "Learn the core JavaScript concepts needed for modern frontend development.",
               "estimatedHours": 40,
