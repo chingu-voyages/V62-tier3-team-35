@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   BadgeCheck,
   CalendarDays,
@@ -74,7 +74,9 @@ export function GenerationScreen() {
   const values = getValues();
   const [generationProgress, setGenerationProgress] = useState(0);
   const generationSteps = getGenerationSteps(values);
-  // const hasGenerated = useRef(false);
+  const hasGenerated = useRef(false);
+  // TODO: replace with session userId once auth is ready, remove userId param from fetch URL
+  const TEMP_TEST_USER_ID = "00000000-0000-0000-0000-000000000001";
 
   useEffect(() => {
     const blockingStep = firstUnansweredStepIndex(values);
@@ -86,34 +88,34 @@ export function GenerationScreen() {
     }
   }, [router, values]);
 
-  // useEffect(() => {
-  //   if (hasGenerated.current) return;
-  //   hasGenerated.current = true;
+  useEffect(() => {
+    if (hasGenerated.current) return;
+    hasGenerated.current = true;
 
-  //   const generateRoadmap = async () => {
-  //     try {
-  //       const response = await fetch("/api/generate-path", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(values),
-  //       });
+    const generateRoadmap = async () => {
+      try {
+        const response = await fetch(`/api/paths?userId=${TEMP_TEST_USER_ID}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
 
-  //       if (!response.ok) {
-  //         throw new Error("Failed to generate roadmap");
-  //       }
+        if (!response.ok) {
+          throw new Error("Failed to generate roadmap");
+        }
 
-  //       const roadmap = await response.json();
+        const roadmap = await response.json();
 
-  //       console.log("Generated roadmap:", roadmap);
-  //     } catch (error) {
-  //       console.error("Failed to generate roadmap:", error);
-  //     }
-  //   };
+        console.log("Generated roadmap:", roadmap);
+      } catch (error) {
+        console.error("Failed to generate roadmap:", error);
+      }
+    };
 
-  //   generateRoadmap();
-  // }, []);
+    generateRoadmap();
+  }, []);
 
   useEffect(() => {
     if (generationProgress >= generationSteps.length) {

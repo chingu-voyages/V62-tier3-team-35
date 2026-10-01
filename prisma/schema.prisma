@@ -70,9 +70,24 @@ model Step {
   estimatedTime  String       @map("estimated_time")
   isCompleted    Boolean      @default(false) @map("is_completed")
   completedAt    DateTime?    @map("completed_at")
+  topics         Topic[]
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
   @@unique([learningPathId, order])
   @@map("steps")
+}
+
+model Topic {
+  id             String       @id @default(uuid())
+  stepId         String       @map("step_id")
+  step           Step         @relation(fields: [stepId], references: [id], onDelete: Cascade)
+  name           String
+  resources      Json
+  isCompleted    Boolean      @default(false) @map("is_completed")
+  completedAt    DateTime?    @map("completed_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  @@map("topics")
 }
