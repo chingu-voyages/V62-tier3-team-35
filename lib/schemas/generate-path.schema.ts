@@ -15,6 +15,7 @@ const topicSchema = z.object({
 const technologySchema = z.object({
   technology: z.string(),
   keyTopics: z.string(),
+  icon: z.string(),
   description: z.string(),
   estimatedHours: z.number(),
   estimatedWeeks: z.number(),

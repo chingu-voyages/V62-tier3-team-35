@@ -1,7 +1,7 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 
 import { firstStepPath } from "@/components/generate-path/step-config";
@@ -10,10 +10,47 @@ import {
   initialForm,
   type RoadmapFormValues,
 } from "@/lib/schemas/paths.schema";
+import { Roadmap } from "@/components/roadmap/roadmap";
+import type { RoadmapTechnologyProps } from "@/components/roadmap/roadmap.types";
 
 export function DoneScreen() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { reset } = useFormContext<RoadmapFormValues>();
+
+  const pathId = searchParams.get("pathId");
+  const [roadmap, setRoadmap] = useState<RoadmapTechnologyProps[]>([]);
+  useEffect(() => {
+    if (!pathId) return;
+
+    const loadRoadmap = async () => {
+      try {
+        const response = await fetch(`/api/paths/${pathId}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to load roadmap");
+        }
+
+        const result = await response.json();
+
+        console.log("Loaded roadmap:", result);
+
+        const technologies = result.data.steps.map((step: any) => ({
+          technology: step.title,
+          icon: step.icon ?? "Code2",
+          keyTopics: step.keyTopics ?? "",
+          estimatedWeeks: Math.ceil(Number(step.estimatedTime) / 10),
+          topics: step.topics,
+        }));
+
+        setRoadmap(technologies);
+      } catch (error) {
+        console.error("Failed to load roadmap:", error);
+      }
+    };
+
+    loadRoadmap();
+  }, [pathId]);
 
   const startOver = () => {
     reset(initialForm);
@@ -22,22 +59,11 @@ export function DoneScreen() {
 
   return (
     <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
-      <span className="mb-6 grid size-16 place-items-center rounded-2xl bg-success-bg text-success">
-        <CheckCircle2 className="size-8" aria-hidden="true" />
-      </span>
-      <p className="mb-3 text-sm text-muted-foreground">Your answers are ready</p>
-      <h1 className="font-heading text-3xl leading-9 font-bold tracking-tight">
-        Your roadmap is ready
-      </h1>
-      <p className="mt-3 max-w-sm text-sm leading-5 text-muted-foreground">
-        Your plan is tailored to your goal, experience, skills, and pace.
-      </p>
-      <Button
-        variant="primary"
-        size="lg"
-        className="mt-8"
-        onClick={startOver}
-      >
+      <div className="mt-8 h-150 w-full">
+        {roadmap.length > 0 && <Roadmap roadmap={roadmap} />}
+      </div>
+
+      <Button variant="primary" size="lg" className="mt-8" onClick={startOver}>
         Create another roadmap
       </Button>
     </section>

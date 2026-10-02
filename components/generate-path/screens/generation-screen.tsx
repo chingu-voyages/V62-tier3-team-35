@@ -109,6 +109,7 @@ export function GenerationScreen() {
         const roadmap = await response.json();
 
         console.log("Generated roadmap:", roadmap);
+        router.replace(`/generate-path/done?pathId=${roadmap.data.path.id}`);
       } catch (error) {
         console.error("Failed to generate roadmap:", error);
       }

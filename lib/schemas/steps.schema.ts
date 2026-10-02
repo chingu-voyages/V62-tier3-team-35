@@ -5,6 +5,8 @@ export const stepSchema = z.object({
   order: z.int().nonnegative(),
   title: z.string().min(1).max(200),
   description: z.string(),
+  icon: z.string(),
+  keyTopics: z.string(),
   estimatedTime: z.string(),
   isCompleted: z.boolean().default(false),
   completedAt: z.coerce.date().nullable().default(null),
