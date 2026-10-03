@@ -26,12 +26,10 @@ export function DoneScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
+  const hasError = !pathId || isError;
+
   useEffect(() => {
-    if (!pathId) {
-      setIsLoading(false);
-      setIsError(true);
-      return;
-    }
+    if (!pathId) return;
 
     const loadRoadmap = async () => {
       try {
@@ -61,15 +59,15 @@ export function DoneScreen() {
   return (
     <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
       <div className="mt-8 h-150 w-full flex items-center justify-center">
-        {isLoading && <Spinner />}
-        {isError && (
+        {isLoading && pathId && <Spinner />}
+        {hasError && (
           <Banner
             variant="destructive"
             title="Unable to load your roadmap"
             description="We couldn't load your roadmap. Please try again."
           />
         )}
-        {!isLoading && !isError && <Roadmap roadmap={roadmap} />}
+        {!isLoading && !hasError && <Roadmap roadmap={roadmap} />}
       </div>
 
       <Button variant="primary" size="lg" className="mt-8" onClick={startOver}>
