@@ -1,9 +1,6 @@
 import { ai } from "@/lib/ai/gemini";
 import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
-import {
-  generatePathResponseSchema,
-  GeneratePathResponse,
-} from "../schemas/generate-path.schema";
+import { generatePathResponseSchema } from "../schemas/generate-path.schema";
 
 export async function generatePath({
   careerGoal,
@@ -26,19 +23,19 @@ export async function generatePath({
         - Weekly learning time is the maximum hours available per week.
         - Target pace controls how quickly the course progresses.
         - Do not exceed the weekly time limit.
-        - Calculate estimatedWeeks from estimatedHours and weekly learning time.
+        - Calculate estimatedTime as the estimated number of weeks needed to complete the step based on the user's weekly learning time and target pace.
+          Return estimatedTime as a whole number.
 
         Use your expertise to fill missing information based on the user's goal, level, and available time.
         Create a practical and realistic roadmap. Start from the user's current level and order technologies logically.
 
         Include relevant known technologies with only the essential fundamentals needed for the goal, without repeating advanced material they already know.
         For each technology include:
-        - technology
+        - title
         - icon
         - keyTopics: 3-5 key technologies or concepts, comma-separated
         - description: 2-3 sentences
-        - estimatedHours
-        - estimatedWeeks
+        - estimatedTime: estimated duration in weeks as an integer
         - include 4 or more topics for each technology. Use as many topics as necessary to cover the technology comprehensively based on its complexity and the user's level; do not stop at 4 if more distinct topics are needed. For known technologies, include only the essential fundamentals.
         - topics must cover distinct practical concepts from basic to advanced without unnecessary overlap
 
@@ -63,12 +60,11 @@ export async function generatePath({
         {
           "roadmap": [
             {
-              "technology": "JavaScript",
+              "title": "JavaScript",
               "icon": "Braces",
               "keyTopics": "ES6+, DOM, Events",
               "description": "Learn the core JavaScript concepts needed for modern frontend development.",
-              "estimatedHours": 40,
-              "estimatedWeeks": 4,
+              "estimatedTime": 4,
               "topics": [
                 {
                   "name": "Variables and data types",
@@ -99,20 +95,4 @@ export async function generatePath({
 
   const parsed = JSON.parse(response.text);
   return generatePathResponseSchema.parse(parsed);
-}
-
-export function mapRoadmapToSteps(data: GeneratePathResponse) {
-  const steps = data.roadmap.map((step, i) => ({
-    order: i,
-    title: step.technology,
-    description: step.description,
-    keyTopics: step.keyTopics,
-    icon: step.icon,
-    estimatedTime: step.estimatedHours.toString(),
-    topics: step.topics.map((topic) => ({
-      name: topic.name,
-      resources: topic.resources,
-    })),
-  }));
-  return steps;
 }

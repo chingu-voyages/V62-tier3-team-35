@@ -2,10 +2,11 @@
 
 import { ReactFlowProvider, type Edge, type Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { RoadmapProps, RoadmapTechnologyProps } from "./roadmap.types";
+import { RoadmapProps, RoadmapStepProps } from "./roadmap.types";
 import { RoadmapView } from "./roadmap-view";
 
-function createNodes(roadmap: RoadmapTechnologyProps[]): Node[] {
+// Convert roadmap steps into React Flow nodes.
+function createNodes(roadmap: RoadmapStepProps[]): Node[] {
   return roadmap.map((item, index) => ({
     id: String(index + 1),
     type: "technology",
@@ -14,15 +15,17 @@ function createNodes(roadmap: RoadmapTechnologyProps[]): Node[] {
       y: 0,
     },
     data: {
-      technology: item.technology,
+      title: item.title,
       icon: item.icon,
       keyTopics: item.keyTopics,
-      estimatedWeeks: item.estimatedWeeks,
+      estimatedTime: item.estimatedTime,
+      isCompleted: item.isCompleted,
     },
   }));
 }
 
-function createEdges(roadmap: RoadmapTechnologyProps[]): Edge[] {
+// Create connections between roadmap nodes.
+function createEdges(roadmap: RoadmapStepProps[]): Edge[] {
   return roadmap.slice(0, -1).map((_, index) => ({
     id: `${index + 1}-${index + 2}`,
     source: String(index + 1),

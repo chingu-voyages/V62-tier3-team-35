@@ -10,14 +10,15 @@ export type RoadmapTopicProps = {
   resources: RoadmapResourceProps[];
 };
 
-export type RoadmapTechnologyProps = {
-  technology: string;
-  keyTopics: string;
+export type RoadmapStepProps = {
+  title: string;
   icon: string;
-  estimatedWeeks: number;
+  keyTopics: string;
+  estimatedTime: number;
+  isCompleted: boolean;
   topics: RoadmapTopicProps[];
 };
 
 export type RoadmapProps = {
-  roadmap: RoadmapTechnologyProps[];
+  roadmap: RoadmapStepProps[];
 };

@@ -1,7 +1,7 @@
 import { errorHandler } from "@/lib/errors/error-handler";
 import * as pathsService from "@/services/paths.service";
 import * as stepsService from "@/services/steps.service";
-import { generatePath, mapRoadmapToSteps } from "@/lib/ai/generate-path";
+import { generatePath } from "@/lib/ai/generate-path";
 
 // Create a new learning path for the current user.
 // Query params: userId (required)
@@ -15,10 +15,9 @@ export async function POST(request: Request) {
 
     const aiRoadmap = await generatePath(formInput);
     const path = await pathsService.createPath(userId, formInput);
-    const steps = mapRoadmapToSteps(aiRoadmap);
     const savedSteps = await stepsService.createSteps({
       learningPathId: path.id,
-      steps,
+      steps: aiRoadmap.roadmap,
     });
 
     return Response.json(

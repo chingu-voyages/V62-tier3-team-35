@@ -41,7 +41,7 @@ model Step {
   order          Int
   title          String       @db.VarChar(200)
   description    String
-  estimatedTime  String       @map("estimated_time")
+  estimatedTime  Int          @map("estimated_time")
   isCompleted    Boolean      @default(false) @map("is_completed")
   completedAt    DateTime?    @map("completed_at")
   createdAt      DateTime     @default(now()) @map("created_at")
