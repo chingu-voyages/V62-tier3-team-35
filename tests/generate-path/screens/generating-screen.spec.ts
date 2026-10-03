@@ -15,6 +15,24 @@ test.describe("Generating screen", () => {
       );
     });
 
+    await page.route("**/api/paths?userId=*", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: {
+            path: {
+              id: "test-path-id",
+            },
+            steps: [],
+          },
+        }),
+      });
+    });
+
     await page.goto("/generate-path/generating");
   });
 
