@@ -6,7 +6,10 @@ import { ChoiceGroup } from "@/components/generate-path/controls/choice-group";
 import { ErrorMessage } from "@/components/common/error-message";
 import { formLabels } from "@/components/generate-path/step-config";
 import type { FormOption } from "@/components/generate-path/data/form-options";
-import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/paths.schema";
+import type {
+  RoadmapFormKey,
+  RoadmapFormValues,
+} from "@/lib/schemas/paths.schema";
 
 type ChoiceFormKey = Exclude<RoadmapFormKey, "skills" | "hoursPerWeek">;
 
@@ -28,11 +31,13 @@ export function ChoiceStep({ formKey, choices }: ChoiceStepProps) {
       <ChoiceGroup
         choices={choices}
         label={formLabels[formKey]}
-        value={field.value}
+        value={field.value ?? ""}
         onChange={field.onChange}
         errorId={error?.message ? errorId : undefined}
       />
-      {error?.message && <ErrorMessage id={errorId}>{error.message}</ErrorMessage>}
+      {error?.message && (
+        <ErrorMessage id={errorId}>{error.message}</ErrorMessage>
+      )}
     </>
   );
 }
