@@ -76,3 +76,6 @@
     @apply font-sans;
   }
 }
+.react-flow.react-flow {
+  --xy-edge-stroke-default: #788294EB;
+}
