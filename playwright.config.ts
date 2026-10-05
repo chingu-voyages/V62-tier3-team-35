@@ -12,7 +12,7 @@ export default defineConfig({
   },
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: `pnpm build && pnpm start --port ${E2E_PORT}`,
+    command: `npm run build && npm run start -- --port ${E2E_PORT}`,
     url: E2E_URL,
     reuseExistingServer: false,
     timeout: 120_000,
