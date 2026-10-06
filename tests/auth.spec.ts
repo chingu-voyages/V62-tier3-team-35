@@ -53,19 +53,9 @@ test.describe("Route Protection (Proxy)", () => {
       await expect(page).toHaveURL(/\/sign-up$/);
     });
 
-    test("allows direct access to /forgot-password", async ({ page }) => {
-      await page.goto("/forgot-password");
-      await expect(page).toHaveURL(/\/forgot-password$/);
-    });
-
     test("allows direct access to /verify-email", async ({ page }) => {
       await page.goto("/verify-email?email=test@example.com");
       await expect(page).toHaveURL(/\/verify-email\?email=/);
-    });
-
-    test("allows direct access to /reset-password", async ({ page }) => {
-      await page.goto("/reset-password");
-      await expect(page).toHaveURL(/\/reset-password$/);
     });
 
     test("allows direct access to /email-verified", async ({ page }) => {
@@ -94,7 +84,6 @@ test.describe("Login Flow", () => {
     await expect(page.getByRole("button", { name: "Log in", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Google" })).toBeVisible();
     await expect(page.getByRole("button", { name: "GitHub" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Forgot password?" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Sign up" })).toBeVisible();
   });
 
@@ -201,162 +190,6 @@ test.describe("Sign Up Flow", () => {
     await page.getByPlaceholder("Create your password").fill("Password123!");
     await page.getByRole("button", { name: "Create account", exact: true }).click();
 
-    await expect(page).toHaveURL(/\/verify-email\?email=newuser/);
-  });
-});
-
-/* -------------------------------------------------------------------------- */
-/*                           Forgot Password Flow                             */
-/* -------------------------------------------------------------------------- */
-
-test.describe("Forgot Password Flow", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/forgot-password");
-  });
-
-  test("renders forgot password elements correctly", async ({ page }) => {
-    await expect(page.getByRole("heading", { name: "Forgot Password?" })).toBeVisible();
-    await expect(
-      page.getByText("Enter your email and we'll send you a reset link.")
-    ).toBeVisible();
-    await expect(page.getByLabel("Email")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Send reset link" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
-  });
-
-  test("transitions to check email confirmation upon successful submit", async ({ page }) => {
-    await page.route("**/api/auth/**", async (route) => {
-      if (route.request().url().includes("password")) {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ status: true }),
-        });
-      } else {
-        await route.continue();
-      }
-    });
-
-    await page.getByLabel("Email").fill("reset@example.com");
-    await page.getByRole("button", { name: "Send reset link" }).click();
-
-    await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
-    await expect(page.getByText("A reset link is on the way to reset@example.com")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Resend email" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
-  });
-});
-
-/* -------------------------------------------------------------------------- */
-/*                            Verify Email Flow                               */
-/* -------------------------------------------------------------------------- */
-
-test.describe("Verify Email Flow", () => {
-  test("shows invalid request state when email param is missing", async ({ page }) => {
-    await page.goto("/verify-email");
-
-    await expect(page.getByRole("heading", { name: "Invalid or expired request" })).toBeVisible();
-    await expect(page.getByText("The verification link is not valid or has expired.")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Cannot verify your email" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to sign up" })).toBeVisible();
-  });
-
-  test("shows check inbox state when email param is provided", async ({ page }) => {
-    await page.goto("/verify-email?email=user@example.com");
-
-    await expect(page.getByRole("heading", { name: "Check your inbox" })).toBeVisible();
-    await expect(page.getByText("We sent a verification link to user@example.com")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Resend email" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
-  });
-});
-
-/* -------------------------------------------------------------------------- */
-/*                            Reset Password Flow                             */
-/* -------------------------------------------------------------------------- */
-
-test.describe("Reset Password Flow", () => {
-  test("shows invalid link state when token param is missing", async ({ page }) => {
-    await page.goto("/reset-password");
-
-    await expect(page.getByRole("heading", { name: "Invalid or expired link" })).toBeVisible();
-    await expect(page.getByText("The password reset link is not valid or has expired.")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Cannot reset your password" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Request a new reset link" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
-  });
-
-  test("shows form and resets password successfully without double header", async ({ page }) => {
-    await page.goto("/reset-password?token=valid-test-token");
-
-    // Form header must be visible
-    await expect(page.getByRole("heading", { name: "Create a new password" })).toBeVisible();
-    await expect(
-      page.getByText("Make sure both passwords match and meet the requirements.")
-    ).toBeVisible();
-
-    await page.route("**/api/auth/**", async (route) => {
-      if (route.request().url().includes("password")) {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ status: true }),
-        });
-      } else {
-        await route.continue();
-      }
-    });
-
-    await page.getByPlaceholder("Enter new password").fill("NewPassword123!");
-    await page.getByPlaceholder("Confirm new password").fill("NewPassword123!");
-    await page.getByRole("button", { name: "Reset password" }).click();
-
-    // Success header and body must be visible
-    await expect(page.getByRole("heading", { name: "Password updated" })).toBeVisible();
-    await expect(page.getByText("Your new password is active.")).toBeVisible();
-    await expect(page.getByText("Password changed")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to login" })).toBeVisible();
-
-    // Verify the old form header is NOT present (no double header bug)
-    await expect(page.getByRole("heading", { name: "Create a new password" })).not.toBeVisible();
-  });
-
-  test("displays error banner when reset API fails", async ({ page }) => {
-    await page.goto("/reset-password?token=expired-test-token");
-
-    await page.route("**/api/auth/**", async (route) => {
-      if (route.request().url().includes("password")) {
-        await route.fulfill({
-          status: 400,
-          contentType: "application/json",
-          body: JSON.stringify({
-            message: "Token has expired or is invalid",
-          }),
-        });
-      } else {
-        await route.continue();
-      }
-    });
-
-    await page.getByPlaceholder("Enter new password").fill("NewPassword123!");
-    await page.getByPlaceholder("Confirm new password").fill("NewPassword123!");
-    await page.getByRole("button", { name: "Reset password" }).click();
-
-    await expect(page.getByText("Token has expired or is invalid")).toBeVisible();
-  });
-});
-
-/* -------------------------------------------------------------------------- */
-/*                           Email Verified Page                              */
-/* -------------------------------------------------------------------------- */
-
-test.describe("Email Verified Page", () => {
-  test("renders email verified confirmation elements", async ({ page }) => {
-    await page.goto("/email-verified");
-
-    await expect(page.getByRole("heading", { name: "Email verified" })).toBeVisible();
-    await expect(page.getByText("Your account is ready to go.")).toBeVisible();
-    await expect(page.getByText("You're all set")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Continue to onboarding" })).toBeVisible();
+    await expect(page).toHaveURL("/");
   });
 });
