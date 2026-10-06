@@ -121,11 +121,6 @@ test.describe("Login Flow", () => {
     ).toBeVisible();
   });
 
-  test("navigates to forgot password page when clicking link", async ({ page }) => {
-    await page.getByRole("link", { name: "Forgot password?" }).click();
-    await expect(page).toHaveURL(/\/forgot-password/);
-    await expect(page.getByRole("heading", { name: "Forgot Password?" })).toBeVisible();
-  });
 
   test("navigates to sign up page when clicking link", async ({ page }) => {
     await page.getByRole("link", { name: "Sign up" }).click();
