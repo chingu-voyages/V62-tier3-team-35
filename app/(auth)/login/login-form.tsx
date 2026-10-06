@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Mail, Lock, Eye, EyeOff, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -130,13 +129,6 @@ export default function LoginForm() {
                 </InputGroupAddon>
               </InputGroup>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-
-              <Link
-                href="/forgot-password"
-                className="block ml-auto w-fit text-sm/5 text-right mb-6 font-medium"
-              >
-                Forgot password?
-              </Link>
             </Field>
           )}
         />

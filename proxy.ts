@@ -6,7 +6,6 @@ import { auth } from "./lib/auth";
 const guestRoutes = [
     "/login",
     "/sign-up",
-    "/forgot-password",
     "/verify-email",
 ]
 const protectedRoutes = [
@@ -44,7 +43,6 @@ export const config = {
     matcher: [
         "/login",
         "/sign-up",
-        "/forgot-password",
         "/verify-email",
         "/dashboard/:path*",
         "/create-path/:path*",

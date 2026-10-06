@@ -11,20 +11,6 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    // requireEmailVerification: true, // TODO: Uncomment when email service is ready
-    // async sendResetPassword({ user, url }) {
-    //   console.log(`Reset password link for ${user.email}, ${url}`)
-    //   await sendEmail({
-    //     to: user.email,
-    //     subject: "Reset your password",
-    //     template: "reset-password",
-    //     variables: {
-    //       userEmail: user.email,
-    //       resetLink: url,
-    //       userName: user.name,
-    //     },
-    //   });
-    // },
   },
   // emailVerification: {
   //   sendOnSignUp: true,
