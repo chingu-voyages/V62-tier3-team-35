@@ -47,9 +47,11 @@ export default function SignUpForm() {
         },
         {
           onSuccess: () => {
-            router.push(
-              `/verify-email?email=${encodeURIComponent(data.email)}`,
-            );
+            // TODO: Uncomment when email verification service is ready
+            // router.push(
+            //   `/verify-email?email=${encodeURIComponent(data.email)}`,
+            // );
+            router.push("/");
           },
           onError: (ctx) => {
             const errorMsg = ctx.error.message?.toLowerCase() || "";
