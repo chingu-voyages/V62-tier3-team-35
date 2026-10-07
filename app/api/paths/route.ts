@@ -7,8 +7,10 @@ import { getCurrentUserId } from "@/lib/auth";
 // Create a new learning path for the current user.
 // The current user is determined from the Better Auth session.
 // Body: { careerGoal, skillLevel, skills?, hoursPerWeek, learningPace }
-// Returns: 201 { success: true, data: LearningPath } | 400/404 { success: false, error }
+// Returns: 201 { success: true, data: { path, steps: savedSteps } | 400/404 { success: false, error }
 export async function POST(request: Request) {
+  let pathId: string | undefined;
+  let userId: string | undefined;
   try {
     const userId = await getCurrentUserId();
 
@@ -26,6 +28,9 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
+    if (pathId && userId) {
+      await pathsService.deletePath(pathId, userId).catch(() => {});
+    }
     return errorHandler(error);
   }
 }
