@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 // List all learning paths for the current user, each with its steps ordered by `order`.
 // The current user is determined from the Better Auth session.
 // Returns: 200 { success: true, data: LearningPath[] } | 400 { success: false, error }
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const userId = await getCurrentUserId();
 
