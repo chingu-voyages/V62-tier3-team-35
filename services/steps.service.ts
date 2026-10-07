@@ -59,12 +59,10 @@ export async function createSteps(input: unknown) {
   return createdSteps;
 }
 
-export async function updateStep(id: string, input: unknown) {
-  if (!id) {
-    throw new AppError("Missing step id", 400);
-  }
-
-  const step = await prisma.step.findUnique({ where: { id } });
+export async function updateStep(id: string, userId: string, input: unknown) {
+  const step = await prisma.step.findUnique({
+    where: { id, learningPath: { userId } },
+  });
   if (!step) {
     throw new AppError("Step not found", 404);
   }

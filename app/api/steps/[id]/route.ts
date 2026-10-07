@@ -1,4 +1,5 @@
 import { errorHandler } from "@/lib/errors/error-handler";
+import { getCurrentUserId } from "@/lib/auth";
 import * as stepsService from "@/services/steps.service";
 
 // Update a step (e.g. mark isCompleted, set completedAt, edit title/description).
@@ -9,9 +10,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const userId = await getCurrentUserId();
     const { id } = await params;
     const body = await request.json();
-    const step = await stepsService.updateStep(id, body);
+    const step = await stepsService.updateStep(id, userId, body);
 
     return Response.json({ success: true, data: step });
   } catch (error) {
