@@ -28,13 +28,15 @@ export async function createSteps(input: unknown) {
   // });
 
   const createdSteps = await prisma.$transaction(
-    steps.map((step) =>
+    steps.map((step, i) =>
       prisma.step.create({
         data: {
           learningPathId,
-          order: step.order,
+          order: i,
           title: step.title,
           description: step.description,
+          icon: step.icon,
+          keyTopics: step.keyTopics,
           estimatedTime: step.estimatedTime,
           isCompleted: step.isCompleted,
           completedAt: step.completedAt,

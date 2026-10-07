@@ -1,24 +1,24 @@
 import { errorHandler } from "@/lib/errors/error-handler";
 import * as pathsService from "@/services/paths.service";
 import * as stepsService from "@/services/steps.service";
-import { generatePath, mapRoadmapToSteps } from "@/lib/ai/generate-path";
+import { generatePath } from "@/lib/ai/generate-path";
+import { getCurrentUserId } from "@/lib/auth";
 
 // Create a new learning path for the current user.
-// Query params: userId (required)
+// The current user is determined from the Better Auth session.
 // Body: { careerGoal, skillLevel, skills?, hoursPerWeek, learningPace }
 // Returns: 201 { success: true, data: LearningPath } | 400/404 { success: false, error }
 export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    const userId = await getCurrentUserId();
+
     const formInput = await request.json();
 
     const aiRoadmap = await generatePath(formInput);
     const path = await pathsService.createPath(userId, formInput);
-    const steps = mapRoadmapToSteps(aiRoadmap);
     const savedSteps = await stepsService.createSteps({
       learningPathId: path.id,
-      steps,
+      steps: aiRoadmap.roadmap,
     });
 
     return Response.json(
@@ -31,12 +31,11 @@ export async function POST(request: Request) {
 }
 
 // List all learning paths for the current user, each with its steps ordered by `order`.
-// Query params: userId (required)
+// The current user is determined from the Better Auth session.
 // Returns: 200 { success: true, data: LearningPath[] } | 400 { success: false, error }
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    const userId = await getCurrentUserId();
 
     const paths = await pathsService.getPathsByUserId(userId);
 
