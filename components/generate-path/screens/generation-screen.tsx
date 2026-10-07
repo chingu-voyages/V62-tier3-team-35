@@ -28,6 +28,7 @@ import {
 import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 import { generateRoadmap } from "@/lib/api/paths";
 import { Banner } from "@/components/common/banner";
+import { authClient } from "@/lib/auth-client";
 
 const generationStepDurationMs = 1400;
 
@@ -73,12 +74,12 @@ export function GenerationScreen() {
   const router = useRouter();
   const { getValues } = useFormContext<RoadmapFormValues>();
   const values = getValues();
+  const { data: session } = authClient.useSession();
+  const userId = session?.user.id;
   const [generationProgress, setGenerationProgress] = useState(0);
   const [generationError, setGenerationError] = useState(false);
   const generationSteps = getGenerationSteps(values);
   const hasGenerated = useRef(false);
-  // TODO: replace with session userId once auth is ready, remove userId param from fetch URL
-  const TEMP_TEST_USER_ID = "keAeA0bUZd8fBIQmjSXLW362UOoVoHj0";
 
   useEffect(() => {
     const blockingStep = firstUnansweredStepIndex(values);
@@ -91,12 +92,13 @@ export function GenerationScreen() {
   }, [router, values]);
 
   useEffect(() => {
+    if (!userId) return;
     if (hasGenerated.current) return;
     hasGenerated.current = true;
 
     const runGeneration = async () => {
       try {
-        const roadmap = await generateRoadmap(TEMP_TEST_USER_ID, values);
+        const roadmap = await generateRoadmap(values);
 
         clearDraft();
         router.replace(`/generate-path/done?pathId=${roadmap.data.path.id}`);
@@ -107,7 +109,7 @@ export function GenerationScreen() {
     };
 
     runGeneration();
-  }, [router, values]);
+  }, [router, userId, values]);
 
   useEffect(() => {
     if (generationError) return;

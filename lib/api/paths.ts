@@ -7,8 +7,8 @@ export type PathResponse = {
   };
 };
 
-export async function generateRoadmap(userId: string, values: unknown) {
-  const response = await fetch(`/api/paths?userId=${userId}`, {
+export async function generateRoadmap(values: unknown) {
+  const response = await fetch(`/api/paths`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

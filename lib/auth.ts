@@ -2,9 +2,12 @@ import { betterAuth } from "better-auth";
 import { headers } from "next/headers";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
+import { AppError } from "./errors/app-error";
 
 export const auth = betterAuth({
-  secret: process.env.BETTER_AUTH_SECRET || "default_auth_secret_for_e2e_testing_playwright",
+  secret:
+    process.env.BETTER_AUTH_SECRET ||
+    "default_auth_secret_for_e2e_testing_playwright",
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -50,3 +53,12 @@ export async function getServerSession() {
   });
 }
 
+export async function getCurrentUserId() {
+  const session = await getServerSession();
+
+  if (!session?.user?.id) {
+    throw new AppError("Unauthorized", 401);
+  }
+
+  return session.user.id;
+}
