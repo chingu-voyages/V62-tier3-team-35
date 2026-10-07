@@ -78,7 +78,7 @@ export function GenerationScreen() {
   const generationSteps = getGenerationSteps(values);
   const hasGenerated = useRef(false);
   // TODO: replace with session userId once auth is ready, remove userId param from fetch URL
-  const TEMP_TEST_USER_ID = "00000000-0000-0000-0000-000000000001";
+  const TEMP_TEST_USER_ID = "keAeA0bUZd8fBIQmjSXLW362UOoVoHj0";
 
   useEffect(() => {
     const blockingStep = firstUnansweredStepIndex(values);
