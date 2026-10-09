@@ -9,9 +9,8 @@ import {
 } from "@/components/ui/tabs"
 
 import type { NodeOverviewStatsProps, NodeOverviewBodyProps, NodeOverviewHeaderProps, NodeOverviewProps } from "@/lib/types/roadmap";
-import { nodeData } from "@/lib/data/roadmap";
-
-import { CircleCheck, Clock2, Ellipsis, MessageSquareText, Play } from 'lucide-react';
+import { useState } from "react";
+import { CircleCheck, Clock2, Ellipsis, MessageSquareText, Play, Check } from 'lucide-react';
 
 function NodeOverviewHeader({ icon: Icon, label, description }: NodeOverviewHeaderProps) {
 	return (
@@ -42,9 +41,8 @@ function NodeOverviewHeader({ icon: Icon, label, description }: NodeOverviewHead
 	)
 }
 
-function NodeOverviewBody({ tabs }: NodeOverviewBodyProps) {
+function NodeOverviewBody({ tabs, activeTopic, handleActiveTopic }: NodeOverviewBodyProps) {
 	const tabsOverview = Object.keys(tabs);
-	console.log("Tabs:", tabs);
 	return (
 		<Tabs defaultValue="overview" className="w-[400px] gap-6 pb-12">
 			<TabsList variant="line" className='border-b w-full max-w-[400px]'>
@@ -57,17 +55,33 @@ function NodeOverviewBody({ tabs }: NodeOverviewBodyProps) {
 				<p className='text-muted-foreground pb-7'> {tabs.overview.description} </p>
 
 				<div className='flex justify-between w-full items-center pb-5'>
-					<h3 className="font-semibold"> {tabs.overview.topics.title} ({tabs.overview.topics.listTopics.length})</h3>
+					<h3 className="font-semibold"> {tabs.overview.title} ({tabs.overview.topics.length})</h3>
 					<span className='text-sm text-muted-foreground'>
-						{tabs.overview.topics.listTopics.filter((el) => el.status === "done").length}/{tabs.overview.topics.listTopics.length}
+						{tabs.overview.topics.filter((el) => el.status === "done").length}/{tabs.overview.topics.length}
 					</span>
 
 				</div>
 
 				<ul>
-					{tabs.overview.topics.listTopics.map((el) => (
-						<li key={el.title} className='text-muted-foreground flex gap-4 pb-1 items-center'>
-							<div className='rounded-full border-3 size-7' />
+					{tabs.overview.topics.map((el, idx) => (
+						<li
+							key={el.title}
+							className={`${idx == activeTopic ? "text-foreground" : "text-muted-foreground"} flex gap-4 pb-1 items-center`}
+							tabIndex={idx}
+							onClick={() => handleActiveTopic(idx)}
+						>
+							{el.status === "done" ?
+								(
+									<div className="rounded-full size-7 bg-(--done-color) grid place-content-center">
+										<Check className="size-4 text-white" />
+									</div>
+								)
+								:
+								(
+									<div className={`rounded-full size-7 ${idx == activeTopic ? "border-[#4666FF] border-10" : "border-3"}`} />
+								)
+							}
+
 							{el.title}
 						</li>
 					))}
@@ -76,11 +90,11 @@ function NodeOverviewBody({ tabs }: NodeOverviewBodyProps) {
 
 
 			<TabsContent value="resources">
-				<p className='text-muted-foreground'> {tabs.resources.description} </p>
+				<p className='text-muted-foreground'> {tabs.resources?.description} </p>
 			</TabsContent>
 
 			<TabsContent value="notes">
-				<p className='text-muted-foreground'> {tabs.notes.description} </p>
+				<p className='text-muted-foreground'> {tabs.notes?.description} </p>
 			</TabsContent>
 
 		</Tabs>
@@ -106,7 +120,7 @@ function NodeOverviewStats({ status, duration }: NodeOverviewStatsProps) {
 	)
 }
 
-function NodeOverviewFooter() {
+function NodeOverviewFooter({ handleCompleteTopic }) {
 	return (
 		<div className='flex flex-col gap-3'>
 			<Button variant="primary" size="lg" className='w-full'>
@@ -114,7 +128,9 @@ function NodeOverviewFooter() {
 				Continue Learning
 			</Button>
 
-			<Button variant="secondary" size="lg" className='w-full'>
+			<Button variant="secondary" size="lg" className='w-full'
+				onClick={() => handleCompleteTopic()}
+			>
 				<CircleCheck />
 				Mark as complete
 			</Button>
@@ -127,7 +143,36 @@ function NodeOverviewFooter() {
 	)
 }
 
-export default function NodeOverview({ nodeData }: NodeOverviewProps) {
+export default function NodeOverview({ nodeData, setNodes, nodes, activeNodeID }: NodeOverviewProps) {
+	// Find the first el with the status in progress
+	const listTopics = nodeData.overview.topics;
+	// const listTopics = nodeData.tabs.overview.topics.listTopics;
+	const inProgressIdx = listTopics.findIndex((topic) => topic.status === "in progress");
+	// Choose active topic, by index 0 (first) by deafult.
+	const [activeTopic, setActiveTopic] = useState<number>(inProgressIdx);
+	// Change the state of the current activeTopic to "in progress | up coming"  to "done"
+	// const [completeTopic, setCompleteTopic] = useState<number>();
+
+	const tabs = { overview: nodeData.overview, notes: nodeData.notes, resources: nodeData.resources };
+
+	function handleCompleteTopic() {
+		if (listTopics[activeTopic].status != "done") {
+			let newNodes = nodes.map((node) => {
+				if (node.id === activeNodeID) {
+					// node.data.tabs.overview.topics.listTopics[activeTopic].status = "done";
+				}
+				return node;
+			})
+			setNodes(newNodes)
+		}
+	}
+
+	function handleActiveTopic(idx: number) {
+		if (listTopics[idx].status !== "done") {
+			setActiveTopic(idx);
+		}
+	}
+
 	return (
 		<div className='absolute top-0 right-0 bg-card p-6 rounded-2xl text-card-foreground shadow-lg [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3]'>
 			<NodeOverviewHeader
@@ -140,9 +185,13 @@ export default function NodeOverview({ nodeData }: NodeOverviewProps) {
 				duration={nodeData.duration}
 			/>
 			<NodeOverviewBody
-				tabs={nodeData.tabs}
+				tabs={tabs}
+				activeTopic={activeTopic}
+				handleActiveTopic={handleActiveTopic}
 			/>
-			<NodeOverviewFooter />
+			<NodeOverviewFooter
+				handleCompleteTopic={handleCompleteTopic}
+			/>
 		</div>
 	)
 }

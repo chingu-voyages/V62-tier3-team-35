@@ -5,43 +5,41 @@ import type { LucideIcon } from "lucide-react";
 
 export type Status = "done" | "in progress" | "upcoming";
 
-export interface Overview {
-	description: string;
-	topics: {
-		title: string;
-		listTopics: {
-			title: string;
-			status: Status;
-		}[];
-	};
+export interface Topic {
+	id?: string;
+	title: string;
+	status: Status;
 }
 
-export interface Resources {
-	description: string;
-	body: {
-		title: string;
-		content: {
-			title: string;
-			status: Status;
-		}[];
-	};
+export interface ResourceItem {
+	title: string;
+	url?: string;
+	type?: string;
+	status?: Status;
 }
 
-export interface Notes {
-	description: string;
-	body: {
-		title: string;
-		content: {
-			title: string;
-			status: Status;
-		}[];
-	};
+export interface NoteItem {
+	title: string;
+	content?: string;
+	status?: Status;
 }
 
-export interface Tabs {
-	overview: Overview;
-	resources: Resources;
-	notes: Notes;
+export interface NodeOverviewTab {
+	description: string;
+	title: string;
+	topics: Topic[];
+}
+
+export interface NodeResourcesTab {
+	description: string;
+	title?: string;
+	items: ResourceItem[];
+}
+
+export interface NodeNotesTab {
+	description: string;
+	title?: string;
+	items: NoteItem[];
 }
 
 export interface NodeData {
@@ -51,17 +49,28 @@ export interface NodeData {
 	status: Status;
 	icon: LucideIcon;
 	duration: string;
-	tabs: Tabs;
+	overview: NodeOverviewTab;
+	resources?: NodeResourcesTab;
+	notes?: NodeNotesTab;
 }
 
 // Components Props Type
 
 export interface NodeOverviewProps {
 	nodeData: NodeData;
+	[key: string]: unknown;
+}
+
+export interface NodeOverviewTabs {
+	overview: NodeOverviewTab;
+	resources?: NodeResourcesTab;
+	notes?: NodeNotesTab;
 }
 
 export interface NodeOverviewBodyProps {
-	tabs: Tabs;
+	tabs: NodeOverviewTabs;
+	activeTopic: number;
+	handleActiveTopic: (idx: number) => void;
 }
 
 export interface NodeOverviewHeaderProps {
@@ -75,7 +84,10 @@ export interface NodeOverviewStatsProps {
 	duration: string;
 }
 
+export interface NodeOverviewFooterProps {
+	handleCompleteTopic: () => void;
+}
+
 export type RoadmapNodeType = Node<NodeData, "roadmapNode">;
 
 export type RoadmapNodeProps = NodeProps<RoadmapNodeType>;
-
