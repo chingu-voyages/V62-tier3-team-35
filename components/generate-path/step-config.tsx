@@ -8,7 +8,10 @@ import {
   levelChoices,
   targetChoices,
 } from "@/components/generate-path/data/form-options";
-import type { RoadmapFormKey, RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type {
+  RoadmapFormKey,
+  RoadmapFormValues,
+} from "@/lib/schemas/paths.schema";
 
 export type StepId =
   | "career-goal"

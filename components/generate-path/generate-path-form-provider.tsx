@@ -5,15 +5,15 @@ import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useEffect, type ReactNode } from "react";
 
 import {
+  createPathSchema,
   initialForm,
-  roadmapFormSchema,
   type RoadmapFormValues,
-} from "@/lib/schemas/generate-path.schema";
+} from "@/lib/schemas/paths.schema";
 import { readDraft, saveDraft } from "@/lib/generate-path/draft-storage";
 
 export function GeneratePathFormProvider({ children }: { children: ReactNode }) {
   const methods = useForm<RoadmapFormValues>({
-    resolver: zodResolver(roadmapFormSchema),
+    resolver: zodResolver(createPathSchema),
     defaultValues: initialForm,
     mode: "onSubmit",
     reValidateMode: "onSubmit",

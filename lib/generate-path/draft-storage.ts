@@ -1,7 +1,7 @@
 import {
-  roadmapFormSchema,
+  createPathSchema,
   type RoadmapFormValues,
-} from "@/lib/schemas/generate-path.schema";
+} from "@/lib/schemas/paths.schema";
 
 const DRAFT_KEY = "pathway:generate-path-draft";
 
@@ -10,7 +10,7 @@ export function readDraft(): Partial<RoadmapFormValues> | null {
   try {
     const raw = window.localStorage.getItem(DRAFT_KEY);
     if (!raw) return null;
-    const parsed = roadmapFormSchema.partial().safeParse(JSON.parse(raw));
+    const parsed = createPathSchema.partial().safeParse(JSON.parse(raw));
     return parsed.success ? parsed.data : null;
   } catch {
     return null;

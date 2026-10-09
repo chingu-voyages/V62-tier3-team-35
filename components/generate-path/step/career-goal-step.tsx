@@ -8,7 +8,7 @@ import { ErrorMessage } from "@/components/common/error-message";
 import { goalChoices } from "@/components/generate-path/data/form-options";
 import { formLabels } from "@/components/generate-path/step-config";
 import { Input } from "@/components/ui/input";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 export function CareerGoalStep() {
   const [customTouched, setCustomTouched] = useState(false);

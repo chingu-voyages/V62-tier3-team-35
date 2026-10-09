@@ -5,7 +5,7 @@ import type { FormOption } from "@/components/generate-path/data/form-options";
 type ChoiceGroupProps = {
   choices: readonly FormOption[];
   label: string;
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   errorId?: string;
 };

@@ -13,8 +13,8 @@ import {
   PRESET_HOURS_PER_WEEK,
   type TimeCommitmentPreset,
 } from "@/components/generate-path/data/time-commitment";
-import { customHoursMax, customHoursMin } from "@/lib/schemas/generate-path.schema";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import { customHoursMax, customHoursMin } from "@/lib/schemas/paths.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 export function TimeCommitmentStep() {
   const { field } = useController<RoadmapFormValues, "hoursPerWeek">({

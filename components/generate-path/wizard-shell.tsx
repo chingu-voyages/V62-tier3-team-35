@@ -8,7 +8,7 @@ import { ConfirmDialog } from "@/components/common/confirm-dialog";
 import { clearDraft, saveDraft } from "@/lib/generate-path/draft-storage";
 import { GeneratePathFormProvider } from "@/components/generate-path/generate-path-form-provider";
 import { RoadmapFrame } from "@/components/generate-path/layout/roadmap-frame";
-import type { RoadmapFormValues } from "@/lib/schemas/generate-path.schema";
+import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 export function WizardShell({ children }: { children: ReactNode }) {
   return (
