@@ -26,7 +26,9 @@ import {
   stepPathForIndex,
 } from "@/components/generate-path/step-config";
 import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
+import { generateRoadmap } from "@/lib/api/paths";
 import { Banner } from "@/components/common/banner";
+import { authClient } from "@/lib/auth-client";
 
 const generationStepDurationMs = 1400;
 
@@ -72,11 +74,12 @@ export function GenerationScreen() {
   const router = useRouter();
   const { getValues } = useFormContext<RoadmapFormValues>();
   const values = getValues();
+  const { data: session } = authClient.useSession();
+  const userId = session?.user.id;
   const [generationProgress, setGenerationProgress] = useState(0);
+  const [generationError, setGenerationError] = useState(false);
   const generationSteps = getGenerationSteps(values);
   const hasGenerated = useRef(false);
-  // TODO: replace with session userId once auth is ready, remove userId param from fetch URL
-  const TEMP_TEST_USER_ID = "00000000-0000-0000-0000-000000000001";
 
   useEffect(() => {
     const blockingStep = firstUnansweredStepIndex(values);
@@ -89,49 +92,40 @@ export function GenerationScreen() {
   }, [router, values]);
 
   useEffect(() => {
+    if (!userId) return;
     if (hasGenerated.current) return;
     hasGenerated.current = true;
 
-    const generateRoadmap = async () => {
+    const runGeneration = async () => {
       try {
-        const response = await fetch(`/api/paths?userId=${TEMP_TEST_USER_ID}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
+        const roadmap = await generateRoadmap(values);
 
-        if (!response.ok) {
-          throw new Error("Failed to generate roadmap");
-        }
-
-        const roadmap = await response.json();
-
-        console.log("Generated roadmap:", roadmap);
+        clearDraft();
+        router.replace(`/generate-path/done?pathId=${roadmap.data.path.id}`);
       } catch (error) {
         console.error("Failed to generate roadmap:", error);
+        setGenerationError(true);
       }
     };
 
-    generateRoadmap();
-  }, []);
+    runGeneration();
+  }, [router, userId, values]);
 
   useEffect(() => {
-    if (generationProgress >= generationSteps.length) {
-      clearDraft();
-      router.replace("/generate-path/done");
+    if (generationError) return;
+
+    if (generationProgress >= generationSteps.length - 1) {
       return;
     }
 
     const timer = window.setTimeout(() => {
       setGenerationProgress((current) =>
-        Math.min(current + 1, generationSteps.length),
+        Math.min(current + 1, generationSteps.length - 1),
       );
     }, generationStepDurationMs);
 
     return () => window.clearTimeout(timer);
-  }, [generationProgress, generationSteps.length, router]);
+  }, [generationProgress, generationSteps.length, generationError]);
 
   const summaryItems = [
     { label: getChoiceTitle(goalChoices, values.careerGoal), Icon: Target },
@@ -159,11 +153,14 @@ export function GenerationScreen() {
           build a path that fits you.
         </p>
 
-        <Banner
-          variant="destructive"
-          title="Something went wrong"
-          description="We couldn't generate your roadmap. Please try again."
-        />
+        {generationError && (
+          <Banner
+            variant="destructive"
+            className="mt-6"
+            title="Something went wrong"
+            description="We couldn't generate your roadmap. Please try again."
+          />
+        )}
       </div>
 
       <div className="mt-6 flex h-12 w-full items-center overflow-x-auto rounded-full border border-border bg-card px-3.5 text-left shadow-sm">
@@ -190,9 +187,7 @@ export function GenerationScreen() {
         <div className="relative flex flex-col gap-1.5">
           {generationSteps.map(({ title, description }, index) => {
             const completed = index < generationProgress;
-            const active =
-              generationProgress < generationSteps.length &&
-              index === generationProgress;
+            const active = !generationError && index === generationProgress;
 
             return (
               <div
@@ -234,13 +229,14 @@ export function GenerationScreen() {
           })}
         </div>
       </div>
-
-      <Banner
-        variant="info"
-        className="mt-7 w-full max-w-lg text-left"
-        title="What Pathway found"
-        description={`${(values.skills ?? []).length} existing skills will count as known while we focus the roadmap on your next useful gaps.`}
-      />
+      {!generationError && (
+        <Banner
+          variant="info"
+          className="mt-7 w-full max-w-lg text-left"
+          title="What Pathway found"
+          description={`${(values.skills ?? []).length} existing skills will count as known while we focus the roadmap on your next useful gaps.`}
+        />
+      )}
     </section>
   );
 }

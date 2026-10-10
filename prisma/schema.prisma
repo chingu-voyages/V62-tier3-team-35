@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
@@ -13,15 +8,118 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String
-  email    String @unique
-  password String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(uuid())
+  email         String    @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  emailVerified Boolean   @default(false)
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
 
   learningPaths LearningPath[]
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model LearningPath {
+  id           String       @id @default(uuid())
+  userId       String       @map("user_id")
+  careerGoal   String       @map("career_goal") @db.VarChar(300)
+  skillLevel   SkillLevel   @map("skill_level")
+  skills       String[]     @default([])
+  hoursPerWeek Int          @map("hours_per_week")
+  learningPace LearningPace @map("learning_pace")
+  status       PathStatus   @default(draft)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  user         User         @relation(fields: [userId], references: [id])
+  steps        Step[]
+
+  @@index([userId])
+  @@map("learning_paths")
+}
+
+model Step {
+  id             String       @id @default(uuid())
+  learningPathId String       @map("learning_path_id")
+  order          Int
+  title          String       @db.VarChar(200)
+  description    String
+  keyTopics      String?      @map("key_topics")
+  icon           String?
+  estimatedTime  Int          @map("estimated_time")
+  isCompleted    Boolean      @default(false) @map("is_completed")
+  completedAt    DateTime?    @map("completed_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  learningPath   LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
+  topics         Topic[]
+
+  @@unique([learningPathId, order])
+  @@map("steps")
+}
+
+model Topic {
+  id          String    @id @default(uuid())
+  stepId      String    @map("step_id")
+  name        String
+  resources   Json
+  isCompleted Boolean   @default(false) @map("is_completed")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  step        Step      @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@map("topics")
 }
 
 enum SkillLevel {
@@ -40,54 +138,4 @@ enum LearningPace {
   recommended
   accelerated
   relaxed
-}
-
-model LearningPath {
-  id          String        @id @default(uuid())
-  userId      String        @map("user_id")
-  user        User          @relation(fields: [userId], references: [id])
-  careerGoal  String        @map("career_goal") @db.VarChar(300)
-  skillLevel  SkillLevel    @map("skill_level")
-  skills      String[]      @default([])
-  hoursPerWeek Int          @map("hours_per_week")
-  learningPace LearningPace @map("learning_pace")
-  status      PathStatus    @default(draft)
-  steps       Step[]
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-
-  @@index([userId])
-  @@map("learning_paths")
-}
-
-model Step {
-  id             String       @id @default(uuid())
-  learningPathId String       @map("learning_path_id")
-  learningPath   LearningPath @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
-  order          Int
-  title          String       @db.VarChar(200)
-  description    String
-  estimatedTime  String       @map("estimated_time")
-  isCompleted    Boolean      @default(false) @map("is_completed")
-  completedAt    DateTime?    @map("completed_at")
-  topics         Topic[]
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
-
-  @@unique([learningPathId, order])
-  @@map("steps")
-}
-
-model Topic {
-  id             String       @id @default(uuid())
-  stepId         String       @map("step_id")
-  step           Step         @relation(fields: [stepId], references: [id], onDelete: Cascade)
-  name           String
-  resources      Json
-  isCompleted    Boolean      @default(false) @map("is_completed")
-  completedAt    DateTime?    @map("completed_at")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
-
-  @@map("topics")
 }
