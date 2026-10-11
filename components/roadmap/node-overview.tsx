@@ -1,197 +1,491 @@
 import { cn } from "@/lib/utils";
 import { statusNodeStyle } from "./card-node";
-import { Button } from '@/components/ui/button';
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import type { NodeOverviewStatsProps, NodeOverviewBodyProps, NodeOverviewHeaderProps, NodeOverviewProps } from "@/lib/types/roadmap";
+import type {
+  NodeOverviewStatsProps,
+  NodeOverviewBodyProps,
+  NodeOverviewHeaderProps,
+  NodeOverviewProps,
+  NodeOverviewTabs,
+  NodeOverviewFooterProps,
+  Status,
+  NoteItem,
+} from "@/lib/types/roadmap";
 import { useState } from "react";
-import { CircleCheck, Clock2, Ellipsis, MessageSquareText, Play, Check } from 'lucide-react';
+import {
+  CircleCheck,
+  Clock2,
+  Ellipsis,
+  MessageSquareText,
+  Play,
+  Check,
+  Plus,
+} from "lucide-react";
+import { StepIcon } from "@/lib/utils/icons";
+import NodeAddNote from "@/components/roadmap/node-form-note"
+import { addNote, deleteNote, editNote } from "./action";
+import { NoteSchemaType } from "@/lib/schemas/roadmap-notes";
 
-function NodeOverviewHeader({ icon: Icon, label, description }: NodeOverviewHeaderProps) {
-	return (
-		<header className='flex gap-5 pb-3'>
+import { PencilIcon, TrashIcon } from "lucide-react"
 
-			<div className='grid place-content-center size-14 bg-foreground rounded-full text-background'>
-				<Icon />
-			</div>
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-			<div className=''>
-				<h3 className='text-2xl font-semibold'>
-					{label}
-				</h3>
-				<p className="text-(--accent-text) text-sm">
-					{description}
-				</p>
-			</div>
-
-			<Button
-				variant="outline"
-				size="icon-lg"
-				className='rounded-full ml-auto'
-			>
-				<Ellipsis className='size-5' />
-			</Button>
-		</header>
-
-	)
+interface DropdownNoteProps {
+  handleEditNote: (id: string, note: NoteSchemaType) => Promise<void> | void;
+  handleDeleteNote: (id: string) => Promise<void> | void;
+  noteID: string;
+  note: NoteItem;
+  activeTopicName: string;
+  children: React.ReactNode;
 }
 
-function NodeOverviewBody({ tabs, activeTopic, handleActiveTopic }: NodeOverviewBodyProps) {
-	const tabsOverview = Object.keys(tabs);
-	return (
-		<Tabs defaultValue="overview" className="w-[400px] gap-6 pb-12">
-			<TabsList variant="line" className='border-b w-full max-w-[400px]'>
-				{tabsOverview.map((tab) => (
-					<TabsTrigger key={tab} value={tab} className='capitalize justify-start'>{tab}</TabsTrigger>
-				))}
-			</TabsList>
-
-			<TabsContent value="overview">
-				<p className='text-muted-foreground pb-7'> {tabs.overview.description} </p>
-
-				<div className='flex justify-between w-full items-center pb-5'>
-					<h3 className="font-semibold"> {tabs.overview.title} ({tabs.overview.topics.length})</h3>
-					<span className='text-sm text-muted-foreground'>
-						{tabs.overview.topics.filter((el) => el.status === "done").length}/{tabs.overview.topics.length}
-					</span>
-
-				</div>
-
-				<ul>
-					{tabs.overview.topics.map((el, idx) => (
-						<li
-							key={el.title}
-							className={`${idx == activeTopic ? "text-foreground" : "text-muted-foreground"} flex gap-4 pb-1 items-center`}
-							tabIndex={idx}
-							onClick={() => handleActiveTopic(idx)}
-						>
-							{el.status === "done" ?
-								(
-									<div className="rounded-full size-7 bg-(--done-color) grid place-content-center">
-										<Check className="size-4 text-white" />
-									</div>
-								)
-								:
-								(
-									<div className={`rounded-full size-7 ${idx == activeTopic ? "border-[#4666FF] border-10" : "border-3"}`} />
-								)
-							}
-
-							{el.title}
-						</li>
-					))}
-				</ul>
-			</TabsContent>
-
-
-			<TabsContent value="resources">
-				<p className='text-muted-foreground'> {tabs.resources?.description} </p>
-			</TabsContent>
-
-			<TabsContent value="notes">
-				<p className='text-muted-foreground'> {tabs.notes?.description} </p>
-			</TabsContent>
-
-		</Tabs>
-	)
+export function DropdownNote({
+  handleEditNote,
+  handleDeleteNote,
+  noteID,
+  note,
+  activeTopicName,
+  children,
+}: DropdownNoteProps) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        {children}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuGroup>
+          <NodeAddNote 
+            inProgressTopic={activeTopicName} 
+            handleFunction={handleEditNote} 
+            isEditing={true} 
+            note={note} 
+            noteID={noteID}
+          >
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <PencilIcon />
+              Edit
+            </DropdownMenuItem>
+          </NodeAddNote>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => handleDeleteNote(noteID)}
+          >
+            <TrashIcon />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 
-function NodeOverviewStats({ status, duration }: NodeOverviewStatsProps) {
-	return (
-		<div className='pb-7 flex gap-2'>
-			<div className={cn(statusNodeStyle({ status }), "text-sm px-3")}>
-				<div className="size-1.5 rounded-full bg-current" />
-				<span className="sr-only"> Status: </span>
-				{status}
-			</div>
+function NodeOverviewHeader({
+  icon,
+  title,
+  keyTopics,
+}: NodeOverviewHeaderProps) {
+  return (
+    <header className="flex gap-4 pb-3 max-w-100">
+      <div className="grid place-content-center size-14 bg-foreground rounded-full text-background shrink-0">
+        <StepIcon icon={icon} />
+      </div>
 
-			<div className={cn(statusNodeStyle({ status: "upcoming" }), "text-sm px-3")}>
-				<Clock2 className='size-4' />
-				<span className="sr-only">Duration: </span>
-				{duration ?? "1 week"}
-			</div>
-		</div>
-	)
+      <div>
+        <h3 className="text-2xl font-semibold pb-0.5"> {title} </h3>
+        <p className="text-(--accent-text) text-sm"> {keyTopics} </p>
+      </div>
+    </header>
+  );
 }
 
-function NodeOverviewFooter({ handleCompleteTopic }) {
-	return (
-		<div className='flex flex-col gap-3'>
-			<Button variant="primary" size="lg" className='w-full'>
-				<Play />
-				Continue Learning
-			</Button>
+function NodeOverviewBody({
+  tabs,
+  activeTopic,
+  activeTopicName,
+  handleActiveTopic,
+  handleAddNote,
+  handleDeleteNote,
+  handleEditNote
+}: NodeOverviewBodyProps) {
+  const tabsOverview = Object.keys(tabs);
+  return (
+    <Tabs defaultValue="overview" className="w-100 gap-6 pb-12">
+      <TabsList variant="line" className="border-b w-full max-w-100">
+        {tabsOverview.map((tab) => (
+          <TabsTrigger
+            key={tab}
+            value={tab}
+            className="capitalize justify-start"
+          >
+            {tab}
+          </TabsTrigger>
+        ))}
+      </TabsList>
 
-			<Button variant="secondary" size="lg" className='w-full'
-				onClick={() => handleCompleteTopic()}
-			>
-				<CircleCheck />
-				Mark as complete
-			</Button>
+      <TabsContent value="overview">
+        <p className="text-muted-foreground pb-7">
+          {" "}
+          {tabs.overview.description}{" "}
+        </p>
+        <div className="flex justify-between w-full items-center pb-5">
+          <h3 className="font-semibold">
+            {tabs.overview.title} ({tabs.overview.topics.length})
+          </h3>
+          <span className="text-sm text-muted-foreground">
+            {tabs.overview.topics.filter((el) => el.status === "done").length}/
+            {tabs.overview.topics.length}
+          </span>
+        </div>
 
-			<Button variant="secondary" size="lg" className='w-full'>
-				<MessageSquareText />
-				Add a note
-			</Button>
-		</div>
-	)
+        <ul>
+          {tabs.overview.topics.map((el, idx) => (
+            <li
+              key={el.id}
+              className={`${idx == activeTopic ? "text-foreground" : "text-muted-foreground"} flex gap-4 pb-1 items-center`}
+              tabIndex={idx}
+              onClick={() => handleActiveTopic(idx)}
+            >
+              {el.status === "done" ? (
+                <div className="rounded-full size-7 bg-(--done-color) grid place-content-center">
+                  <Check className="size-4 text-white" />
+                </div>
+              ) : (
+                <div
+                  className={`rounded-full size-7 ${idx == activeTopic ? "border-[#4666FF] border-10" : "border-3"}`}
+                />
+              )}
+
+              {el.name}
+            </li>
+          ))}
+        </ul>
+      </TabsContent>
+
+      <TabsContent value="resources">
+        <header className="pb-4">
+          <h3 className="text-xl font-semibold"> {tabs.resources.title} </h3>
+          <p className="text-sm text-muted-foreground">
+            {tabs.resources.description}
+          </p>
+        </header>
+
+        <ul className="flex flex-col gap-3 max-h-60 overflow-y-auto">
+          {tabs.resources.items.map((item, idx) => (
+            <li
+              key={idx}
+              className="border rounded-xl shadow-xs hover:bg-muted/50 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              <a
+                href={item.url}
+                className="p-3 flex gap-3.5"
+                target="_blank"
+              >
+                <div className="size-11 rounded-full bg-muted text-foreground font-semibold grid place-content-center text-sm">
+                  {item.title.slice(0, 2)}
+                </div>
+                <div>
+                  <h4 className="font-semibold pb-2"> {item.title}</h4>
+                  <p className="text-muted-foreground capitalize"> {item.type}</p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </TabsContent>
+
+      <TabsContent value="notes">
+        {tabs.notes.items.length <= 0 ? (
+          <div className="flex flex-col justify-center items-center gap-4.5">
+            <div className="size-11 rounded-full bg-muted grid place-content-center">
+              <MessageSquareText />
+            </div>
+            <h3 className="text-xl font-semibold"> No notes yet </h3>
+            <p className="text-muted-foreground text-center">
+              Keep thoughts, questions, and key takeaways for this milestone in
+              one place.
+            </p>
+            <NodeAddNote inProgressTopic={activeTopicName} handleFunction={handleAddNote}>
+              <Button variant="primary" size="lg">
+                Add your first note
+              </Button>
+            </NodeAddNote>
+          </div>
+        ) : (
+          <div>
+            <header className="flex justify-between items-center w-full pb-4 ">
+              <div>
+                <h3 className="font-semibold text-xl"> Your notes </h3>
+                <p className="text-(--para-fg) text-[13px]">
+                  {" "}
+                  {tabs.notes.items.length} notes{" "}
+                </p>
+              </div>
+              <NodeAddNote inProgressTopic={activeTopicName} handleFunction={handleAddNote}>
+                <Button variant="primary" size="lg">
+                  <Plus />
+                  New note
+                </Button>
+              </NodeAddNote>
+            </header>
+
+            {tabs.notes.items.map((item) => (
+              <div
+                className="border bg-card rounded-xl px-4 pt-3 pb-1.5 mb-3 shadow-xs"
+                key={item.id}
+              >
+                <div className="w-full flex items-center justify-between">
+                  <h4 className="text-foreground text-base/7"> {item.title}</h4>
+                  <DropdownNote
+                    handleDeleteNote={handleDeleteNote}
+                    handleEditNote={handleEditNote}
+                    noteID={item.id}
+                    note={item}
+                    activeTopicName={activeTopicName}
+                  >
+                    <Button variant="ghost" size="icon" className="rounded-full">
+                      <Ellipsis className="text-(--para-fg)" />
+                    </Button>
+                  </DropdownNote>
+                </div>
+                <p className="pb-3 text-[13px] text-(--para-fg)">
+                  {" "}
+                  {item.content}
+                </p>
+                <p className="pb-3 text-[13px] text-(--para-fg)">
+                  {" "}
+                  {item.createdAt}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </TabsContent>
+    </Tabs>
+  );
 }
 
-export default function NodeOverview({ nodeData, setNodes, nodes, activeNodeID }: NodeOverviewProps) {
-	// Find the first el with the status in progress
-	const listTopics = nodeData.overview.topics;
-	// const listTopics = nodeData.tabs.overview.topics.listTopics;
-	const inProgressIdx = listTopics.findIndex((topic) => topic.status === "in progress");
-	// Choose active topic, by index 0 (first) by deafult.
-	const [activeTopic, setActiveTopic] = useState<number>(inProgressIdx);
-	// Change the state of the current activeTopic to "in progress | up coming"  to "done"
-	// const [completeTopic, setCompleteTopic] = useState<number>();
+function NodeOverviewStats({ status, estimatedTime }: NodeOverviewStatsProps) {
+  return (
+    <div className="pb-7 flex gap-2">
+      <div className={cn(statusNodeStyle({ status }), "text-sm px-3")}>
+        <div className="size-1.5 rounded-full bg-current" />
+        <span className="sr-only"> Status: </span>
+        {status}
+      </div>
 
-	const tabs = { overview: nodeData.overview, notes: nodeData.notes, resources: nodeData.resources };
+      <div
+        className={cn(statusNodeStyle({ status: "upcoming" }), "text-sm px-3")}
+      >
+        <Clock2 className="size-4" />
+        <span className="sr-only">Duration: </span>
+        {estimatedTime ?? "1 week"}
+      </div>
+    </div>
+  );
+}
 
-	function handleCompleteTopic() {
-		if (listTopics[activeTopic].status != "done") {
-			let newNodes = nodes.map((node) => {
-				if (node.id === activeNodeID) {
-					// node.data.tabs.overview.topics.listTopics[activeTopic].status = "done";
-				}
-				return node;
-			})
-			setNodes(newNodes)
-		}
-	}
+function NodeOverviewFooter({ handleCompleteTopic, activeTopicName, handleAddNote }: NodeOverviewFooterProps) {
+  return (
+    <div className="flex flex-col gap-3">
+      <Button variant="primary" size="lg" className="w-full">
+        <Play />
+        Continue Learning
+      </Button>
 
-	function handleActiveTopic(idx: number) {
-		if (listTopics[idx].status !== "done") {
-			setActiveTopic(idx);
-		}
-	}
+      <Button
+        variant="secondary"
+        size="lg"
+        className="w-full"
+        onClick={() => handleCompleteTopic()}
+      >
+        <CircleCheck />
+        Mark as complete
+      </Button>
 
-	return (
-		<div className='absolute top-0 right-0 bg-card p-6 rounded-2xl text-card-foreground shadow-lg [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3]'>
-			<NodeOverviewHeader
-				icon={nodeData.icon}
-				label={nodeData.label}
-				description={nodeData.description}
-			/>
-			<NodeOverviewStats
-				status={nodeData.status}
-				duration={nodeData.duration}
-			/>
-			<NodeOverviewBody
-				tabs={tabs}
-				activeTopic={activeTopic}
-				handleActiveTopic={handleActiveTopic}
-			/>
-			<NodeOverviewFooter
-				handleCompleteTopic={handleCompleteTopic}
-			/>
-		</div>
-	)
+
+      <NodeAddNote inProgressTopic={activeTopicName} handleFunction={handleAddNote}>
+        <Button variant="secondary" size="lg" className="w-full">
+          <MessageSquareText />
+          Add a note
+        </Button>
+      </NodeAddNote>
+
+    </div>
+  );
+}
+
+export default function NodeOverview({
+  nodeData,
+  setNodes,
+  nodes,
+  activeNodeID,
+}: NodeOverviewProps) {
+  const listTopics = nodeData.overview.topics;
+  const inProgressIdx = listTopics.findIndex(
+    (topic) => topic.status === "in progress",
+  );
+  const [activeTopic, setActiveTopic] = useState<number>(
+    inProgressIdx !== -1 ? inProgressIdx : 0,
+  );
+
+
+  const tabs: NodeOverviewTabs = {
+    overview: nodeData.overview,
+    resources: nodeData.resources,
+    notes: nodeData.notes,
+  };
+
+  const activeTopicName = tabs.overview.topics[activeTopic].name;
+
+  function handleCompleteTopic() {
+    if (listTopics[activeTopic] && listTopics[activeTopic].status !== "done") {
+      const updatedTopics = listTopics.map((topic, i) =>
+        i === activeTopic
+          ? { ...topic, status: "done" as Status, isCompleted: true }
+          : topic,
+      );
+      const allDone = updatedTopics.every((t) => t.status === "done");
+
+      if (setNodes && nodes && activeNodeID) {
+        const newNodes = nodes.map((node) => {
+          if (node.id === activeNodeID) {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                status: allDone ? ("done" as Status) : node.data.status,
+                isCompleted: allDone ? true : node.data.isCompleted,
+                overview: {
+                  ...node.data.overview,
+                  topics: updatedTopics,
+                },
+              },
+            };
+          }
+          return node;
+        });
+        setNodes(newNodes);
+      }
+    }
+  }
+
+  function handleActiveTopic(idx: number) {
+    if (listTopics[idx]?.status !== "done") {
+      setActiveTopic(idx);
+    }
+  }
+
+  async function handleAddNote(data: NoteSchemaType) {
+    if (!setNodes || !nodes || !activeNodeID) return;
+
+
+    const savedNote = await addNote(activeNodeID, data);
+
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        if (node.id === activeNodeID) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              notes: {
+                ...node.data.notes,
+                items: [savedNote, ...(node.data.notes?.items ?? [])],
+              },
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }
+
+  async function handleDeleteNote(id: string) {
+    if (!setNodes || !nodes || !activeNodeID) return;
+
+    await deleteNote(id);
+
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        if (node.id === activeNodeID) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              notes: {
+                ...node.data.notes,
+                items: node.data.notes.items.filter((note) => note.id !== id)
+              },
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }
+
+  async function handleEditNote(id: string, note: NoteSchemaType) {
+    if (!setNodes || !nodes || !activeNodeID) return;
+
+    const editedNote = await editNote(id, note);
+
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        if (node.id === activeNodeID) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              notes: {
+                ...node.data.notes,
+                items: node.data.notes.items.map((item) => item.id === id ? { ...item, ...editedNote } : item),
+              },
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }
+
+  return (
+    <div className="absolute top-0 right-0 bg-card p-6 rounded-2xl text-card-foreground shadow-lg [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
+      <NodeOverviewHeader
+        icon={nodeData.icon}
+        title={nodeData.title}
+        keyTopics={nodeData.keyTopics}
+      />
+      <NodeOverviewStats
+        status={nodeData.status}
+        estimatedTime={nodeData.estimatedTime}
+      />
+      <NodeOverviewBody
+        tabs={tabs}
+        activeTopic={activeTopic}
+        activeTopicName={activeTopicName}
+        handleActiveTopic={handleActiveTopic}
+        handleAddNote={handleAddNote}
+        handleDeleteNote={handleDeleteNote}
+        handleEditNote={handleEditNote}
+      />
+      <NodeOverviewFooter
+        handleCompleteTopic={handleCompleteTopic}
+        activeTopicName={activeTopicName}
+        handleAddNote={handleAddNote}
+      />
+    </div>
+  );
 }
