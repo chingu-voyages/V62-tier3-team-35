@@ -10,9 +10,9 @@ export function getStepIcon(icon: LucideIcon | string | undefined | null): Lucid
   if (!icon) return Icons.Code2;
   if (typeof icon !== "string") return icon;
 
-  let Component = Icons[icon as keyof typeof Icons];
-  if (typeof Component === "function") {
-    return Component as LucideIcon;
+  const direct = Icons[icon as keyof typeof Icons];
+  if (direct && (typeof direct === "function" || typeof direct === "object")) {
+    return direct as LucideIcon;
   }
 
   const pascalName = icon
@@ -20,9 +20,9 @@ export function getStepIcon(icon: LucideIcon | string | undefined | null): Lucid
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join("");
 
-  Component = Icons[pascalName as keyof typeof Icons];
-  if (typeof Component === "function") {
-    return Component as LucideIcon;
+  const byPascal = Icons[pascalName as keyof typeof Icons];
+  if (byPascal && (typeof byPascal === "function" || typeof byPascal === "object")) {
+    return byPascal as LucideIcon;
   }
 
   return Icons.Code2;
