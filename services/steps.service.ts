@@ -28,13 +28,15 @@ export async function createSteps(input: unknown) {
   // });
 
   const createdSteps = await prisma.$transaction(
-    steps.map((step) =>
+    steps.map((step, i) =>
       prisma.step.create({
         data: {
           learningPathId,
-          order: step.order,
+          order: i,
           title: step.title,
           description: step.description,
+          icon: step.icon,
+          keyTopics: step.keyTopics,
           estimatedTime: step.estimatedTime,
           isCompleted: step.isCompleted,
           completedAt: step.completedAt,
@@ -57,12 +59,10 @@ export async function createSteps(input: unknown) {
   return createdSteps;
 }
 
-export async function updateStep(id: string, input: unknown) {
-  if (!id) {
-    throw new AppError("Missing step id", 400);
-  }
-
-  const step = await prisma.step.findUnique({ where: { id } });
+export async function updateStep(id: string, userId: string, input: unknown) {
+  const step = await prisma.step.findUnique({
+    where: { id, learningPath: { userId } },
+  });
   if (!step) {
     throw new AppError("Step not found", 404);
   }

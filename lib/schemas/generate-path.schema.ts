@@ -13,11 +13,11 @@ const topicSchema = z.object({
 });
 
 const technologySchema = z.object({
-  technology: z.string(),
+  title: z.string(),
   keyTopics: z.string(),
+  icon: z.string(),
   description: z.string(),
-  estimatedHours: z.number(),
-  estimatedWeeks: z.number(),
+  estimatedTime: z.number().int().positive(),
   topics: z.array(topicSchema).min(1),
 });
 

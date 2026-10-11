@@ -1,7 +1,7 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFormContext } from "react-hook-form";
 
 import { firstStepPath } from "@/components/generate-path/step-config";
@@ -10,10 +10,46 @@ import {
   initialForm,
   type RoadmapFormValues,
 } from "@/lib/schemas/paths.schema";
+import { Roadmap } from "@/components/roadmap/roadmap";
+import type { RoadmapStepProps } from "@/components/roadmap/roadmap.types";
+import { getRoadmap, type PathResponse } from "@/lib/api/paths";
+import { Spinner } from "@/components/ui/spinner";
+import { Banner } from "@/components/common/banner";
 
 export function DoneScreen() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { reset } = useFormContext<RoadmapFormValues>();
+
+  const pathId = searchParams.get("pathId");
+  const [roadmap, setRoadmap] = useState<RoadmapStepProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  const hasError = !pathId || isError;
+
+  useEffect(() => {
+    if (!pathId) return;
+
+    const loadRoadmap = async () => {
+      try {
+        const result: PathResponse = await getRoadmap(pathId);
+
+        if (result.data.steps.length === 0) {
+          throw new Error("Roadmap is empty");
+        }
+
+        setRoadmap(result.data.steps);
+      } catch (error) {
+        console.error("Failed to load roadmap:", error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadRoadmap();
+  }, [pathId]);
 
   const startOver = () => {
     reset(initialForm);
@@ -22,22 +58,19 @@ export function DoneScreen() {
 
   return (
     <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
-      <span className="mb-6 grid size-16 place-items-center rounded-2xl bg-success-bg text-success">
-        <CheckCircle2 className="size-8" aria-hidden="true" />
-      </span>
-      <p className="mb-3 text-sm text-muted-foreground">Your answers are ready</p>
-      <h1 className="font-heading text-3xl leading-9 font-bold tracking-tight">
-        Your roadmap is ready
-      </h1>
-      <p className="mt-3 max-w-sm text-sm leading-5 text-muted-foreground">
-        Your plan is tailored to your goal, experience, skills, and pace.
-      </p>
-      <Button
-        variant="primary"
-        size="lg"
-        className="mt-8"
-        onClick={startOver}
-      >
+      <div className="mt-8 h-150 w-full flex items-center justify-center">
+        {isLoading && pathId && <Spinner />}
+        {hasError && (
+          <Banner
+            variant="destructive"
+            title="Unable to load your roadmap"
+            description="We couldn't load your roadmap. Please try again."
+          />
+        )}
+        {!isLoading && !hasError && <Roadmap roadmap={roadmap} />}
+      </div>
+
+      <Button variant="primary" size="lg" className="mt-8" onClick={startOver}>
         Create another roadmap
       </Button>
     </section>

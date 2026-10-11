@@ -1,4 +1,5 @@
 import { errorHandler } from "@/lib/errors/error-handler";
+import { getCurrentUserId } from "@/lib/auth";
 import * as pathsService from "@/services/paths.service";
 
 // Fetch a single learning path (with its steps ordered by `order`).
@@ -9,8 +10,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const userId = await getCurrentUserId();
     const { id } = await params;
-    const path = await pathsService.getPathById(id);
+    const path = await pathsService.getPathById(id, userId);
 
     return Response.json({ success: true, data: path });
   } catch (error) {
@@ -26,9 +28,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const userId = await getCurrentUserId();
     const { id } = await params;
     const body = await request.json();
-    const path = await pathsService.updatePath(id, body);
+    const path = await pathsService.updatePath(id, userId, body);
 
     return Response.json({ success: true, data: path });
   } catch (error) {
@@ -44,8 +47,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const userId = await getCurrentUserId();
     const { id } = await params;
-    const path = await pathsService.deletePath(id);
+    const path = await pathsService.deletePath(id, userId);
 
     return Response.json({ success: true, data: path });
   } catch (error) {
