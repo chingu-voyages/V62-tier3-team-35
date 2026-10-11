@@ -11,7 +11,7 @@ import {
   type RoadmapFormValues,
 } from "@/lib/schemas/paths.schema";
 import { Roadmap } from "@/components/roadmap/roadmap";
-import type { RoadmapStepProps } from "@/components/roadmap/roadmap.types";
+import type { RoadmapStepProps } from "@/lib/types/roadmap";
 import { getRoadmap, type PathResponse } from "@/lib/api/paths";
 import { Spinner } from "@/components/ui/spinner";
 import { Banner } from "@/components/common/banner";
@@ -57,22 +57,26 @@ export function DoneScreen() {
   };
 
   return (
-    <section className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 text-center">
-      <div className="mt-8 h-150 w-full flex items-center justify-center">
+    <div className="flex flex-1 flex-col w-full h-full relative">
+      <div className="flex-1 w-full min-h-[500px] h-full relative flex items-center justify-center">
         {isLoading && pathId && <Spinner />}
         {hasError && (
-          <Banner
-            variant="destructive"
-            title="Unable to load your roadmap"
-            description="We couldn't load your roadmap. Please try again."
-          />
+          <div className="mx-auto max-w-xl px-6">
+            <Banner
+              variant="destructive"
+              title="Unable to load your roadmap"
+              description="We couldn't load your roadmap. Please try again."
+            />
+          </div>
         )}
         {!isLoading && !hasError && <Roadmap roadmap={roadmap} />}
       </div>
 
-      <Button variant="primary" size="lg" className="mt-8" onClick={startOver}>
-        Create another roadmap
-      </Button>
-    </section>
+      <div className="p-4 border-t bg-background/80 backdrop-blur-sm flex justify-center shrink-0">
+        <Button variant="primary" size="lg" onClick={startOver}>
+          Create another roadmap
+        </Button>
+      </div>
+    </div>
   );
 }
