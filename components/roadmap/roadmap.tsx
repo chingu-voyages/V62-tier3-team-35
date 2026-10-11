@@ -1,28 +1,76 @@
 "use client";
 
-import { ReactFlowProvider, type Edge, type Node } from "@xyflow/react";
+import { ReactFlowProvider, type Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { RoadmapProps, RoadmapStepProps } from "./roadmap.types";
+import type { ResourceItem, RoadmapNodeType, RoadmapProps, RoadmapStepProps, Status } from "@/lib/types/roadmap"
 import { RoadmapView } from "./roadmap-view";
-import { initialNodes as mockNodes, initialEdges as mockEdges } from "@/lib/data/roadmap";
 
-// Convert roadmap steps into React Flow nodes.
-function createNodes(roadmap: RoadmapStepProps[]): Node[] {
-  return roadmap.map((item, index) => ({
-    id: item.id || String(index + 1),
-    type: "technology",
-    position: {
-      x: 0,
-      y: 0,
-    },
-    data: {
-      ...item,
-      label: item.title,
-      description: item.description || item.keyTopics,
-      duration: `${item.estimatedTime} weeks`,
-      status: item.status ?? (item.isCompleted ? "done" : index === 0 ? "in progress" : "upcoming"),
-    },
-  }));
+export function createNodesFromDb(steps: RoadmapStepProps[]): RoadmapNodeType[] {
+  const firstIncompleteStepIdx = steps.findIndex((s) => !s.isCompleted);
+  const activeStepIdx = firstIncompleteStepIdx !== -1 ? firstIncompleteStepIdx : 0;
+
+  return steps.map((step, stepIndex) => {
+    let stepStatus: Status = "upcoming";
+    if (step.isCompleted || step.status === "done") {
+      stepStatus = "done";
+    } else if (stepIndex === activeStepIdx) {
+      stepStatus = "in progress";
+    }
+
+    const firstIncompleteTopicIdx = step.topics.findIndex((t) => !t.isCompleted);
+    const activeTopicIdx = firstIncompleteTopicIdx !== -1 ? firstIncompleteTopicIdx : 0;
+
+    const topics = step.topics.map((t, topicIndex) => {
+      let topicStatus: Status = "upcoming";
+      if (stepStatus === "done" || t.isCompleted || t.status === "done") {
+        topicStatus = "done";
+      } else if (stepStatus === "in progress" && topicIndex === activeTopicIdx) {
+        topicStatus = "in progress";
+      }
+
+      return {
+        id: t.id,
+        name: t.name,
+        status: topicStatus,
+        isCompleted: topicStatus === "done",
+      };
+    });
+
+    const resources = step.topics.flatMap((t) =>
+      Array.isArray(t.resources) ? (t.resources as ResourceItem[]) : []
+    );
+
+    return {
+      id: step.id,
+      type: "roadmapNode" as const,
+      position: { x: 0, y: 0 },
+      data: {
+        id: step.id,
+        title: step.title,
+        description: step.description,
+        keyTopics: step.keyTopics,
+        estimatedTime: `${step.estimatedTime} weeks`,
+        status: stepStatus,
+        icon: step.icon || "Code2",
+        isCompleted: stepStatus === "done",
+        overview: {
+          title: "Topics",
+          description: step.description,
+          topics,
+        },
+        resources: {
+          title: "Resources",
+          description: "Learning resources for this step",
+          items: resources,
+        },
+        notes: {
+          title: "Notes",
+          description: "Personal notes for this step",
+          items: step.notes ?? [],
+        },
+      },
+    };
+  });
 }
 
 // Create connections between roadmap nodes.
@@ -40,15 +88,17 @@ function createEdges(roadmap: RoadmapStepProps[]): Edge[] {
       },
       markerEnd: {
         type: "arrow" as const,
+        color: "var(--muted-foreground)",
       },
     };
   });
 }
 
 export function Roadmap({ roadmap }: RoadmapProps) {
-  const effectiveRoadmap = roadmap && roadmap.length > 0 ? roadmap : undefined;
-  const nodes = effectiveRoadmap ? createNodes(effectiveRoadmap) : (mockNodes as unknown as Node[]);
-  const edges = effectiveRoadmap ? createEdges(effectiveRoadmap) : mockEdges;
+  if (!roadmap || roadmap.length === 0) return null;
+
+  const nodes = createNodesFromDb(roadmap);
+  const edges = createEdges(roadmap);
 
   return (
     <div className="h-full w-full relative">
