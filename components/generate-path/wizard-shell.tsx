@@ -23,10 +23,10 @@ function WizardShellInner({ children }: { children: ReactNode }) {
   const { getValues } = useFormContext<RoadmapFormValues>();
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
 
-  const handleSaveExit = () => {
-    saveDraft(getValues());
-    router.push("/");
-  };
+  // const handleSaveExit = () => {
+  //   saveDraft(getValues());
+  //   router.push("/");
+  // };
 
   const handleDiscard = () => {
     clearDraft();
@@ -37,7 +37,7 @@ function WizardShellInner({ children }: { children: ReactNode }) {
     <>
       <RoadmapFrame
         onClose={() => setConfirmingDiscard(true)}
-        onSaveExit={handleSaveExit}
+        // onSaveExit={handleSaveExit}
       >
         {children}
       </RoadmapFrame>
