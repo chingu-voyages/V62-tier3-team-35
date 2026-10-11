@@ -95,7 +95,7 @@ model Step {
   order          Int
   title          String         @db.VarChar(200)
   description    String
-  keyTopics      String?        @map("key_topics")
+  keyTopics      String         @map("key_topics")
   icon           String?
   estimatedTime  Int            @map("estimated_time")
   status         ProgressStatus @default(upcoming)
