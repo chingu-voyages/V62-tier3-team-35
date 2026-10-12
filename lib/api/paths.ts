@@ -32,3 +32,13 @@ export async function getRoadmap(pathId: string) {
 
   return response.json();
 }
+
+export async function getRoadmaps() {
+  const response = await fetch(`/api/paths`);
+
+  if (!response.ok) {
+    throw new Error("Failed to load roadmaps");
+  }
+
+  return response.json();
+}

@@ -2,7 +2,6 @@
 
 import {
   ArrowRight,
-  MoreHorizontal,
   PenLine,
   Trash2,
   Copy,
@@ -12,7 +11,6 @@ import {
   Clock3,
   Pencil,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ActionMenu } from "./action-menu";
@@ -32,7 +30,7 @@ export type Roadmap = {
 export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
   return (
     <Card className="group relative overflow-visible rounded-[18px] border-border bg-white shadow-[0_2px_10px_rgba(17,18,17,0.025)] p-0">
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex! flex-col! items-start! h-full">
         <div className="flex items-start gap-4">
           <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-background text-foreground">
             <Pencil className="h-5 w-5" strokeWidth={1.8} />
@@ -114,7 +112,8 @@ export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
         <div className="mt-6 flex items-center gap-1.5 overflow-hidden">
           <TagList tags={roadmap.skills} />
         </div>
-        <Button className="cursor-pointer h-11.5 w-full justify-between rounded-full bg-foreground px-4 text-sm font-semibold text-white hover:bg-secondary-foreground transition hover:shadow-[0_12px_28px_rgba(17,18,17,0.08)]">
+
+        <Button className="cursor-pointer h-11.5 w-full justify-between rounded-full bg-foreground px-4 text-sm font-semibold text-white hover:bg-secondary-foreground transition hover:shadow-[0_12px_28px_rgba(17,18,17,0.08)] mt-auto">
           Continue learning <ArrowRight className="h-4 w-4" />
         </Button>
       </CardContent>
