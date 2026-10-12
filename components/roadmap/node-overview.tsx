@@ -515,7 +515,7 @@ export default function NodeOverview({
   }
 
   return (
-    <div className="fixed sm:absolute inset-x-0 bottom-0 sm:bottom-auto sm:top-0 sm:right-0 sm:left-auto z-40 max-h-[85svh] sm:max-h-[calc(100svh-var(--navbar-height))] w-full sm:w-[420px] bg-card p-4 sm:p-6 rounded-t-2xl sm:rounded-2xl text-card-foreground shadow-2xl sm:shadow-lg border sm:border border-border flex flex-col overflow-y-auto [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
+    <div className="fixed sm:absolute inset-x-0 bottom-0 sm:bottom-auto sm:top-4 sm:right-6 sm:inset-x-auto z-40 max-h-[85svh] sm:max-h-[calc(100svh-var(--navbar-height))] w-full sm:w-[420px] bg-card p-4 sm:p-6 rounded-t-2xl sm:rounded-2xl text-card-foreground shadow-2xl sm:shadow-lg border sm:border border-border flex flex-col overflow-y-auto [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
       <NodeOverviewHeader
         icon={nodeData.icon}
         title={nodeData.title}
