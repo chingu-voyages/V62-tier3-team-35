@@ -1,14 +1,5 @@
 "use client";
 
-/*
- * NOTE:
- * This Navbar is currently implemented for demonstration and reference purposes to showcase:
- * - Reactive client-side session handling via `authClient.useSession()`
- * - UI switching between guest (Login / Get Started) and authenticated state (User Avatar & Menu)
- * - Safe sign-out flow with loading feedback (Spinner) and error toast handling via `authClient.signOut()`
- * - Navigation links, responsive full-screen mobile menu drawer, and dropdown actions.
- */
-
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,12 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "../logo";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
-import {
-  CompassIcon,
-  PlusCircleIcon,
-  SettingsIcon,
-  LogOutIcon,
-} from "lucide-react";
+import { CompassIcon, PlusCircleIcon, LogOutIcon } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -34,25 +20,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
-
-const navigationLink = [
-  {
-    name: "Home",
-    href: "/",
-  },
-  {
-    name: "About",
-    href: "/about",
-  },
-  {
-    name: "Features",
-    href: "/features",
-  },
-  {
-    name: "Pricing",
-    href: "/pricing",
-  },
-];
 interface UserMenuProps {
   user: {
     name?: string | null;
@@ -115,17 +82,6 @@ export function UserMenu({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href="/settings" className="cursor-pointer">
-              <SettingsIcon className="size-4 mr-2" />
-              Settings
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-
-        <DropdownMenuSeparator />
-
         <DropdownMenuItem
           variant="destructive"
           onClick={() => signOut()}
@@ -179,7 +135,9 @@ function HamburgerOpen({ handleHamburger }: HamburgerOpenProps) {
         </button>
       </header>
 
-      <div className="mt-8">
+      {/* //TODO: Uncomment it once the menu design is ready. */}
+
+      {/* <div className="mt-8">
         <ul className="flex flex-col gap-6">
           {navigationLink.map((el, idx) => (
             <li key={idx}>
@@ -193,7 +151,7 @@ function HamburgerOpen({ handleHamburger }: HamburgerOpenProps) {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 }
