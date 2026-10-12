@@ -9,16 +9,22 @@ import { firstStepPath } from "@/components/generate-path/step-config";
 import { AppSidebar } from "@/components/common/sidebar";
 import { Button } from "@/components/ui/button";
 import { RoadmapCard, type Roadmap } from "@/components/roadmaps/roadmap-card";
-import { type LearningPath } from "@/components/roadmaps/roadmaps-data";
+import type { LearningPath, Step } from "@/lib/generated/prisma/browser";
 import { cn } from "cn";
 import { FilterTabs, PathFilter } from "./filter-tabs";
 import { SortMenu, SortValue } from "./sort-menu";
 import { getRoadmaps } from "@/lib/api/paths";
 import { Spinner } from "@/components/ui/spinner";
 import { Banner } from "@/components/common/banner";
-function formatDuration(path: LearningPath): string {
+
+type LearningPathWithSteps = LearningPath & { steps: Step[] };
+
+function formatDuration(path: LearningPathWithSteps): string {
   const totalHours =
-    path.steps.reduce((sum, step) => sum + step.estimatedTime, 0) / 60;
+    path.steps.reduce(
+      (sum: number, step: Step) => sum + step.estimatedTime,
+      0,
+    ) / 60;
   const weeks = Math.max(
     1,
     Math.round(totalHours / Math.max(path.hoursPerWeek, 1)),
@@ -29,9 +35,9 @@ function formatDuration(path: LearningPath): string {
   return `~${Math.max(1, Math.round(totalHours))}h`;
 }
 
-function learningPathToRoadmap(path: LearningPath): Roadmap {
+function learningPathToRoadmap(path: LearningPathWithSteps): Roadmap {
   const modules = path.steps.length;
-  const completed = path.steps.filter((step) => step.isCompleted).length;
+  const completed = path.steps.filter((step: Step) => step.isCompleted).length;
 
   return {
     title: path.title ?? path.careerGoal,
@@ -39,7 +45,7 @@ function learningPathToRoadmap(path: LearningPath): Roadmap {
       path.description ??
       path.steps
         .slice(0, 3)
-        .map((step) => step.title)
+        .map((step: Step) => step.title)
         .join(" · "),
     modules,
     duration: formatDuration(path),
@@ -51,7 +57,7 @@ function learningPathToRoadmap(path: LearningPath): Roadmap {
         ? "completed"
         : path.status === "draft"
           ? "archived"
-          : "progress", // keep "archived" mapping for UI card styling if needed
+          : "progress",
   };
 }
 
@@ -60,7 +66,7 @@ export function RoadmapsDashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [filter, setFilter] = useState<PathFilter>("all");
   const [sort, onSortChange] = useState<SortValue>("recent"); // kept for compatibility with SortMenu but not used for filtering
-  const [paths, setPaths] = useState<LearningPath[]>([]);
+  const [paths, setPaths] = useState<LearningPathWithSteps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
