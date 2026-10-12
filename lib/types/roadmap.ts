@@ -2,13 +2,13 @@ import type { Node, NodeProps } from "@xyflow/react";
 import type { LucideIcon } from "lucide-react";
 import { NoteSchemaType } from "../schemas/roadmap-notes";
 
-export type Status = "done" | "in progress" | "upcoming";
+export type Status = "done" | "in_progress" | "upcoming";
 
 export interface Topic {
   id: string;
   name: string;
   status: Status;
-  isCompleted: boolean;
+  isDone: boolean;
 }
 
 export interface ResourceItem {
@@ -52,7 +52,7 @@ export interface NodeData {
   status: Status;
   icon: LucideIcon | string;
   estimatedTime: string;
-  isCompleted: boolean;
+  isDone: boolean;
   overview: NodeOverviewTab;
   resources: NodeResourcesTab;
   notes: NodeNotesTab;
@@ -61,8 +61,7 @@ export interface NodeData {
 export interface DbTopic {
   id: string;
   name: string;
-  status: string;
-  isCompleted: boolean;
+  status: Status;
   resources?: unknown;
 }
 
@@ -73,8 +72,7 @@ export interface DbStep {
   keyTopics: string;
   icon?: string | null;
   estimatedTime: number | string;
-  status: string;
-  isCompleted: boolean;
+  status: Status;
   topics: DbTopic[];
   notes?: NoteItem[];
 }
@@ -136,7 +134,7 @@ export interface NodeAddNoteProps {
 export interface NodeOverviewFooterProps {
   handleCompleteTopic: () => void;
   handleAddNote: (data: NoteSchemaType) => void;
-  isCompleted?: boolean;
+  isDone: boolean;
 }
 
 export interface NodeOverviewHeaderProps {

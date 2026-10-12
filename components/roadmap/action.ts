@@ -96,20 +96,20 @@ export async function completeTopic(topicId: string, stepId: string) {
   await prisma.topic.update({
     where: { id: topicId },
     data: {
-      isCompleted: true,
+      status: "done",
       completedAt: new Date(),
     },
   });
 
   const allTopicsDone = step.topics.every(
-    (t) => t.id === topicId || t.isCompleted,
+    (t) => t.id === topicId || t.status === "done",
   );
 
   if (allTopicsDone) {
     await prisma.step.update({
       where: { id: stepId },
       data: {
-        isCompleted: true,
+        status: "done",
         completedAt: new Date(),
       },
     });

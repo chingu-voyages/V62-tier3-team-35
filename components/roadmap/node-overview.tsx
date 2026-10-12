@@ -18,7 +18,6 @@ import {
   Clock2,
   Ellipsis,
   MessageSquareText,
-  Play,
   Check,
   Plus,
   X,
@@ -294,7 +293,7 @@ function NodeOverviewStats({ status, estimatedTime }: NodeOverviewStatsProps) {
       <div className={cn(statusNodeStyle({ status }), "text-sm px-3")}>
         <div className="size-1.5 rounded-full bg-current" />
         <span className="sr-only"> Status: </span>
-        {status}
+        {status.replace("_", " ")}
       </div>
 
       <div
@@ -311,24 +310,19 @@ function NodeOverviewStats({ status, estimatedTime }: NodeOverviewStatsProps) {
 function NodeOverviewFooter({
   handleCompleteTopic,
   handleAddNote,
-  isCompleted = false,
+  isDone,
 }: NodeOverviewFooterProps) {
   return (
     <div className="flex flex-col gap-3">
-      <Button variant="primary" size="lg" className="w-full">
-        <Play />
-        Continue Learning
-      </Button>
-
       <Button
-        variant="secondary"
+        variant="primary"
         size="lg"
         className="w-full"
         onClick={() => handleCompleteTopic()}
-        disabled={isCompleted}
+        disabled={isDone}
       >
         <CircleCheck />
-        {isCompleted ? "Topic completed" : "Mark as complete"}
+        {isDone ? "Topic completed" : "Mark as complete"}
       </Button>
 
       <NodeAddNote handleFunction={handleAddNote}>
@@ -367,9 +361,9 @@ export default function NodeOverview({
 
       const updatedTopics = listTopics.map((topic, i) => {
         if (i === activeTopic) {
-          return { ...topic, status: "done" as Status, isCompleted: true };
+          return { ...topic, status: "done" as Status, isDone: true };
         } else if (i === nextTopicIdx) {
-          return { ...topic, status: "in progress" as Status };
+          return { ...topic, status: "in_progress" as Status };
         }
         return topic;
       });
@@ -385,7 +379,7 @@ export default function NodeOverview({
         const nextIndex =
           allDone && currentIndex !== -1
             ? nodes.findIndex(
-                (n, idx) => idx > currentIndex && !n.data.isCompleted,
+                (n, idx) => idx > currentIndex && n.data.status !== "done",
               )
             : -1;
 
@@ -397,7 +391,7 @@ export default function NodeOverview({
               data: {
                 ...node.data,
                 status: allDone ? ("done" as Status) : node.data.status,
-                isCompleted: allDone ? true : node.data.isCompleted,
+                isDone: allDone ? true : node.data.isDone,
                 overview: {
                   ...node.data.overview,
                   topics: updatedTopics,
@@ -414,7 +408,7 @@ export default function NodeOverview({
                 ...node.data,
                 status:
                   node.data.status === "upcoming"
-                    ? ("in progress" as Status)
+                    ? ("in_progress" as Status)
                     : node.data.status,
               },
             };
@@ -429,7 +423,7 @@ export default function NodeOverview({
           setSelectedNodeId(nextNode.id);
           const nextTopics = nextNode.data.overview.topics;
           const nextInProg = nextTopics.findIndex(
-            (t) => t.status === "in progress",
+            (t) => t.status === "in_progress",
           );
           const nextUpcom = nextTopics.findIndex(
             (t) => t.status === "upcoming",
@@ -563,7 +557,7 @@ export default function NodeOverview({
       <NodeOverviewFooter
         handleCompleteTopic={handleCompleteTopic}
         handleAddNote={handleAddNote}
-        isCompleted={listTopics[activeTopic]?.status === "done"}
+        isDone={listTopics[activeTopic]?.status === "done"}
       />
     </div>
   );

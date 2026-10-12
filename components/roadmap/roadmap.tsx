@@ -6,33 +6,33 @@ import type { ResourceItem, RoadmapNodeType, RoadmapProps, RoadmapStepProps, Sta
 import { RoadmapView } from "./roadmap-view";
 
 export function createNodesFromDb(steps: RoadmapStepProps[]): RoadmapNodeType[] {
-  const firstIncompleteStepIdx = steps.findIndex((s) => !s.isCompleted);
+  const firstIncompleteStepIdx = steps.findIndex((s) => s.status !== "done");
   const activeStepIdx = firstIncompleteStepIdx !== -1 ? firstIncompleteStepIdx : 0;
 
   return steps.map((step, stepIndex) => {
     let stepStatus: Status = "upcoming";
-    if (step.isCompleted || step.status === "done") {
+    if (step.status === "done") {
       stepStatus = "done";
     } else if (stepIndex === activeStepIdx) {
-      stepStatus = "in progress";
+      stepStatus = "in_progress";
     }
 
-    const firstIncompleteTopicIdx = step.topics.findIndex((t) => !t.isCompleted);
+    const firstIncompleteTopicIdx = step.topics.findIndex((t) => t.status !== "done");
     const activeTopicIdx = firstIncompleteTopicIdx !== -1 ? firstIncompleteTopicIdx : 0;
 
     const topics = step.topics.map((t, topicIndex) => {
       let topicStatus: Status = "upcoming";
-      if (stepStatus === "done" || t.isCompleted || t.status === "done") {
+      if (stepStatus === "done" || t.status === "done") {
         topicStatus = "done";
-      } else if (stepStatus === "in progress" && topicIndex === activeTopicIdx) {
-        topicStatus = "in progress";
+      } else if (stepStatus === "in_progress" && topicIndex === activeTopicIdx) {
+        topicStatus = "in_progress";
       }
 
       return {
         id: t.id,
         name: t.name,
         status: topicStatus,
-        isCompleted: topicStatus === "done",
+        isDone: topicStatus === "done",
       };
     });
 
@@ -52,7 +52,7 @@ export function createNodesFromDb(steps: RoadmapStepProps[]): RoadmapNodeType[] 
         estimatedTime: `${step.estimatedTime} weeks`,
         status: stepStatus,
         icon: step.icon || "Code2",
-        isCompleted: stepStatus === "done",
+        isDone: stepStatus === "done",
         overview: {
           title: "Topics",
           description: step.description,

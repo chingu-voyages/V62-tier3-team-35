@@ -13,7 +13,7 @@ export const statusNodeStyle = cva(
   {
     variants: {
       status: {
-        "in progress": "bg-(--progress-bg) text-(--progress-color)",
+        in_progress: "bg-(--progress-bg) text-(--progress-color)",
         upcoming: "bg-(--upcoming-bg) text-muted-foreground",
         done: "bg-(--done-color) text-white",
       },
@@ -34,7 +34,7 @@ function StatusNode({ status }: StatusNodeProps) {
     <div className={statusNodeStyle({ status })}>
       <div className="size-1.5 rounded-full bg-current" />
       <span className="sr-only"> Status: </span>
-      {status}
+      {status.replace("_", " ")}
     </div>
   );
 }

@@ -87,7 +87,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
         setSelectedNodeId(selectedNode.id);
         const listTopics = selectedNode.data.overview.topics;
         const inProgressIdx = listTopics.findIndex(
-          (topic) => topic.status === "in progress",
+          (topic) => topic.status === "in_progress",
         );
         const upcomingIdx = listTopics.findIndex(
           (topic) => topic.status === "upcoming",
