@@ -104,15 +104,17 @@ export interface NodeOverviewProps {
   setNodes?: (
     nodes: RoadmapNodeType[] | ((prev: RoadmapNodeType[]) => RoadmapNodeType[]),
   ) => void;
-  nodes?: RoadmapNodeType[];
+  nodes: RoadmapNodeType[];
   activeNodeID?: string | null;
+  activeTopic: number;
+  setActiveTopic: (idx: number) => void;
+  setSelectedNodeId?: (id: string | null) => void;
   [key: string]: unknown;
 }
 
 export interface NodeOverviewBodyProps {
   tabs: NodeOverviewTabs;
   activeTopic: number;
-  activeTopicName: string;
   handleActiveTopic: (idx: number) => void;
   handleAddNote: (data: NoteSchemaType) => void;
   handleDeleteNote: (id: string) => void;
@@ -124,7 +126,6 @@ export type NoteFormHandler =
   | ((id: string, data: NoteSchemaType) => Promise<void> | void);
 
 export interface NodeAddNoteProps {
-  inProgressTopic?: string;
   handleFunction: NoteFormHandler;
   isEditing?: boolean;
   note?: NoteItem;
@@ -134,8 +135,8 @@ export interface NodeAddNoteProps {
 
 export interface NodeOverviewFooterProps {
   handleCompleteTopic: () => void;
-  activeTopicName: string;
   handleAddNote: (data: NoteSchemaType) => void;
+  isCompleted?: boolean;
 }
 
 export interface NodeOverviewHeaderProps {

@@ -13,7 +13,6 @@ import type {
   Status,
   NoteItem,
 } from "@/lib/types/roadmap";
-import { useState } from "react";
 import {
   CircleCheck,
   Clock2,
@@ -24,11 +23,11 @@ import {
   Plus,
 } from "lucide-react";
 import { StepIcon } from "@/lib/utils/icons";
-import NodeAddNote from "@/components/roadmap/node-form-note"
-import { addNote, deleteNote, editNote } from "./action";
+import NodeAddNote from "@/components/roadmap/node-form-note";
+import { addNote, completeTopic, deleteNote, editNote } from "./action";
 import { NoteSchemaType } from "@/lib/schemas/roadmap-notes";
 
-import { PencilIcon, TrashIcon } from "lucide-react"
+import { PencilIcon, TrashIcon } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -37,14 +36,13 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface DropdownNoteProps {
   handleEditNote: (id: string, note: NoteSchemaType) => Promise<void> | void;
   handleDeleteNote: (id: string) => Promise<void> | void;
   noteID: string;
   note: NoteItem;
-  activeTopicName: string;
   children: React.ReactNode;
 }
 
@@ -53,21 +51,17 @@ export function DropdownNote({
   handleDeleteNote,
   noteID,
   note,
-  activeTopicName,
   children,
 }: DropdownNoteProps) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        {children}
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          <NodeAddNote 
-            inProgressTopic={activeTopicName} 
-            handleFunction={handleEditNote} 
-            isEditing={true} 
-            note={note} 
+          <NodeAddNote
+            handleFunction={handleEditNote}
+            isEditing={true}
+            note={note}
             noteID={noteID}
           >
             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
@@ -88,9 +82,8 @@ export function DropdownNote({
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
-
 
 function NodeOverviewHeader({
   icon,
@@ -98,13 +91,13 @@ function NodeOverviewHeader({
   keyTopics,
 }: NodeOverviewHeaderProps) {
   return (
-    <header className="flex gap-4 pb-3 max-w-100">
+    <header className="flex gap-4 pb-3 w-full">
       <div className="grid place-content-center size-14 bg-foreground rounded-full text-background shrink-0">
         <StepIcon icon={icon} />
       </div>
 
-      <div>
-        <h3 className="text-2xl font-semibold pb-0.5"> {title} </h3>
+      <div className="min-w-0 flex-1">
+        <h3 className="text-xl sm:text-2xl font-semibold pb-0.5"> {title} </h3>
         <p className="text-(--accent-text) text-sm"> {keyTopics} </p>
       </div>
     </header>
@@ -114,16 +107,15 @@ function NodeOverviewHeader({
 function NodeOverviewBody({
   tabs,
   activeTopic,
-  activeTopicName,
   handleActiveTopic,
   handleAddNote,
   handleDeleteNote,
-  handleEditNote
+  handleEditNote,
 }: NodeOverviewBodyProps) {
   const tabsOverview = Object.keys(tabs);
   return (
-    <Tabs defaultValue="overview" className="w-100 gap-6 pb-12">
-      <TabsList variant="line" className="border-b w-full max-w-100">
+    <Tabs defaultValue="overview" className="w-full gap-6 pb-8 sm:pb-12">
+      <TabsList variant="line" className="border-b w-full">
         {tabsOverview.map((tab) => (
           <TabsTrigger
             key={tab}
@@ -137,8 +129,7 @@ function NodeOverviewBody({
 
       <TabsContent value="overview">
         <p className="text-muted-foreground pb-7">
-          {" "}
-          {tabs.overview.description}{" "}
+          {tabs.overview.description}
         </p>
         <div className="flex justify-between w-full items-center pb-5">
           <h3 className="font-semibold">
@@ -192,13 +183,17 @@ function NodeOverviewBody({
                 href={item.url}
                 className="p-3 flex gap-3.5"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 <div className="size-11 rounded-full bg-muted text-foreground font-semibold grid place-content-center text-sm">
                   {item.title.slice(0, 2)}
                 </div>
                 <div>
                   <h4 className="font-semibold pb-2"> {item.title}</h4>
-                  <p className="text-muted-foreground capitalize"> {item.type}</p>
+                  <p className="text-muted-foreground capitalize">
+                    {" "}
+                    {item.type}
+                  </p>
                 </div>
               </a>
             </li>
@@ -217,7 +212,7 @@ function NodeOverviewBody({
               Keep thoughts, questions, and key takeaways for this milestone in
               one place.
             </p>
-            <NodeAddNote inProgressTopic={activeTopicName} handleFunction={handleAddNote}>
+            <NodeAddNote handleFunction={handleAddNote}>
               <Button variant="primary" size="lg">
                 Add your first note
               </Button>
@@ -233,7 +228,7 @@ function NodeOverviewBody({
                   {tabs.notes.items.length} notes{" "}
                 </p>
               </div>
-              <NodeAddNote inProgressTopic={activeTopicName} handleFunction={handleAddNote}>
+              <NodeAddNote handleFunction={handleAddNote}>
                 <Button variant="primary" size="lg">
                   <Plus />
                   New note
@@ -253,9 +248,12 @@ function NodeOverviewBody({
                     handleEditNote={handleEditNote}
                     noteID={item.id}
                     note={item}
-                    activeTopicName={activeTopicName}
                   >
-                    <Button variant="ghost" size="icon" className="rounded-full">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                    >
                       <Ellipsis className="text-(--para-fg)" />
                     </Button>
                   </DropdownNote>
@@ -297,7 +295,11 @@ function NodeOverviewStats({ status, estimatedTime }: NodeOverviewStatsProps) {
   );
 }
 
-function NodeOverviewFooter({ handleCompleteTopic, activeTopicName, handleAddNote }: NodeOverviewFooterProps) {
+function NodeOverviewFooter({
+  handleCompleteTopic,
+  handleAddNote,
+  isCompleted = false,
+}: NodeOverviewFooterProps) {
   return (
     <div className="flex flex-col gap-3">
       <Button variant="primary" size="lg" className="w-full">
@@ -310,19 +312,18 @@ function NodeOverviewFooter({ handleCompleteTopic, activeTopicName, handleAddNot
         size="lg"
         className="w-full"
         onClick={() => handleCompleteTopic()}
+        disabled={isCompleted}
       >
         <CircleCheck />
-        Mark as complete
+        {isCompleted ? "Topic completed" : "Mark as complete"}
       </Button>
 
-
-      <NodeAddNote inProgressTopic={activeTopicName} handleFunction={handleAddNote}>
+      <NodeAddNote handleFunction={handleAddNote}>
         <Button variant="secondary" size="lg" className="w-full">
           <MessageSquareText />
           Add a note
         </Button>
       </NodeAddNote>
-
     </div>
   );
 }
@@ -332,15 +333,11 @@ export default function NodeOverview({
   setNodes,
   nodes,
   activeNodeID,
+  activeTopic,
+  setActiveTopic,
+  setSelectedNodeId,
 }: NodeOverviewProps) {
   const listTopics = nodeData.overview.topics;
-  const inProgressIdx = listTopics.findIndex(
-    (topic) => topic.status === "in progress",
-  );
-  const [activeTopic, setActiveTopic] = useState<number>(
-    inProgressIdx !== -1 ? inProgressIdx : 0,
-  );
-
 
   const tabs: NodeOverviewTabs = {
     overview: nodeData.overview,
@@ -348,22 +345,42 @@ export default function NodeOverview({
     notes: nodeData.notes,
   };
 
-  const activeTopicName = tabs.overview.topics[activeTopic].name;
-
   function handleCompleteTopic() {
-    if (listTopics[activeTopic] && listTopics[activeTopic].status !== "done") {
-      const updatedTopics = listTopics.map((topic, i) =>
-        i === activeTopic
-          ? { ...topic, status: "done" as Status, isCompleted: true }
-          : topic,
+    const topicToComplete = listTopics[activeTopic];
+    if (topicToComplete && topicToComplete.status !== "done") {
+      const nextTopicIdx = listTopics.findIndex(
+        (t, i) => i > activeTopic && t.status !== "done",
       );
+
+      const updatedTopics = listTopics.map((topic, i) => {
+        if (i === activeTopic) {
+          return { ...topic, status: "done" as Status, isCompleted: true };
+        } else if (i === nextTopicIdx) {
+          return { ...topic, status: "in progress" as Status };
+        }
+        return topic;
+      });
+
+      if (nextTopicIdx !== -1) {
+        setActiveTopic(nextTopicIdx);
+      }
+
       const allDone = updatedTopics.every((t) => t.status === "done");
 
       if (setNodes && nodes && activeNodeID) {
-        const newNodes = nodes.map((node) => {
+        const currentIndex = nodes.findIndex((n) => n.id === activeNodeID);
+        const nextIndex =
+          allDone && currentIndex !== -1
+            ? nodes.findIndex(
+                (n, idx) => idx > currentIndex && !n.data.isCompleted,
+              )
+            : -1;
+
+        const newNodes = nodes.map((node, idx) => {
           if (node.id === activeNodeID) {
             return {
               ...node,
+              selected: allDone ? false : node.selected,
               data: {
                 ...node.data,
                 status: allDone ? ("done" as Status) : node.data.status,
@@ -375,9 +392,44 @@ export default function NodeOverview({
               },
             };
           }
+
+          if (idx === nextIndex) {
+            return {
+              ...node,
+              selected: true,
+              data: {
+                ...node.data,
+                status:
+                  node.data.status === "upcoming"
+                    ? ("in progress" as Status)
+                    : node.data.status,
+              },
+            };
+          }
           return node;
         });
+
         setNodes(newNodes);
+
+        if (allDone && nextIndex !== -1 && setSelectedNodeId) {
+          const nextNode = nodes[nextIndex];
+          setSelectedNodeId(nextNode.id);
+          const nextTopics = nextNode.data.overview.topics;
+          const nextInProg = nextTopics.findIndex(
+            (t) => t.status === "in progress",
+          );
+          const nextUpcom = nextTopics.findIndex(
+            (t) => t.status === "upcoming",
+          );
+          setActiveTopic(
+            nextInProg !== -1 ? nextInProg : nextUpcom !== -1 ? nextUpcom : 0,
+          );
+        }
+
+        // Persist topic and step completion to the database
+        completeTopic(topicToComplete.id, activeNodeID).catch((err) => {
+          console.error("Failed to complete topic in database:", err);
+        });
       }
     }
   }
@@ -390,7 +442,6 @@ export default function NodeOverview({
 
   async function handleAddNote(data: NoteSchemaType) {
     if (!setNodes || !nodes || !activeNodeID) return;
-
 
     const savedNote = await addNote(activeNodeID, data);
 
@@ -409,7 +460,7 @@ export default function NodeOverview({
           };
         }
         return node;
-      })
+      }),
     );
   }
 
@@ -427,13 +478,13 @@ export default function NodeOverview({
               ...node.data,
               notes: {
                 ...node.data.notes,
-                items: node.data.notes.items.filter((note) => note.id !== id)
+                items: node.data.notes.items.filter((note) => note.id !== id),
               },
             },
           };
         }
         return node;
-      })
+      }),
     );
   }
 
@@ -451,18 +502,20 @@ export default function NodeOverview({
               ...node.data,
               notes: {
                 ...node.data.notes,
-                items: node.data.notes.items.map((item) => item.id === id ? { ...item, ...editedNote } : item),
+                items: node.data.notes.items.map((item) =>
+                  item.id === id ? { ...item, ...editedNote } : item,
+                ),
               },
             },
           };
         }
         return node;
-      })
+      }),
     );
   }
 
   return (
-    <div className="absolute top-0 right-0 bg-card p-6 rounded-2xl text-card-foreground shadow-lg [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
+    <div className="fixed sm:absolute inset-x-0 bottom-0 sm:bottom-auto sm:top-0 sm:right-0 sm:left-auto z-40 max-h-[85svh] sm:max-h-[calc(100svh-var(--navbar-height))] w-full sm:w-[420px] bg-card p-4 sm:p-6 rounded-t-2xl sm:rounded-2xl text-card-foreground shadow-2xl sm:shadow-lg border sm:border border-border flex flex-col overflow-y-auto [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
       <NodeOverviewHeader
         icon={nodeData.icon}
         title={nodeData.title}
@@ -475,7 +528,6 @@ export default function NodeOverview({
       <NodeOverviewBody
         tabs={tabs}
         activeTopic={activeTopic}
-        activeTopicName={activeTopicName}
         handleActiveTopic={handleActiveTopic}
         handleAddNote={handleAddNote}
         handleDeleteNote={handleDeleteNote}
@@ -483,8 +535,8 @@ export default function NodeOverview({
       />
       <NodeOverviewFooter
         handleCompleteTopic={handleCompleteTopic}
-        activeTopicName={activeTopicName}
         handleAddNote={handleAddNote}
+        isCompleted={listTopics[activeTopic]?.status === "done"}
       />
     </div>
   );

@@ -123,7 +123,7 @@ export default function CardNode({
     <div className="[--done-bg:#F0FFC4AB] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--selected-border:#2E6BFF] [--arrow-fg:#788294EB]">
       <div
         className={cn(
-          "text-updater-node rounded-2xl p-3.5 text-card-foreground border-2 transition-colors w-[250px]",
+          "rounded-2xl p-3.5 text-card-foreground border-2 transition-colors w-[250px]",
           status === "done" ? "bg-(--done-bg) border-transparent" : "bg-card",
           selected && "border-(--selected-border)",
         )}

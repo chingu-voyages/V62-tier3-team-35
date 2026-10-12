@@ -8,7 +8,6 @@ import {
   useNodesState,
   useReactFlow,
   type Edge,
-  type Node,
   type OnSelectionChangeFunc,
 } from "@xyflow/react";
 import { RoadmapNode } from "./node";
@@ -31,6 +30,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
 
   const nodesInitialized = useNodesInitialized();
   const { fitView, getViewport, setViewport } = useReactFlow();
+  const [activeTopic, setActiveTopic] = useState<number>(0);
 
   useEffect(() => {
     if (!nodesInitialized) return;
@@ -79,17 +79,31 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
     fitRoadmap();
   }, [nodesInitialized, fitView, getViewport, setViewport]);
 
-  const onSelectionChange: OnSelectionChangeFunc<Node, Edge> = useCallback(
-    (all) => {
+  const onSelectionChange: OnSelectionChangeFunc<RoadmapNodeType, Edge> =
+    useCallback((all) => {
       const onlyNodes = all.nodes;
       if (onlyNodes.length > 0) {
-        setSelectedNodeId(onlyNodes[0].id);
+        const selectedNode = onlyNodes[0];
+        setSelectedNodeId(selectedNode.id);
+        const listTopics = selectedNode.data.overview.topics;
+        const inProgressIdx = listTopics.findIndex(
+          (topic) => topic.status === "in progress",
+        );
+        const upcomingIdx = listTopics.findIndex(
+          (topic) => topic.status === "upcoming",
+        );
+        const topic =
+          inProgressIdx !== -1
+            ? inProgressIdx
+            : upcomingIdx !== -1
+              ? upcomingIdx
+              : 0;
+        setActiveTopic(topic);
       } else {
         setSelectedNodeId(null);
+        setActiveTopic(0);
       }
-    },
-    [],
-  );
+    }, []);
 
   const onPaneClick = useCallback(() => {
     setSelectedNodeId(null);
@@ -98,7 +112,8 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
   const selectedNode = nodes.find((node) => node.id === selectedNodeId);
 
   return (
-    <div className="relative w-full h-full"
+    <div
+      className="relative w-full h-full"
       style={{ height: "calc(100svh - var(--navbar-height))" }}
     >
       <ReactFlow
@@ -121,6 +136,9 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
           setNodes={setNodes}
           nodes={nodes}
           activeNodeID={selectedNode.id}
+          activeTopic={activeTopic}
+          setActiveTopic={setActiveTopic}
+          setSelectedNodeId={setSelectedNodeId}
         />
       )}
     </div>
