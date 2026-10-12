@@ -143,6 +143,7 @@ export interface NodeOverviewHeaderProps {
   icon: LucideIcon | string;
   title: string;
   keyTopics: string;
+  handleClose: () => void;
 }
 
 export interface NodeOverviewStatsProps {

@@ -21,6 +21,7 @@ import {
   Play,
   Check,
   Plus,
+  X,
 } from "lucide-react";
 import { StepIcon } from "@/lib/utils/icons";
 import NodeAddNote from "@/components/roadmap/node-form-note";
@@ -89,17 +90,29 @@ function NodeOverviewHeader({
   icon,
   title,
   keyTopics,
+  handleClose,
 }: NodeOverviewHeaderProps) {
   return (
-    <header className="flex gap-4 pb-3 w-full">
+    <header className="flex gap-4 pb-3 w-full items-start">
       <div className="grid place-content-center size-14 bg-foreground rounded-full text-background shrink-0">
         <StepIcon icon={icon} />
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="text-xl sm:text-2xl font-semibold pb-0.5"> {title} </h3>
+        <h3 className="text-xl md:text-2xl font-semibold pb-0.5"> {title} </h3>
         <p className="text-(--accent-text) text-sm"> {keyTopics} </p>
       </div>
+
+      <Button
+        variant="outline"
+        size="icon-lg"
+        className="sm:hidden shrink-0 rounded-full"
+        onClick={handleClose}
+        type="button"
+        aria-label="Close overview"
+      >
+        <X className="size-5" />
+      </Button>
     </header>
   );
 }
@@ -514,12 +527,26 @@ export default function NodeOverview({
     );
   }
 
+  const handleClose = () => {
+    if (setSelectedNodeId) {
+      setSelectedNodeId(null);
+    }
+    if (setNodes) {
+      setNodes((prevNodes) =>
+        prevNodes.map((node) =>
+          node.id === activeNodeID ? { ...node, selected: false } : node,
+        ),
+      );
+    }
+  };
+
   return (
     <div className="fixed sm:absolute inset-x-0 bottom-0 sm:bottom-auto sm:top-4 sm:right-6 sm:inset-x-auto z-40 max-h-[85svh] sm:max-h-[calc(100svh-var(--navbar-height))] w-full sm:w-[420px] bg-card p-4 sm:p-6 rounded-t-2xl sm:rounded-2xl text-card-foreground shadow-2xl sm:shadow-lg border sm:border border-border flex flex-col overflow-y-auto [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
       <NodeOverviewHeader
         icon={nodeData.icon}
         title={nodeData.title}
         keyTopics={nodeData.keyTopics}
+        handleClose={handleClose}
       />
       <NodeOverviewStats
         status={nodeData.status}
