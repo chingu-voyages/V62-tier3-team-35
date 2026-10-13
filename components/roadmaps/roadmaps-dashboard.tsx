@@ -101,7 +101,7 @@ export function RoadmapsDashboard() {
   }, [invalidateCache]);
 
   return (
-    <div className="flex bg-[#FAFBF7] min-h-screen">
+    <div className="flex h-screen overflow-hidden bg-[#FAFBF7]">
       <AppSidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
@@ -109,11 +109,11 @@ export function RoadmapsDashboard() {
 
       <main
         className={cn(
-          "py-8 pr-8 transition-[padding] duration-300 w-full",
+          "flex h-screen w-full flex-col overflow-hidden py-8 pr-8 transition-[padding] duration-300",
           collapsed ? "pl-35" : "pl-63",
         )}
       >
-        <header className="flex items-start justify-between gap-5">
+        <header className="flex shrink-0 items-start justify-between gap-5">
           <div>
             <h1 className="text-[28px] font-semibold tracking-[-0.045em] text-foreground sm:text-[30px]">
               Roadmaps
@@ -129,7 +129,7 @@ export function RoadmapsDashboard() {
             </Link>
           </Button>
         </header>
-        <section className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between mt-10">
+        <section className="mt-10 flex shrink-0 flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex items-center gap-3">
             <h2 className="text-[21px] font-semibold tracking-[-0.03em] text-foreground">
               Learning paths
@@ -148,7 +148,7 @@ export function RoadmapsDashboard() {
             <SortMenu sort={sort} onSortChange={onSortChange} />
           </div>
         </section>
-        <section className="mt-10">
+        <section className="mt-10 min-h-0 flex-1 overflow-y-auto">
           {isLoading && (
             <div className="flex items-center justify-center py-12">
               <Spinner />
