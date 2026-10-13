@@ -25,13 +25,11 @@ export function learningPathToRoadmap(path: LearningPathWithSteps): Roadmap {
 
   return {
     id: path.id,
-    title: path.title ?? path.careerGoal,
-    description:
-      path.description ??
-      path.steps
-        .slice(0, 3)
-        .map((step: Step) => step.title)
-        .join(" · "),
+    title: path.careerGoal,
+    description: path.steps
+      .slice(0, 3)
+      .map((step: Step) => step.title)
+      .join(" · "),
     modules,
     duration: formatDuration(path),
     progress: modules === 0 ? 0 : Math.round((completed / modules) * 100),
