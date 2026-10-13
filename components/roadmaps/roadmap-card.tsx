@@ -1,21 +1,21 @@
 "use client";
-
+import { useState } from "react";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   ArrowRight,
   PenLine,
   Trash2,
-  Copy,
-  Share2,
-  Archive,
   FileText,
   Clock3,
   Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { updateRoadmap } from "@/lib/api/paths";
 import { ActionMenu } from "./action-menu";
 import { TagList } from "../common/tag-list";
+import { EditRoadmapDialog, type RoadmapDetails } from "./edit-roadmap-dialog";
 
 export type Roadmap = {
   id: string;
@@ -29,7 +29,20 @@ export type Roadmap = {
   status: "progress" | "completed";
 };
 
-export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
+type RoadmapCardProps = {
+  roadmap: Roadmap;
+  onUpdated?: (values: RoadmapDetails) => void;
+};
+
+export function RoadmapCard({ roadmap, onUpdated }: RoadmapCardProps) {
+  const [editOpen, setEditOpen] = useState(false);
+
+  async function handleSave(values: RoadmapDetails) {
+    await updateRoadmap(roadmap.id, values);
+    toast.success("Roadmap updated");
+    onUpdated?.(values);
+  }
+
   return (
     <Card className="group relative overflow-visible rounded-[18px] border-border bg-white shadow-[0_2px_10px_rgba(17,18,17,0.025)] p-0">
       <CardContent className="p-4 flex! flex-col! items-start! h-full">
@@ -50,24 +63,14 @@ export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
                   {
                     label: "Edit roadmap",
                     icon: PenLine,
-                  },
-                  {
-                    label: "Duplicate",
-                    icon: Copy,
-                  },
-                  { label: "Share", icon: Share2 },
-                  {
-                    label: "Archive",
-                    icon: Archive,
+                    onSelect: () => setEditOpen(true),
                   },
                   {
                     label: "Delete roadmap",
                     icon: Trash2,
                     destructive: true,
-                    separatorBefore: true,
                   },
                 ]}
-                disabled
               />
             </div>
             <p className="mt-1 line-clamp-2 min-h-9 text-[13px] leading-4.5 text-[#6b7280]">
@@ -124,6 +127,13 @@ export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
           </Link>
         </Button>
       </CardContent>
+
+      <EditRoadmapDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        roadmap={{ title: roadmap.title, description: roadmap.description }}
+        onSave={handleSave}
+      />
     </Card>
   );
 }

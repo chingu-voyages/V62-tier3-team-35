@@ -19,6 +19,7 @@ import {
   learningPathToRoadmap,
   type LearningPathWithSteps,
 } from "./roadmaps-utils";
+import type { RoadmapDetails } from "./edit-roadmap-dialog";
 
 export function RoadmapsDashboard() {
   const router = useRouter();
@@ -40,6 +41,20 @@ export function RoadmapsDashboard() {
     cacheRef.current.clear();
     setReloadKey((key) => key + 1);
   }, []);
+
+  const handlePathUpdated = useCallback(
+    (id: string, values: RoadmapDetails) => {
+      setPaths((prev) =>
+        prev.map((path) =>
+          path.id === id
+            ? { ...path, title: values.title, description: values.description }
+            : path,
+        ),
+      );
+      cacheRef.current.clear();
+    },
+    [],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -178,6 +193,7 @@ export function RoadmapsDashboard() {
                 <RoadmapCard
                   key={path.id}
                   roadmap={learningPathToRoadmap(path)}
+                  onUpdated={(values) => handlePathUpdated(path.id, values)}
                 />
               ))}
             </div>

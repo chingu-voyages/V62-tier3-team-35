@@ -30,6 +30,25 @@ export async function generateRoadmap(values: unknown) {
   return response.json();
 }
 
+export async function updateRoadmap(
+  pathId: string,
+  values: { title: string; description: string },
+) {
+  const response = await fetch(`/api/paths/${pathId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(values),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update roadmap");
+  }
+
+  return response.json();
+}
+
 export async function getRoadmap(pathId: string) {
   const response = await fetch(`/api/paths/${pathId}`);
 

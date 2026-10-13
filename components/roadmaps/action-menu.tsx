@@ -19,8 +19,6 @@ export type ActionMenuItem = {
   onSelect?: () => void;
   destructive?: boolean;
   disabled?: boolean;
-  /** renders a separator above this item */
-  separatorBefore?: boolean;
 };
 
 type ActionMenuProps = {
@@ -38,7 +36,7 @@ type ActionMenuProps = {
 export function ActionMenu({
   items,
   label = "Actions",
-  align = "end",
+  align = "start",
   defaultOpen,
   className,
   contentClassName,
@@ -63,36 +61,26 @@ export function ActionMenu({
       <DropdownMenuContent
         align={align}
         className={cn(
-          "w-45 rounded-2xl p-2 shadow-[0_12px_28px_rgba(17,18,17,0.14)]",
+          "w-45 rounded-xl p-2 shadow-[0_12px_28px_rgba(17,18,17,0.14)]",
           contentClassName,
         )}
       >
-        {items.map(
-          ({
-            label,
-            icon: Icon,
-            onSelect,
-            destructive,
-            disabled,
-            separatorBefore,
-          }) => (
-            <Fragment key={label}>
-              {separatorBefore && <DropdownMenuSeparator />}
-              <DropdownMenuItem
-                disabled={disabled}
-                onSelect={onSelect}
-                className={cn(
-                  "gap-2",
-                  destructive &&
-                    "text-destructive focus:bg-destructive-bg focus:text-destructive",
-                )}
-              >
-                {Icon && <Icon className="h-4 w-4" />}
-                {label}
-              </DropdownMenuItem>
-            </Fragment>
-          ),
-        )}
+        {items.map(({ label, icon: Icon, onSelect, destructive, disabled }) => (
+          <Fragment key={label}>
+            <DropdownMenuItem
+              disabled={disabled}
+              onSelect={onSelect}
+              className={cn(
+                "gap-2 cursor-pointer",
+                destructive &&
+                  "text-destructive focus:bg-destructive-bg focus:text-destructive",
+              )}
+            >
+              {Icon && <Icon className="h-4 w-4" />}
+              {label}
+            </DropdownMenuItem>
+          </Fragment>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
