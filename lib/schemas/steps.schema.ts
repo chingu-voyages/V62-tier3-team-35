@@ -8,7 +8,7 @@ export const stepSchema = z.object({
   icon: z.string(),
   keyTopics: z.string(),
   estimatedTime: z.int().positive(),
-  isCompleted: z.boolean().default(false),
+  status: z.enum(["upcoming", "in_progress", "done"]).default("upcoming"),
   completedAt: z.coerce.date().nullable().default(null),
   topics: z.array(topicSchema),
 });
