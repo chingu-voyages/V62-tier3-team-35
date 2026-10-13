@@ -23,12 +23,40 @@ export async function createPath(userId: string, input: unknown) {
   return prisma.learningPath.create({ data: { ...data, userId } });
 }
 
-export async function getPathsByUserId(userId: string) {
+const PATH_STATUSES = ["in_progress", "completed"] as const;
+type PathStatusValue = (typeof PATH_STATUSES)[number];
+
+function isPathStatus(value: string | null | undefined): value is PathStatusValue {
+  return value != null && (PATH_STATUSES as readonly string[]).includes(value);
+}
+
+export type GetPathsOptions = {
+  sort?: string | null;
+  status?: string | null;
+};
+
+export async function getPathsByUserId(
+  userId: string,
+  { sort, status }: GetPathsOptions = {},
+) {
   return prisma.learningPath.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
+    where: {
+      userId,
+      ...(isPathStatus(status) ? { status } : {}),
+    },
+    orderBy: { createdAt: sort === "oldest" ? "asc" : "desc" },
     include: { steps: { orderBy: { order: "asc" } } },
   });
+}
+
+export async function getPathCountsByUserId(userId: string) {
+  const [all, inProgress, completed] = await Promise.all([
+    prisma.learningPath.count({ where: { userId } }),
+    prisma.learningPath.count({ where: { userId, status: "in_progress" } }),
+    prisma.learningPath.count({ where: { userId, status: "completed" } }),
+  ]);
+
+  return { all, "in-progress": inProgress, completed };
 }
 
 export async function getPathById(id: string, userId: string) {

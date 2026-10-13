@@ -37,14 +37,22 @@ export async function POST(request: Request) {
 
 // List all learning paths for the current user, each with its steps ordered by `order`.
 // The current user is determined from the Better Auth session.
-// Returns: 200 { success: true, data: LearningPath[] } | 400 { success: false, error }
-export async function GET() {
+// Query: sort=newest | oldest (defaults to newest first)
+//        status=in_progress | completed (omit for all)
+// Returns: 200 { success: true, data: LearningPath[], counts } | 400 { success: false, error }
+export async function GET(request: Request) {
   try {
     const userId = await getCurrentUserId();
+    const { searchParams } = new URL(request.url);
+    const sort = searchParams.get("sort");
+    const status = searchParams.get("status");
 
-    const paths = await pathsService.getPathsByUserId(userId);
+    const [paths, counts] = await Promise.all([
+      pathsService.getPathsByUserId(userId, { sort, status }),
+      pathsService.getPathCountsByUserId(userId),
+    ]);
 
-    return Response.json({ success: true, data: paths });
+    return Response.json({ success: true, data: paths, counts });
   } catch (error) {
     return errorHandler(error);
   }

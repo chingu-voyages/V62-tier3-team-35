@@ -73,14 +73,12 @@ model Verification {
 model LearningPath {
   id           String       @id @default(uuid())
   userId       String       @map("user_id")
-  title        String?      @map("title") @db.VarChar(200)
-  description  String?      @map("description")
   careerGoal   String       @map("career_goal") @db.VarChar(300)
   skillLevel   SkillLevel   @map("skill_level")
   skills       String[]     @default([])
   hoursPerWeek Int          @map("hours_per_week")
   learningPace LearningPace @map("learning_pace")
-  status       PathStatus   @default(draft)
+  status       PathStatus   @default(in_progress)
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
   user         User         @relation(fields: [userId], references: [id])
@@ -131,8 +129,7 @@ enum SkillLevel {
 }
 
 enum PathStatus {
-  draft
-  active
+  in_progress
   completed
 }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   ArrowRight,
   PenLine,
@@ -17,6 +18,7 @@ import { ActionMenu } from "./action-menu";
 import { TagList } from "../common/tag-list";
 
 export type Roadmap = {
+  id: string;
   title: string;
   description: string;
   modules: number;
@@ -24,7 +26,7 @@ export type Roadmap = {
   progress: number;
   completed: number;
   skills: string[];
-  status: "progress" | "completed" | "archived";
+  status: "progress" | "completed";
 };
 
 export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
@@ -113,8 +115,13 @@ export function RoadmapCard({ roadmap }: { roadmap: Roadmap }) {
           <TagList tags={roadmap.skills} />
         </div>
 
-        <Button className="cursor-pointer h-11.5 w-full justify-between rounded-full bg-foreground px-4 text-sm font-semibold text-white hover:bg-secondary-foreground transition hover:shadow-[0_12px_28px_rgba(17,18,17,0.08)] mt-auto">
-          Continue learning <ArrowRight className="h-4 w-4" />
+        <Button
+          asChild
+          className="cursor-pointer h-11.5 w-full justify-between rounded-full bg-foreground px-4 text-sm font-semibold text-white hover:bg-secondary-foreground transition hover:shadow-[0_12px_28px_rgba(17,18,17,0.08)] mt-auto"
+        >
+          <Link href={`/paths/${roadmap.id}`}>
+            Continue learning <ArrowRight className="h-4 w-4" />
+          </Link>
         </Button>
       </CardContent>
     </Card>

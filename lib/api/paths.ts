@@ -1,4 +1,11 @@
 import type { RoadmapStepProps } from "@/components/roadmap/roadmap.types";
+import type { PathFilter } from "@/components/roadmaps/filter-tabs";
+
+const STATUS_BY_FILTER: Record<PathFilter, string | null> = {
+  all: null,
+  "in-progress": "in_progress",
+  completed: "completed",
+};
 
 export type PathResponse = {
   success: boolean;
@@ -33,8 +40,14 @@ export async function getRoadmap(pathId: string) {
   return response.json();
 }
 
-export async function getRoadmaps() {
-  const response = await fetch(`/api/paths`);
+export async function getRoadmaps(filter: PathFilter = "all") {
+  const params = new URLSearchParams({ sort: "newest" });
+  const status = STATUS_BY_FILTER[filter];
+  if (status) {
+    params.set("status", status);
+  }
+
+  const response = await fetch(`/api/paths?${params.toString()}`);
 
   if (!response.ok) {
     throw new Error("Failed to load roadmaps");

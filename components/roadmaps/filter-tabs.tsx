@@ -6,7 +6,6 @@ const FILTERS = [
   { value: "all", label: "All Paths" },
   { value: "in-progress", label: "In Progress" },
   { value: "completed", label: "Completed" },
-  { value: "archived", label: "Archived" },
 ] as const;
 
 export type PathFilter = (typeof FILTERS)[number]["value"];
