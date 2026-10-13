@@ -67,17 +67,25 @@ export function LandingHeader() {
 
   return (
     <>
+      {/* Keep the brand mark outside the difference blend. */}
+      <div
+        data-landing
+        className="pointer-events-none fixed inset-x-0 top-0 z-40 mx-auto flex h-(--navbar-height) w-full max-w-screen-2xl items-center px-4 sm:px-10 lg:px-18"
+      >
+        <div className="pointer-events-auto w-8 sm:w-36 [&>a]:flex [&>a]:h-8 [&>a]:w-full [&>a]:items-center">
+          <Logo size="sm" />
+        </div>
+      </div>
       <header
         data-landing
-        className="fixed inset-x-0 top-0 z-40 flex h-(--navbar-height) items-center bg-foreground text-background"
+        className="pointer-events-none fixed inset-x-0 top-0 z-40 flex h-(--navbar-height) items-center bg-transparent text-background mix-blend-difference"
       >
         <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4 px-4 sm:px-10 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:px-18">
-          <div className="w-fit">
-            <Logo
-              variant="text"
-              size="sm"
-              className="gap-2 text-xl font-bold text-background max-sm:[&_p]:hidden"
-            />
+          <div aria-hidden="true" className="flex shrink-0 items-center gap-2">
+            <span className="size-8 shrink-0" />
+            <span className="hidden text-xl font-bold text-background sm:inline">
+              Pathway
+            </span>
           </div>
 
           <nav
