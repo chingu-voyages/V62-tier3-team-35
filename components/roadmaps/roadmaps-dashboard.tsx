@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { firstStepPath } from "@/components/generate-path/step-config";
 import { AppSidebar } from "@/components/common/sidebar";
 import { Button } from "@/components/ui/button";
-import { RoadmapCard } from "@/components/roadmaps/roadmap-card";
+import { RoadmapCard, type Roadmap } from "@/components/roadmaps/roadmap-card";
 import { cn } from "cn";
 import { FilterTabs, PathFilter } from "./filter-tabs";
 import { SortMenu, SortValue } from "./sort-menu";
@@ -51,6 +51,25 @@ export function RoadmapsDashboard() {
             : path,
         ),
       );
+      cacheRef.current.clear();
+    },
+    [],
+  );
+
+  const handlePathDeleted = useCallback(
+    (id: string, status: Roadmap["status"]) => {
+      setPaths((prev) => prev.filter((path) => path.id !== id));
+      setCounts((prev) => ({
+        all: Math.max(0, prev.all - 1),
+        "in-progress": Math.max(
+          0,
+          prev["in-progress"] - (status === "progress" ? 1 : 0),
+        ),
+        completed: Math.max(
+          0,
+          prev.completed - (status === "completed" ? 1 : 0),
+        ),
+      }));
       cacheRef.current.clear();
     },
     [],
@@ -116,7 +135,7 @@ export function RoadmapsDashboard() {
   }, [invalidateCache]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FAFBF7]">
+    <div className="flex h-screen bg-[#FAFBF7]">
       <AppSidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed((c) => !c)}
@@ -124,7 +143,7 @@ export function RoadmapsDashboard() {
 
       <main
         className={cn(
-          "flex h-screen w-full flex-col overflow-hidden py-8 pr-8 transition-[padding] duration-300",
+          "flex h-screen w-full flex-col  py-8 pr-8 transition-[padding] duration-300",
           collapsed ? "pl-35" : "pl-63",
         )}
       >
@@ -188,12 +207,13 @@ export function RoadmapsDashboard() {
           )}
 
           {!isLoading && !error && paths.length > 0 && (
-            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 px-1">
               {paths.map((path) => (
                 <RoadmapCard
                   key={path.id}
                   roadmap={learningPathToRoadmap(path)}
                   onUpdated={(values) => handlePathUpdated(path.id, values)}
+                  onDeleted={(status) => handlePathDeleted(path.id, status)}
                 />
               ))}
             </div>

@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { updateRoadmap } from "@/lib/api/paths";
+import { ConfirmDialog } from "@/components/common/confirm-dialog";
+import { deleteRoadmap, updateRoadmap } from "@/lib/api/paths";
 import { ActionMenu } from "./action-menu";
 import { TagList } from "../common/tag-list";
 import { EditRoadmapDialog, type RoadmapDetails } from "./edit-roadmap-dialog";
@@ -32,15 +33,31 @@ export type Roadmap = {
 type RoadmapCardProps = {
   roadmap: Roadmap;
   onUpdated?: (values: RoadmapDetails) => void;
+  onDeleted?: (status: Roadmap["status"]) => void;
 };
 
-export function RoadmapCard({ roadmap, onUpdated }: RoadmapCardProps) {
+export function RoadmapCard({
+  roadmap,
+  onUpdated,
+  onDeleted,
+}: RoadmapCardProps) {
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   async function handleSave(values: RoadmapDetails) {
     await updateRoadmap(roadmap.id, values);
     toast.success("Roadmap updated");
     onUpdated?.(values);
+  }
+
+  async function handleDelete() {
+    try {
+      await deleteRoadmap(roadmap.id);
+      toast.success("Roadmap deleted");
+      onDeleted?.(roadmap.status);
+    } catch {
+      toast.error("Couldn’t delete the roadmap. Please try again.");
+    }
   }
 
   return (
@@ -69,6 +86,7 @@ export function RoadmapCard({ roadmap, onUpdated }: RoadmapCardProps) {
                     label: "Delete roadmap",
                     icon: Trash2,
                     destructive: true,
+                    onSelect: () => setDeleteOpen(true),
                   },
                 ]}
               />
@@ -133,6 +151,15 @@ export function RoadmapCard({ roadmap, onUpdated }: RoadmapCardProps) {
         onOpenChange={setEditOpen}
         roadmap={{ title: roadmap.title, description: roadmap.description }}
         onSave={handleSave}
+      />
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onConfirm={handleDelete}
+        title="Delete roadmap?"
+        description={`“${roadmap.title}” and all of its progress will be permanently deleted. This can’t be undone.`}
+        confirmLabel="Delete"
       />
     </Card>
   );

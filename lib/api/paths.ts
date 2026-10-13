@@ -49,6 +49,18 @@ export async function updateRoadmap(
   return response.json();
 }
 
+export async function deleteRoadmap(pathId: string) {
+  const response = await fetch(`/api/paths/${pathId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete roadmap");
+  }
+
+  return response.json();
+}
+
 export async function getRoadmap(pathId: string) {
   const response = await fetch(`/api/paths/${pathId}`);
 
