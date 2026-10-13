@@ -140,7 +140,7 @@ export function RoadmapCard({
           asChild
           className="cursor-pointer h-11.5 w-full justify-between rounded-full bg-foreground px-4 text-sm font-semibold text-white hover:bg-secondary-foreground transition hover:shadow-[0_12px_28px_rgba(17,18,17,0.08)] mt-auto"
         >
-          <Link href={`/paths/${roadmap.id}`}>
+          <Link href={`/roadmaps/${roadmap.id}`}>
             Continue learning <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>

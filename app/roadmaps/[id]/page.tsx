@@ -3,7 +3,8 @@ import RoadmapPage from "@/components/roadmap/roadmap-page";
 
 export const metadata: Metadata = {
   title: "Learning Roadmap | Pathway",
-  description: "Explore your interactive roadmap, track progress, and take study notes.",
+  description:
+    "Explore your interactive roadmap, track progress, and take study notes.",
 };
 
 type PathPageProps = {
