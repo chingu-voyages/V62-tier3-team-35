@@ -4,19 +4,17 @@ import type { Roadmap } from "./roadmap-card";
 export type LearningPathWithSteps = LearningPath & { steps: Step[] };
 
 export function formatDuration(path: LearningPathWithSteps): string {
-  const totalHours =
-    path.steps.reduce(
-      (sum: number, step: Step) => sum + step.estimatedTime,
-      0,
-    ) / 60;
-  const weeks = Math.max(
-    1,
-    Math.round(totalHours / Math.max(path.hoursPerWeek, 1)),
+  const totalWeeks = path.steps.reduce(
+    (sum: number, step: Step) => sum + step.estimatedTime,
+    0,
   );
 
-  if (weeks >= 4) return `~${Math.round(weeks / 4.33)} months`;
-  if (weeks > 1) return `~${weeks} weeks`;
-  return `~${Math.max(1, Math.round(totalHours))}h`;
+  if (totalWeeks >= 4) {
+    const months = Math.max(1, Math.round(totalWeeks / 4.33));
+    return `~${months} ${months === 1 ? "month" : "months"}`;
+  }
+  if (totalWeeks > 1) return `~${totalWeeks} weeks`;
+  return "~1 week";
 }
 
 export function learningPathToRoadmap(path: LearningPathWithSteps): Roadmap {
