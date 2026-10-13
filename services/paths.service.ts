@@ -18,9 +18,15 @@ async function getPathOrThrow(id: string, userId: string) {
   return path;
 }
 
-export async function createPath(userId: string, input: unknown) {
+export async function createPath(
+  userId: string,
+  input: unknown,
+  meta: { title?: string; description?: string } = {},
+) {
   const data = createPathSchema.parse(input);
-  return prisma.learningPath.create({ data: { ...data, userId } });
+  return prisma.learningPath.create({
+    data: { ...data, userId, title: meta.title, description: meta.description },
+  });
 }
 
 const PATH_STATUSES = ["in_progress", "completed"] as const;

@@ -17,7 +17,10 @@ export async function POST(request: Request) {
     const formInput = await request.json();
 
     const aiRoadmap = await generatePath(formInput);
-    const path = await pathsService.createPath(userId, formInput);
+    const path = await pathsService.createPath(userId, formInput, {
+      title: aiRoadmap.title,
+      description: aiRoadmap.description,
+    });
     const savedSteps = await stepsService.createSteps({
       learningPathId: path.id,
       steps: aiRoadmap.roadmap,

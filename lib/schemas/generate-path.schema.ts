@@ -22,6 +22,8 @@ const technologySchema = z.object({
 });
 
 export const generatePathResponseSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
   roadmap: z.array(technologySchema),
 });
 

@@ -74,6 +74,8 @@ model LearningPath {
   id           String       @id @default(uuid())
   userId       String       @map("user_id")
   careerGoal   String       @map("career_goal") @db.VarChar(300)
+  title        String?      @db.VarChar(300)
+  description  String?
   skillLevel   SkillLevel   @map("skill_level")
   skills       String[]     @default([])
   hoursPerWeek Int          @map("hours_per_week")
