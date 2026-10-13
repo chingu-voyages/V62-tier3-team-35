@@ -1,0 +1,80 @@
+@reference "../globals.css";
+
+/* Landing-only utilities reuse the existing theme without changing shared tokens. */
+@layer components {
+  .landing-title {
+    @apply text-4xl leading-[1.1] font-medium tracking-tight sm:text-5xl lg:text-6xl;
+  }
+
+  .landing-heading {
+    @apply text-3xl leading-[1.15] font-medium tracking-tight text-balance sm:text-4xl lg:text-5xl;
+  }
+
+  .landing-subheading {
+    @apply text-xl leading-snug font-medium sm:text-2xl;
+  }
+
+  .landing-body {
+    @apply text-base leading-relaxed sm:text-lg;
+  }
+
+  .landing-caption {
+    @apply text-sm leading-6;
+  }
+
+  .landing-eyebrow {
+    @apply text-xs leading-5 font-semibold tracking-[0.12em];
+  }
+
+  .how-it-works-reveal {
+    /* Match the section gutters; the background never changes content geometry. */
+    --reveal-inline: calc(var(--spacing) * 6);
+    --reveal-block: calc(var(--spacing) * 20);
+    --reveal-radius: calc(var(--radius) * 2.6);
+    view-timeline-name: --how-it-works;
+    view-timeline-axis: block;
+    /* Hold the original panel until its top reaches 60% of the viewport. */
+    view-timeline-inset: var(--navbar-height) 40%;
+
+    @variant sm {
+      --reveal-inline: calc(var(--spacing) * 10);
+    }
+    @variant lg {
+      --reveal-inline: calc(var(--spacing) * 12);
+      --reveal-block: calc(var(--spacing) * 24);
+    }
+  }
+
+  .how-it-works-background {
+    clip-path: inset(
+      var(--reveal-block) max(var(--reveal-inline), calc((100% - 1440px) / 2))
+        round var(--reveal-radius)
+    );
+
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) and
+        (animation-range: entry-crossing 0% exit-crossing 0%) {
+        animation: how-it-works-expand linear both;
+        animation-timeline: --how-it-works;
+        animation-range: entry-crossing 0% exit-crossing 0%;
+      }
+    }
+  }
+}
+
+@keyframes how-it-works-expand {
+  to {
+    clip-path: inset(0px round 0px);
+    /* Prevent a subpixel seam against the footer without changing layout. */
+    bottom: -1px;
+  }
+}
+
+@layer components {
+  :where([data-landing]):focus-visible,
+  :where([data-landing]) :where(a, button, [tabindex]):focus-visible {
+    outline: 2px solid var(--ring) !important;
+    outline-offset: 3px !important;
+    scroll-margin-block: calc(var(--navbar-height) + 1rem);
+  }
+}

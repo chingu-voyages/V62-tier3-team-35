@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
-import { firstStepPath } from "@/components/generate-path/step-config";
 import { ExploreRoadmapButton } from "@/components/marketing/explore-roadmap-button";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,6 +20,7 @@ export function HeroSection() {
 
   return (
     <section
+      id="home"
       aria-labelledby="hero-heading"
       className="relative isolate flex min-h-svh items-center bg-foreground pt-(--navbar-height) text-background"
     >
@@ -29,17 +29,14 @@ export function HeroSection() {
         style={gridStyle}
       >
         <div className="col-start-2 min-w-0 flex flex-col items-start lg:row-start-1">
-          <h1
-            id="hero-heading"
-            className="text-4xl leading-[1.1] font-medium tracking-tight sm:text-5xl lg:text-[60px]"
-          >
+          <h1 id="hero-heading" className="landing-title">
             From curiosity to
             <br />
             <span className="mt-1 inline-block rounded-md bg-accent px-2 pb-1 text-foreground">
               real progress.
             </span>
           </h1>
-          <p className="mt-8 max-w-sm text-sm leading-[26px] text-background/75">
+          <p className="landing-body mt-8 max-w-md text-background/75">
             Turn what you want to learn, what you already know, and the time you
             have into a clear, personal roadmap. Know where to start — and what
             comes next.
@@ -48,19 +45,17 @@ export function HeroSection() {
           <dl className="mt-12 grid w-full max-w-lg grid-cols-3 gap-4">
             {highlights.map(({ value, label }) => (
               <div key={label} className="flex flex-col">
-                <dt className="mt-2 text-xs leading-5 text-background/65">
+                <dt className="landing-caption mt-2 text-background/65">
                   {label}
                 </dt>
-                <dd className="-order-1 text-xl font-medium sm:text-2xl">
-                  {value}
-                </dd>
+                <dd className="landing-subheading -order-1">{value}</dd>
               </div>
             ))}
           </dl>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-12 gap-y-4">
             <Button asChild variant="secondary" size="lg">
-              <Link href={firstStepPath}>
+              <Link href="/sign-up">
                 Create my path
                 <ArrowUpRight aria-hidden="true" />
               </Link>
