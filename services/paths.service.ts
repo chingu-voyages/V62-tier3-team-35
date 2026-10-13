@@ -69,7 +69,13 @@ export async function getPathById(id: string, userId: string) {
   const path = await prisma.learningPath.findUnique({
     where: { id, userId },
     include: {
-      steps: { orderBy: { order: "asc" }, include: { topics: true } },
+      steps: {
+        orderBy: { order: "asc" },
+        include: {
+          topics: true,
+          notes: { orderBy: { createdAt: "desc" } },
+        },
+      },
     },
   });
 

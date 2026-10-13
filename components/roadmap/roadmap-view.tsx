@@ -1,30 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
+  Background,
   ReactFlow,
   useNodesInitialized,
   useNodesState,
   useReactFlow,
   type Edge,
-  type Node,
+  type OnSelectionChangeFunc,
 } from "@xyflow/react";
-import { TechnologyNode } from "./technology-node";
+import { RoadmapNode } from "./node";
+import NodeOverview from "./node-overview";
+import type { RoadmapNodeType } from "@/lib/types/roadmap";
 
 const nodeTypes = {
-  technology: TechnologyNode,
+  roadmapNode: RoadmapNode,
 };
 
 type RoadmapViewProps = {
-  initialNodes: Node[];
+  initialNodes: RoadmapNodeType[];
   edges: Edge[];
 };
 
 export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] =
+    useNodesState<RoadmapNodeType>(initialNodes);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   const nodesInitialized = useNodesInitialized();
   const { fitView, getViewport, setViewport } = useReactFlow();
+  const [activeTopic, setActiveTopic] = useState<number>(0);
 
   useEffect(() => {
     if (!nodesInitialized) return;
@@ -73,13 +79,70 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
     fitRoadmap();
   }, [nodesInitialized, fitView, getViewport, setViewport]);
 
+  const onSelectionChange: OnSelectionChangeFunc<RoadmapNodeType, Edge> =
+    useCallback((all) => {
+      const onlyNodes = all.nodes;
+      if (onlyNodes.length > 0) {
+        const selectedNode = onlyNodes[0];
+        setSelectedNodeId(selectedNode.id);
+        const listTopics = selectedNode.data.overview.topics;
+        const inProgressIdx = listTopics.findIndex(
+          (topic) => topic.status === "in_progress",
+        );
+        const upcomingIdx = listTopics.findIndex(
+          (topic) => topic.status === "upcoming",
+        );
+        const topic =
+          inProgressIdx !== -1
+            ? inProgressIdx
+            : upcomingIdx !== -1
+              ? upcomingIdx
+              : 0;
+        setActiveTopic(topic);
+      } else {
+        setSelectedNodeId(null);
+        setActiveTopic(0);
+      }
+    }, []);
+
+  const onPaneClick = useCallback(() => {
+    setSelectedNodeId(null);
+  }, []);
+
+  const selectedNode = nodes.find((node) => node.id === selectedNodeId);
+
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      nodeTypes={nodeTypes}
-      proOptions={{ hideAttribution: true }}
-    />
+    <div
+      className="relative w-full h-full"
+      style={{ height: "calc(100svh - var(--navbar-height))" }}
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        nodeTypes={nodeTypes}
+        onSelectionChange={onSelectionChange}
+        onPaneClick={onPaneClick}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        proOptions={{ hideAttribution: true }}
+      >
+        <Background />
+      </ReactFlow>
+
+      {selectedNode && (
+        <NodeOverview
+          nodeData={selectedNode.data}
+          setNodes={setNodes}
+          nodes={nodes}
+          activeNodeID={selectedNode.id}
+          activeTopic={activeTopic}
+          setActiveTopic={setActiveTopic}
+          setSelectedNodeId={setSelectedNodeId}
+        />
+      )}
+    </div>
   );
 }
+
+export default RoadmapView;

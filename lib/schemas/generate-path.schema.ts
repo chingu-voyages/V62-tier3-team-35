@@ -28,3 +28,5 @@ export const generatePathResponseSchema = z.object({
 });
 
 export type GeneratePathResponse = z.infer<typeof generatePathResponseSchema>;
+export type TechnologySchema = z.infer<typeof technologySchema>;
+export type TopicSchema = z.infer<typeof topicSchema>;

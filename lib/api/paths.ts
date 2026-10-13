@@ -1,4 +1,4 @@
-import type { RoadmapStepProps } from "@/components/roadmap/roadmap.types";
+import type { RoadmapStepProps } from "@/lib/types/roadmap";
 import type { PathFilter } from "@/components/roadmaps/filter-tabs";
 
 const STATUS_BY_FILTER: Record<PathFilter, string | null> = {
