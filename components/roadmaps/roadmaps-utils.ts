@@ -21,7 +21,7 @@ export function formatDuration(path: LearningPathWithSteps): string {
 
 export function learningPathToRoadmap(path: LearningPathWithSteps): Roadmap {
   const modules = path.steps.length;
-  const completed = path.steps.filter((step: Step) => step.isCompleted).length;
+  const completed = path.steps.filter((step: Step) => step.status === "done").length;
 
   return {
     id: path.id,
