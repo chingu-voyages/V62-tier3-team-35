@@ -34,13 +34,12 @@ export function RoadmapsDashboard() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
   const cacheRef = useRef<Map<PathFilter, LearningPathWithSteps[]>>(new Map());
+  const filterRef = useRef<PathFilter>(filter);
 
-  const invalidateCache = useCallback(() => {
-    cacheRef.current.clear();
-    setReloadKey((key) => key + 1);
-  }, []);
+  useEffect(() => {
+    filterRef.current = filter;
+  }, [filter]);
 
   const handlePathUpdated = useCallback(
     (id: string, values: RoadmapDetails) => {
@@ -118,21 +117,37 @@ export function RoadmapsDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [filter, reloadKey]);
+  }, [filter]);
+
+  const revalidate = useCallback(async () => {
+    const requestedFilter = filter;
+    try {
+      const response = await getRoadmaps(requestedFilter);
+      if (filterRef.current !== requestedFilter) return;
+      cacheRef.current.set(requestedFilter, response.data);
+      setPaths(response.data);
+      if (response.counts) {
+        setCounts(response.counts);
+      }
+      setError(null);
+    } catch {
+      // Keep showing the current data if a background refresh fails.
+    }
+  }, [filter]);
 
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.visibilityState === "visible") invalidateCache();
+      if (document.visibilityState === "visible") revalidate();
     };
 
-    window.addEventListener("focus", invalidateCache);
+    window.addEventListener("focus", revalidate);
     document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
-      window.removeEventListener("focus", invalidateCache);
+      window.removeEventListener("focus", revalidate);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [invalidateCache]);
+  }, [revalidate]);
 
   return (
     <div className="flex h-screen bg-[#FAFBF7]">
