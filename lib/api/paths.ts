@@ -1,4 +1,4 @@
-import type { RoadmapStepProps } from "@/components/roadmap/roadmap.types";
+import type { RoadmapStepProps } from "@/lib/types/roadmap";
 
 export type PathResponse = {
   success: boolean;

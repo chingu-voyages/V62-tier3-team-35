@@ -114,7 +114,9 @@ test.describe("Login Flow", () => {
 
     await page.getByLabel("Email").fill("wrong@example.com");
     await page.getByPlaceholder("Enter your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-in/**");
     await page.getByRole("button", { name: "Log in", exact: true }).click();
+    await responsePromise;
 
     await expect(
       page.getByText(/Email or password is incorrect|Invalid email or password/i)
@@ -164,7 +166,9 @@ test.describe("Sign Up Flow", () => {
     await page.getByLabel("Full name").fill("Test User");
     await page.getByLabel("Email").fill("existing@example.com");
     await page.getByPlaceholder("Create your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-up/**");
     await page.getByRole("button", { name: "Create account", exact: true }).click();
+    await responsePromise;
 
     await expect(page.getByText(/already exists/i)).toBeVisible();
   });
@@ -183,7 +187,9 @@ test.describe("Sign Up Flow", () => {
     await page.getByLabel("Full name").fill("New User");
     await page.getByLabel("Email").fill("newuser@example.com");
     await page.getByPlaceholder("Create your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-up/**");
     await page.getByRole("button", { name: "Create account", exact: true }).click();
+    await responsePromise;
 
     await expect(page).toHaveURL("/");
   });
