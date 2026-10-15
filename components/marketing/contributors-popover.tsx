@@ -32,6 +32,7 @@ const contributors = [
   {
     name: "LillaT",
     initials: "LT",
+    github: "Lilla-ctrl",
     color: "bg-[#BDD8FF]",
   },
 ];

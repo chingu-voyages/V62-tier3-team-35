@@ -49,7 +49,7 @@ export function RoadmapBenefitsSection() {
       aria-labelledby="roadmap-benefits-heading"
       className="w-full scroll-mt-(--navbar-height) bg-background text-foreground"
     >
-      <div className="mx-auto flex min-h-[820px] w-full max-w-screen-2xl flex-col px-[clamp(1.5rem,4.6875vw,4.5rem)] py-16 sm:py-20 lg:pt-[clamp(4rem,6.119792vw,5.875rem)] lg:pb-[clamp(4rem,6.119792vw,5.875rem)]">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-col px-[clamp(1.5rem,4.6875vw,4.5rem)] pb-16 sm:pb-20">
         <h2 id="roadmap-benefits-heading" className="landing-heading max-w-6xl">
           <span className="block text-muted-foreground">
             You don’t need more things to learn.
