@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Header from "@/components/header/header";
+import Header from "@/components/header";
 
 export type RoadmapFrameProps = {
   children: ReactNode;
@@ -9,7 +9,7 @@ export type RoadmapFrameProps = {
 export function RoadmapFrame({ children, onClose }: RoadmapFrameProps) {
   return (
     <div className="flex min-h-svh flex-col bg-background">
-      <Header variant="steps" onClose={onClose} />
+      <Header variant="close" onClose={onClose} />
       <main className="flex flex-1 flex-col overflow-x-hidden">{children}</main>
     </div>
   );

@@ -8,25 +8,25 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id            String         @id @default(uuid())
+  email         String         @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   name          String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean        @default(false)
   image         String?
-  sessions      Session[]
   accounts      Account[]
-
   learningPaths LearningPath[]
   notes         Note[]
+  sessions      Session[]
+
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -34,7 +34,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -44,7 +43,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -54,6 +52,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
@@ -79,9 +78,11 @@ model LearningPath {
   skills       String[]     @default([])
   hoursPerWeek Int          @map("hours_per_week")
   learningPace LearningPace @map("learning_pace")
-  status       PathStatus   @default(draft)
+  status       PathStatus   @default(in_progress)
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
+  title        String?      @db.VarChar(300)
+  description  String?
   user         User         @relation(fields: [userId], references: [id])
   steps        Step[]
 
@@ -98,14 +99,14 @@ model Step {
   keyTopics      String         @map("key_topics")
   icon           String?
   estimatedTime  Int            @map("estimated_time")
-  status         ProgressStatus @default(upcoming)
-  resources      Json?
   completedAt    DateTime?      @map("completed_at")
   createdAt      DateTime       @default(now()) @map("created_at")
   updatedAt      DateTime       @updatedAt @map("updated_at")
+  resources      Json?
+  status         ProgressStatus @default(upcoming)
+  notes          Note[]
   learningPath   LearningPath   @relation(fields: [learningPathId], references: [id], onDelete: Cascade)
   topics         Topic[]
-  notes          Note[]
 
   @@unique([learningPathId, order])
   @@map("steps")
@@ -130,7 +131,7 @@ model Note {
   stepId    String   @map("step_id")
   userId    String   @map("user_id")
   title     String
-  content   String?  @db.Text
+  content   String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   step      Step     @relation(fields: [stepId], references: [id], onDelete: Cascade)
@@ -154,8 +155,7 @@ enum SkillLevel {
 }
 
 enum PathStatus {
-  draft
-  active
+  in_progress
   completed
 }
 
