@@ -6,7 +6,7 @@ export const customHoursMax = 80;
 
 const skillLevelValues = ["beginner", "intermediate", "advanced"] as const;
 const learningPaceValues = ["recommended", "accelerated", "relaxed"] as const;
-const pathStatusValues = ["draft", "active", "completed"] as const;
+const pathStatusValues = ["in_progress", "completed"] as const;
 
 const skillLevelSchema = z.enum(skillLevelValues, {
   error: "Choose your experience level",

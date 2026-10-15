@@ -105,7 +105,7 @@ function NodeOverviewHeader({
       <Button
         variant="outline"
         size="icon-lg"
-        className="sm:hidden shrink-0 rounded-full"
+        className="sm:hidden shrink-0"
         onClick={handleClose}
         type="button"
         aria-label="Close overview"
@@ -343,6 +343,7 @@ export default function NodeOverview({
   activeTopic,
   setActiveTopic,
   setSelectedNodeId,
+  onStepComplete,
 }: NodeOverviewProps) {
   const listTopics = nodeData.overview.topics;
 
@@ -354,6 +355,7 @@ export default function NodeOverview({
 
   function handleCompleteTopic() {
     const topicToComplete = listTopics[activeTopic];
+
     if (topicToComplete && topicToComplete.status !== "done") {
       const nextTopicIdx = listTopics.findIndex(
         (t, i) => i > activeTopic && t.status !== "done",
@@ -373,6 +375,9 @@ export default function NodeOverview({
       }
 
       const allDone = updatedTopics.every((t) => t.status === "done");
+      if (allDone && activeNodeID) {
+        onStepComplete?.(activeNodeID);
+      }
 
       if (setNodes && nodes && activeNodeID) {
         const currentIndex = nodes.findIndex((n) => n.id === activeNodeID);
@@ -535,7 +540,7 @@ export default function NodeOverview({
   };
 
   return (
-    <div className="fixed sm:absolute inset-x-0 bottom-0 sm:bottom-auto sm:top-4 sm:right-6 sm:inset-x-auto z-40 max-h-[85svh] sm:max-h-[calc(100svh-var(--navbar-height))] w-full sm:w-[420px] bg-card p-4 sm:p-6 rounded-t-2xl sm:rounded-2xl text-card-foreground shadow-2xl sm:shadow-lg border sm:border border-border flex flex-col overflow-y-auto [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
+    <div className="fixed sm:absolute inset-x-0 bottom-0 sm:bottom-auto sm:top-16 sm:right-6 sm:inset-x-auto z-40 max-h-[85svh] sm:max-h-[calc(100svh-var(--navbar-height))] w-full sm:w-[420px] bg-card p-4 sm:p-6 rounded-t-2xl sm:rounded-2xl text-card-foreground shadow-2xl sm:shadow-lg border sm:border border-border flex flex-col overflow-y-auto [--accent-text:#6570C7] [--done-color:#42B229] [--progress-bg:#EDF2FF] [--progress-color:#2E6BFF] [--upcoming-bg:#F5F6F3] [--para-fg:#536079]">
       <NodeOverviewHeader
         icon={nodeData.icon}
         title={nodeData.title}
