@@ -86,6 +86,7 @@ export type RoadmapNoteProps = NoteItem;
 
 export type RoadmapProps = {
   roadmap?: DbStep[];
+  onStepComplete?: (stepId: string) => void;
 };
 
 export type RoadmapNodeType = Node<NodeData, "roadmapNode">;
@@ -107,6 +108,7 @@ export interface NodeOverviewProps {
   activeTopic: number;
   setActiveTopic: (idx: number) => void;
   setSelectedNodeId?: (id: string | null) => void;
+  onStepComplete?: (stepId: string) => void;
   [key: string]: unknown;
 }
 
@@ -147,4 +149,11 @@ export interface NodeOverviewHeaderProps {
 export interface NodeOverviewStatsProps {
   status: Status;
   estimatedTime: string;
+}
+
+export interface RoadmapStats {
+  totalSteps: number;
+  completedSteps: number;
+  progress: number;
+  totalEstimatedMonths: number;
 }

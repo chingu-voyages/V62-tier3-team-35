@@ -4,6 +4,7 @@ export type PathResponse = {
   success: boolean;
   data: {
     steps: RoadmapStepProps[];
+    hoursPerWeek: number;
   };
 };
 

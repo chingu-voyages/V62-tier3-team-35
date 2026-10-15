@@ -2,12 +2,21 @@
 
 import { ReactFlowProvider, type Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { ResourceItem, RoadmapNodeType, RoadmapProps, RoadmapStepProps, Status } from "@/lib/types/roadmap"
+import type {
+  ResourceItem,
+  RoadmapNodeType,
+  RoadmapProps,
+  RoadmapStepProps,
+  Status,
+} from "@/lib/types/roadmap";
 import { RoadmapView } from "./roadmap-view";
 
-export function createNodesFromDb(steps: RoadmapStepProps[]): RoadmapNodeType[] {
+export function createNodesFromDb(
+  steps: RoadmapStepProps[],
+): RoadmapNodeType[] {
   const firstIncompleteStepIdx = steps.findIndex((s) => s.status !== "done");
-  const activeStepIdx = firstIncompleteStepIdx !== -1 ? firstIncompleteStepIdx : 0;
+  const activeStepIdx =
+    firstIncompleteStepIdx !== -1 ? firstIncompleteStepIdx : 0;
 
   return steps.map((step, stepIndex) => {
     let stepStatus: Status = "upcoming";
@@ -17,14 +26,20 @@ export function createNodesFromDb(steps: RoadmapStepProps[]): RoadmapNodeType[] 
       stepStatus = "in_progress";
     }
 
-    const firstIncompleteTopicIdx = step.topics.findIndex((t) => t.status !== "done");
-    const activeTopicIdx = firstIncompleteTopicIdx !== -1 ? firstIncompleteTopicIdx : 0;
+    const firstIncompleteTopicIdx = step.topics.findIndex(
+      (t) => t.status !== "done",
+    );
+    const activeTopicIdx =
+      firstIncompleteTopicIdx !== -1 ? firstIncompleteTopicIdx : 0;
 
     const topics = step.topics.map((t, topicIndex) => {
       let topicStatus: Status = "upcoming";
       if (stepStatus === "done" || t.status === "done") {
         topicStatus = "done";
-      } else if (stepStatus === "in_progress" && topicIndex === activeTopicIdx) {
+      } else if (
+        stepStatus === "in_progress" &&
+        topicIndex === activeTopicIdx
+      ) {
         topicStatus = "in_progress";
       }
 
@@ -37,7 +52,7 @@ export function createNodesFromDb(steps: RoadmapStepProps[]): RoadmapNodeType[] 
     });
 
     const resources = step.topics.flatMap((t) =>
-      Array.isArray(t.resources) ? (t.resources as ResourceItem[]) : []
+      Array.isArray(t.resources) ? (t.resources as ResourceItem[]) : [],
     );
 
     return {
@@ -94,7 +109,7 @@ function createEdges(roadmap: RoadmapStepProps[]): Edge[] {
   });
 }
 
-export function Roadmap({ roadmap }: RoadmapProps) {
+export function Roadmap({ roadmap, onStepComplete }: RoadmapProps) {
   if (!roadmap || roadmap.length === 0) return null;
 
   const nodes = createNodesFromDb(roadmap);
@@ -103,7 +118,11 @@ export function Roadmap({ roadmap }: RoadmapProps) {
   return (
     <div className="h-full w-full relative">
       <ReactFlowProvider>
-        <RoadmapView initialNodes={nodes} edges={edges} />
+        <RoadmapView
+          initialNodes={nodes}
+          edges={edges}
+          onStepComplete={onStepComplete}
+        />
       </ReactFlowProvider>
     </div>
   );
