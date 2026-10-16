@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Route, Home, Plus, ChevronsLeft, type LucideIcon } from "lucide-react";
 
 import { cn } from "cn";
@@ -55,6 +56,12 @@ export function AppSidebar({
   onToggle,
   className,
 }: AppSidebarProps) {
+  const pathname = usePathname();
+
+  const isHome = pathname === "/";
+  const isRoadmaps = pathname === "/roadmaps";
+  const isNewRoadmap = pathname.startsWith("/generate-path");
+
   return (
     <aside
       className={cn(
@@ -99,15 +106,22 @@ export function AppSidebar({
       </div>
 
       <nav className={cn("mt-8 space-y-2", collapsed && "lg:space-y-3")}>
-        <SidebarLink icon={Home} label="Home" collapsed={collapsed} href="/" />
         <SidebarLink
-          active
+          active={isHome}
+          icon={Home}
+          label="Home"
+          collapsed={collapsed}
+          href="/"
+        />
+        <SidebarLink
+          active={isRoadmaps}
           icon={Route}
           label="Roadmaps"
           collapsed={collapsed}
           href="/roadmaps"
         />
         <SidebarLink
+          active={isNewRoadmap}
           icon={Plus}
           label="New roadmap"
           collapsed={collapsed}
