@@ -68,7 +68,7 @@ export function SidebarUserMenu({ collapsed }: SidebarUserMenuProps) {
           className={cn(
             "flex h-14 w-full items-center gap-3 rounded-full p-1.5 text-left transition-colors",
             "hover:bg-white/10 data-[state=open]:bg-white/10",
-            collapsed && "justify-center",
+            collapsed && "lg:justify-center",
           )}
         >
           <Avatar className="size-9 shrink-0">
@@ -80,7 +80,7 @@ export function SidebarUserMenu({ collapsed }: SidebarUserMenuProps) {
           <span
             className={cn(
               "flex-1 truncate whitespace-nowrap text-sm font-medium text-[#D5D9D2]",
-              collapsed && "hidden",
+              collapsed && "lg:hidden",
             )}
           >
             {name}
@@ -89,7 +89,7 @@ export function SidebarUserMenu({ collapsed }: SidebarUserMenuProps) {
           <ChevronRight
             className={cn(
               "mr-2 size-4 shrink-0 text-white/50",
-              collapsed && "hidden",
+              collapsed && "lg:hidden",
             )}
           />
         </button>

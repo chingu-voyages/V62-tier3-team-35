@@ -62,14 +62,14 @@ export function RoadmapCard({
 
   return (
     <Card className="group relative overflow-visible rounded-[18px] border-border bg-white shadow-[0_2px_10px_rgba(17,18,17,0.025)] p-0">
-      <CardContent className="p-4 flex! flex-col! items-start! h-full">
-        <div className="flex items-start gap-4">
+      <CardContent className="p-4 flex! flex-col! h-full overflow-hidden">
+        <div className="flex w-full min-w-0 items-start gap-4">
           <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-background text-foreground">
             <Pencil className="h-5 w-5" strokeWidth={1.8} />
           </div>
           {/* ---- */}
           <div className="min-w-0 flex-1">
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex min-w-0 items-start justify-between gap-2">
               <h3 className="truncate text-[16px] font-semibold tracking-[-0.02em] text-foreground">
                 {roadmap.title}
               </h3>
@@ -96,7 +96,7 @@ export function RoadmapCard({
             </p>
 
             {/* modules */}
-            <section className="mt-3 flex items-center gap-4 text-[11px] text-[#6b7280]">
+            <section className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-[#6b7280]">
               <span className="flex items-center gap-1.5">
                 <FileText className="h-4 w-4" />
                 {roadmap.modules} modules
@@ -108,7 +108,7 @@ export function RoadmapCard({
             </section>
 
             {/* progress */}
-            <section className="mt-3 flex items-center gap-5">
+            <section className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
               <div className="flex gap-2 items-center">
                 <div
                   className="relative h-7 w-7 rounded-full"

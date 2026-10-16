@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { firstStepPath } from "@/components/generate-path/step-config";
-import { DashboardShell } from "@/components/common/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { RoadmapCard, type Roadmap } from "@/components/roadmaps/roadmap-card";
 import { FilterTabs, PathFilter } from "./filter-tabs";
@@ -148,8 +147,8 @@ export function RoadmapsDashboard() {
   }, [revalidate]);
 
   return (
-    <DashboardShell className="flex h-screen w-full flex-col py-8 pr-8">
-      <header className="flex shrink-0 items-start justify-between gap-5">
+    <div className="flex h-screen w-full flex-col px-5 pb-8 lg:pt-8 lg:pr-8">
+      <header className="flex shrink-0 flex-col items-start gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-[28px] font-semibold tracking-[-0.045em] text-foreground sm:text-[30px]">
             Roadmaps
@@ -158,7 +157,7 @@ export function RoadmapsDashboard() {
             Choose a learning path and start building real skills step by step.
           </p>
         </div>
-        <Button asChild variant="primary" size="lg" className="ml-auto">
+        <Button asChild variant="primary" size="lg" className="sm:ml-auto">
           <Link href={firstStepPath}>
             <Plus /> New path
           </Link>
@@ -173,7 +172,7 @@ export function RoadmapsDashboard() {
             {paths.length} roadmaps
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <FilterTabs
             value={filter}
             onValueChange={setFilter}
@@ -220,6 +219,6 @@ export function RoadmapsDashboard() {
           </div>
         )}
       </section>
-    </DashboardShell>
+    </div>
   );
 }

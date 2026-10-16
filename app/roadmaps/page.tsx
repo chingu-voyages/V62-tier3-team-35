@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { RoadmapsDashboard } from "@/components/roadmaps/roadmaps-dashboard";
+import { DashboardShell } from "@/components/common/dashboard-shell";
 
 export const metadata: Metadata = {
   title: "My Roadmaps",
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function RoadmapsPage() {
-  return <RoadmapsDashboard />;
+  return (
+    <DashboardShell>
+      <RoadmapsDashboard />
+    </DashboardShell>
+  );
 }

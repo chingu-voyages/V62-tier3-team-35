@@ -25,9 +25,9 @@ export function FilterTabs({
     <Tabs
       value={value}
       onValueChange={(v) => onValueChange(v as PathFilter)}
-      className="h-11"
+      className="h-11 max-w-full min-w-0"
     >
-      <TabsList className="rounded-full border bg-card p-0 group-data-horizontal/tabs:h-11">
+      <TabsList className="rounded-full border bg-card p-0 group-data-horizontal/tabs:h-11 max-w-full overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
         {FILTERS.map(({ value, label }) => (
           <TabsTrigger
             key={value}

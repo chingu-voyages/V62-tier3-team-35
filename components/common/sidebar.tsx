@@ -1,7 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Route, Home, Plus, ChevronsLeft, type LucideIcon } from "lucide-react";
+import {
+  Route,
+  Home,
+  Plus,
+  ChevronsLeft,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 
 import { cn } from "cn";
 import { Logo } from "../logo";
@@ -13,6 +20,7 @@ type SidebarLinkProps = {
   label: string;
   collapsed: boolean;
   href: string;
+  onNavigate?: () => void;
 };
 
 function SidebarLink({
@@ -21,11 +29,13 @@ function SidebarLink({
   label,
   collapsed,
   href,
+  onNavigate,
 }: SidebarLinkProps) {
   return (
     <Link
       href={href}
       aria-label={label}
+      onClick={onNavigate}
       className={cn(
         "flex h-11 w-full items-center gap-3 rounded-full px-3 text-left text-[14px] transition",
         collapsed && "lg:justify-center lg:px-0",
@@ -48,12 +58,16 @@ function SidebarLink({
 type AppSidebarProps = {
   collapsed: boolean;
   onToggle: () => void;
+  mobileOpen: boolean;
+  onMobileClose: () => void;
   className?: string;
 };
 
 export function AppSidebar({
   collapsed,
   onToggle,
+  mobileOpen,
+  onMobileClose,
   className,
 }: AppSidebarProps) {
   const pathname = usePathname();
@@ -65,17 +79,18 @@ export function AppSidebar({
   return (
     <aside
       className={cn(
-        "fixed left-4 top-4 bottom-4 z-40",
+        "fixed left-4 top-4 bottom-4 z-50",
         "flex flex-col overflow-hidden rounded-3xl bg-foreground text-white",
-        "shadow-xl px-3 py-4 transition-[width] duration-300",
-        collapsed ? "w-20" : "w-48",
+        "shadow-xl px-3 py-4 transition-[width,transform] duration-300",
+        collapsed ? "w-48 lg:w-20" : "w-48",
+        mobileOpen ? "translate-x-0" : "translate-x-[-130%] lg:translate-x-0",
         className,
       )}
     >
       <div
         className={cn(
-          "flex items-center px-2 py-2",
-          collapsed ? "justify-center" : "justify-between",
+          "flex items-center justify-between px-2 py-2",
+          collapsed && "lg:justify-center",
         )}
       >
         <div className="flex items-center gap-2.5">
@@ -92,9 +107,18 @@ export function AppSidebar({
           </span>
         </div>
         <button
+          type="button"
+          aria-label="Close sidebar"
+          onClick={onMobileClose}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/60 transition hover:bg-white/15 hover:text-white lg:hidden"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           onClick={onToggle}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/60 transition hover:bg-white/15 hover:text-white"
+          className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/60 transition hover:bg-white/15 hover:text-white lg:flex"
         >
           <ChevronsLeft
             className={cn(
@@ -112,6 +136,7 @@ export function AppSidebar({
           label="Home"
           collapsed={collapsed}
           href="/"
+          onNavigate={onMobileClose}
         />
         <SidebarLink
           active={isRoadmaps}
@@ -119,6 +144,7 @@ export function AppSidebar({
           label="Roadmaps"
           collapsed={collapsed}
           href="/roadmaps"
+          onNavigate={onMobileClose}
         />
         <SidebarLink
           active={isNewRoadmap}
@@ -126,6 +152,7 @@ export function AppSidebar({
           label="New roadmap"
           collapsed={collapsed}
           href="/generate-path/career-goal"
+          onNavigate={onMobileClose}
         />
       </nav>
 
