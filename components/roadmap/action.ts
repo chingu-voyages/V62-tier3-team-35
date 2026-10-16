@@ -114,6 +114,25 @@ export async function completeTopic(topicId: string, stepId: string) {
         completedAt: new Date(),
       },
     });
+
+    // Check if other steps are done,
+    // only if this one is done.
+    const remainingSteps = await prisma.step.count({
+      where: {
+        learningPathId: step.learningPathId,
+        id: { not: stepId },
+        status: { not: "done" },
+      },
+    });
+
+    if (remainingSteps === 0) {
+      await prisma.learningPath.update({
+        where: { id: step.learningPathId },
+        data: {
+          status: "completed",
+        },
+      });
+    }
   }
 
   return { success: true, allDone: allTopicsDone };
