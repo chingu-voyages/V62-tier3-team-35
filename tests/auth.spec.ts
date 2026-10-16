@@ -170,7 +170,9 @@ test.describe("Sign Up Flow", () => {
     await page.getByLabel("Full name").fill("New User");
     await page.getByLabel("Email").fill(`signup-${crypto.randomUUID()}@example.com`);
     await page.getByPlaceholder("Create your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-up/**");
     await page.getByRole("button", { name: "Create account", exact: true }).click();
+    await responsePromise;
 
     await expect(page).toHaveURL(/\/roadmaps$/);
   });

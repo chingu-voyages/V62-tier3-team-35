@@ -48,7 +48,7 @@ CREATE INDEX "learning_paths_user_id_idx" ON "learning_paths"("user_id");
 CREATE UNIQUE INDEX "steps_learning_path_id_order_key" ON "steps"("learning_path_id", "order");
 
 -- AddForeignKey
-ALTER TABLE "learning_paths" ADD CONSTRAINT "learning_paths_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "learning_paths" ADD CONSTRAINT "learning_paths_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "steps" ADD CONSTRAINT "steps_learning_path_id_fkey" FOREIGN KEY ("learning_path_id") REFERENCES "learning_paths"("id") ON DELETE CASCADE ON UPDATE CASCADE;

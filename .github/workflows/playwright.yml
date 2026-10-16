@@ -8,6 +8,24 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pathway
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pathway
+      BETTER_AUTH_SECRET: ci-playwright-secret-0123456789abcdef
+      BETTER_AUTH_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,6 +35,8 @@ jobs:
         run: npm install
       - name: Generate Prisma Client
         run: npx prisma generate
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
       - name: Run lint
         run: npm run lint
       - name: Build application
