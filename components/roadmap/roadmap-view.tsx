@@ -84,10 +84,12 @@ export function RoadmapView({
           ),
         ) || 0;
 
-      // Keep the roadmap aligned to the top after fitting the view.
+      // Keep the roadmap aligned to the top and nudge it left after fitting.
+      const viewport = getViewport();
       setViewport({
-        ...getViewport(),
-        y: navbarHeight + 62,
+        ...viewport,
+        x: viewport.x - 120,
+        y: navbarHeight + 90,
       });
     });
 
