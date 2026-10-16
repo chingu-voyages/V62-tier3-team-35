@@ -62,7 +62,7 @@ export async function getPathCountsByUserId(userId: string) {
     prisma.learningPath.count({ where: { userId, status: "completed" } }),
   ]);
 
-  return { all, "in-progress": inProgress, completed };
+  return { all, in_progress: inProgress, completed };
 }
 
 export async function getPathById(id: string, userId: string) {

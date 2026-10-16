@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const FILTERS = [
   { value: "all", label: "All Paths" },
-  { value: "in-progress", label: "In Progress" },
+  { value: "in_progress", label: "In Progress" },
   { value: "completed", label: "Completed" },
 ] as const;
 

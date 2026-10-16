@@ -27,7 +27,7 @@ export type Roadmap = {
   progress: number;
   completed: number;
   skills: string[];
-  status: "progress" | "completed";
+  status: "in_progress" | "completed";
 };
 
 type RoadmapCardProps = {

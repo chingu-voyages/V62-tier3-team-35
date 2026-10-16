@@ -3,7 +3,7 @@ import type { PathFilter } from "@/components/roadmaps/filter-tabs";
 
 const STATUS_BY_FILTER: Record<PathFilter, string | null> = {
   all: null,
-  "in-progress": "in_progress",
+  in_progress: "in_progress",
   completed: "completed",
 };
 

@@ -35,6 +35,6 @@ export function learningPathToRoadmap(path: LearningPathWithSteps): Roadmap {
     progress: modules === 0 ? 0 : Math.round((completed / modules) * 100),
     completed,
     skills: path.skills,
-    status: path.status === "completed" ? "completed" : "progress",
+    status: path.status === "completed" ? "completed" : "in_progress",
   };
 }

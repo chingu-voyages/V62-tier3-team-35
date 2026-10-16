@@ -27,7 +27,7 @@ export function RoadmapsDashboard() {
   const [paths, setPaths] = useState<LearningPathWithSteps[]>([]);
   const [counts, setCounts] = useState<Record<PathFilter, number>>({
     all: 0,
-    "in-progress": 0,
+    in_progress: 0,
     completed: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -58,9 +58,9 @@ export function RoadmapsDashboard() {
       setPaths((prev) => prev.filter((path) => path.id !== id));
       setCounts((prev) => ({
         all: Math.max(0, prev.all - 1),
-        "in-progress": Math.max(
+        in_progress: Math.max(
           0,
-          prev["in-progress"] - (status === "progress" ? 1 : 0),
+          prev.in_progress - (status === "in_progress" ? 1 : 0),
         ),
         completed: Math.max(
           0,
