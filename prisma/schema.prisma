@@ -83,8 +83,6 @@ model LearningPath {
   status       PathStatus   @default(in_progress)
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
-  title        String?      @db.VarChar(300)
-  description  String?
   user         User         @relation(fields: [userId], references: [id])
   steps        Step[]
 
