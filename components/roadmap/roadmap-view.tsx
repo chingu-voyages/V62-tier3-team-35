@@ -20,9 +20,14 @@ const nodeTypes = {
 type RoadmapViewProps = {
   initialNodes: RoadmapNodeType[];
   edges: Edge[];
+  onStepComplete?: (stepId: string) => void;
 };
 
-export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
+export function RoadmapView({
+  initialNodes,
+  edges,
+  onStepComplete,
+}: RoadmapViewProps) {
   const [nodes, setNodes, onNodesChange] =
     useNodesState<RoadmapNodeType>(initialNodes);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -48,6 +53,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
             y,
           },
         };
+
         y += (node.measured?.height ?? 0) + gap;
 
         return updatedNode;
@@ -59,23 +65,33 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
     if (!nodesInitialized) return;
 
     // Fit all roadmap nodes into the available viewport.
-    const fitRoadmap = async () => {
+    const frame = requestAnimationFrame(async () => {
       await fitView({
-        padding: 0.2,
-        minZoom: 0.4,
-        maxZoom: 1,
+        padding: {
+          top: 0.24,
+          bottom: 0.2,
+          left: 0.2,
+          right: 0.2,
+        },
+        minZoom: 0.8,
+        maxZoom: 1.2,
       });
 
-      const viewport = getViewport();
+      const navbarHeight =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--navbar-height",
+          ),
+        ) || 0;
 
       // Keep the roadmap aligned to the top after fitting the view.
       setViewport({
-        ...viewport,
-        y: 0,
+        ...getViewport(),
+        y: navbarHeight + 62,
       });
-    };
+    });
 
-    fitRoadmap();
+    return () => cancelAnimationFrame(frame);
   }, [nodesInitialized, fitView, getViewport, setViewport]);
 
   const onSelectionChange: OnSelectionChangeFunc<RoadmapNodeType, Edge> =
@@ -111,10 +127,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
   const selectedNode = nodes.find((node) => node.id === selectedNodeId);
 
   return (
-    <div
-      className="relative w-full h-full"
-      style={{ height: "calc(100svh - var(--navbar-height))" }}
-    >
+    <div className="relative w-full h-svh">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -136,6 +149,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
           activeTopic={activeTopic}
           setActiveTopic={setActiveTopic}
           setSelectedNodeId={setSelectedNodeId}
+          onStepComplete={onStepComplete}
         />
       )}
     </div>

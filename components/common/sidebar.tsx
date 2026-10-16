@@ -73,7 +73,7 @@ export function AppSidebar({
       >
         <div className="flex items-center gap-2.5">
           <div className={cn(collapsed && "lg:hidden")}>
-            <Logo />
+            <Logo size="sm" />
           </div>
           <span
             className={cn(
