@@ -117,11 +117,7 @@ export function AppSidebar({
 
       <div className="mt-auto">
         {/* Contributors card can go here, above the user row */}
-        <SidebarUserMenu
-          name="Alex Chen"
-          collapsed={collapsed}
-          onLogout={() => {}}
-        />
+        <SidebarUserMenu collapsed={collapsed} />
       </div>
     </aside>
   );

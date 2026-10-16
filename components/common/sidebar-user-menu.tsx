@@ -1,9 +1,14 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronRight, LogOut, Settings, User } from "lucide-react";
+import { toast } from "sonner";
 
+import { authClient } from "@/lib/auth-client";
 import { cn } from "cn";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Spinner } from "@/components/ui/spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,25 +18,47 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type SidebarUserMenuProps = {
-  name: string;
   collapsed: boolean;
-  onLogout: () => void;
 };
 
 function getInitials(name: string) {
   return name
-    .split(" ")
+    .trim()
+    .split(/\s+/)
     .map((part) => part[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
 }
 
-export function SidebarUserMenu({
-  name,
-  collapsed,
-  onLogout,
-}: SidebarUserMenuProps) {
+export function SidebarUserMenu({ collapsed }: SidebarUserMenuProps) {
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const name = session?.user.name || session?.user.email || "User";
+  const initials = getInitials(name);
+
+  const handleLogout = async () => {
+    if (isSigningOut) return;
+    setIsSigningOut(true);
+
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          setIsSigningOut(false);
+          router.push("/login");
+        },
+        onError: (ctx) => {
+          toast.error(
+            ctx.error.message || "We couldn't sign you out. Try again.",
+          );
+          setIsSigningOut(false);
+        },
+      },
+    });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,7 +73,7 @@ export function SidebarUserMenu({
         >
           <Avatar className="size-9 shrink-0">
             <AvatarFallback className="bg-white/10 text-[13px] font-medium text-[#D5D9D2]">
-              {getInitials(name)}
+              {initials}
             </AvatarFallback>
           </Avatar>
 
@@ -90,11 +117,16 @@ export function SidebarUserMenu({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onSelect={onLogout}
+          onSelect={handleLogout}
+          disabled={isSigningOut}
           variant="destructive"
           className="gap-2 rounded-[14px] cursor-pointer p-2"
         >
-          <LogOut className="size-4" />
+          {isSigningOut ? (
+            <Spinner className="size-4" />
+          ) : (
+            <LogOut className="size-4" />
+          )}
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
