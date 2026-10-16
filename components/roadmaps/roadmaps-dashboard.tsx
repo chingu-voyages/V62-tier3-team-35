@@ -6,10 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { firstStepPath } from "@/components/generate-path/step-config";
-import { AppSidebar } from "@/components/common/sidebar";
+import { DashboardShell } from "@/components/common/dashboard-shell";
 import { Button } from "@/components/ui/button";
 import { RoadmapCard, type Roadmap } from "@/components/roadmaps/roadmap-card";
-import { cn } from "cn";
 import { FilterTabs, PathFilter } from "./filter-tabs";
 import { SortMenu, SortValue } from "./sort-menu";
 import { getRoadmaps } from "@/lib/api/paths";
@@ -23,7 +22,6 @@ import type { RoadmapDetails } from "./edit-roadmap-dialog";
 
 export function RoadmapsDashboard() {
   const router = useRouter();
-  const [collapsed, setCollapsed] = useState(false);
   const [filter, setFilter] = useState<PathFilter>("all");
   const [sort, onSortChange] = useState<SortValue>("recent"); // kept for compatibility with SortMenu but not used for filtering
   const [paths, setPaths] = useState<LearningPathWithSteps[]>([]);
@@ -150,91 +148,78 @@ export function RoadmapsDashboard() {
   }, [revalidate]);
 
   return (
-    <div className="flex h-screen bg-[#FAFBF7]">
-      <AppSidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed((c) => !c)}
-      />
+    <DashboardShell className="flex h-screen w-full flex-col py-8 pr-8">
+      <header className="flex shrink-0 items-start justify-between gap-5">
+        <div>
+          <h1 className="text-[28px] font-semibold tracking-[-0.045em] text-foreground sm:text-[30px]">
+            Roadmaps
+          </h1>
+          <p className="mt-0.5 text-[14px] text-foreground">
+            Choose a learning path and start building real skills step by step.
+          </p>
+        </div>
+        <Button asChild variant="primary" size="lg" className="ml-auto">
+          <Link href={firstStepPath}>
+            <Plus /> New path
+          </Link>
+        </Button>
+      </header>
+      <section className="mt-10 flex shrink-0 flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex items-center gap-3">
+          <h2 className="text-[21px] font-semibold tracking-[-0.03em] text-foreground">
+            Learning paths
+          </h2>
+          <span className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground font-medium">
+            {paths.length} roadmaps
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <FilterTabs
+            value={filter}
+            onValueChange={setFilter}
+            counts={counts}
+          />
 
-      <main
-        className={cn(
-          "flex h-screen w-full flex-col  py-8 pr-8 transition-[padding] duration-300",
-          collapsed ? "pl-35" : "pl-63",
+          <SortMenu sort={sort} onSortChange={onSortChange} />
+        </div>
+      </section>
+      <section className="mt-10 min-h-0 flex-1 overflow-y-auto">
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <Spinner />
+          </div>
         )}
-      >
-        <header className="flex shrink-0 items-start justify-between gap-5">
-          <div>
-            <h1 className="text-[28px] font-semibold tracking-[-0.045em] text-foreground sm:text-[30px]">
-              Roadmaps
-            </h1>
-            <p className="mt-0.5 text-[14px] text-foreground">
-              Choose a learning path and start building real skills step by
-              step.
+
+        {error && !isLoading && (
+          <Banner variant="destructive" title="Error" description={error} />
+        )}
+
+        {!isLoading && !error && paths.length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+            <p className="text-muted-foreground">
+              No learning paths found. Start by creating your first path.
             </p>
+            <Button asChild variant="primary">
+              <Link href={firstStepPath}>
+                <Plus /> New path
+              </Link>
+            </Button>
           </div>
-          <Button asChild variant="primary" size="lg" className="ml-auto">
-            <Link href={firstStepPath}>
-              <Plus /> New path
-            </Link>
-          </Button>
-        </header>
-        <section className="mt-10 flex shrink-0 flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex items-center gap-3">
-            <h2 className="text-[21px] font-semibold tracking-[-0.03em] text-foreground">
-              Learning paths
-            </h2>
-            <span className="rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground font-medium">
-              {paths.length} roadmaps
-            </span>
+        )}
+
+        {!isLoading && !error && paths.length > 0 && (
+          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 px-1">
+            {paths.map((path) => (
+              <RoadmapCard
+                key={path.id}
+                roadmap={learningPathToRoadmap(path)}
+                onUpdated={(values) => handlePathUpdated(path.id, values)}
+                onDeleted={(status) => handlePathDeleted(path.id, status)}
+              />
+            ))}
           </div>
-          <div className="flex items-center gap-2">
-            <FilterTabs
-              value={filter}
-              onValueChange={setFilter}
-              counts={counts}
-            />
-
-            <SortMenu sort={sort} onSortChange={onSortChange} />
-          </div>
-        </section>
-        <section className="mt-10 min-h-0 flex-1 overflow-y-auto">
-          {isLoading && (
-            <div className="flex items-center justify-center py-12">
-              <Spinner />
-            </div>
-          )}
-
-          {error && !isLoading && (
-            <Banner variant="destructive" title="Error" description={error} />
-          )}
-
-          {!isLoading && !error && paths.length === 0 && (
-            <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
-              <p className="text-muted-foreground">
-                No learning paths found. Start by creating your first path.
-              </p>
-              <Button asChild variant="primary">
-                <Link href={firstStepPath}>
-                  <Plus /> New path
-                </Link>
-              </Button>
-            </div>
-          )}
-
-          {!isLoading && !error && paths.length > 0 && (
-            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 px-1">
-              {paths.map((path) => (
-                <RoadmapCard
-                  key={path.id}
-                  roadmap={learningPathToRoadmap(path)}
-                  onUpdated={(values) => handlePathUpdated(path.id, values)}
-                  onDeleted={(status) => handlePathDeleted(path.id, status)}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-      </main>
-    </div>
+        )}
+      </section>
+    </DashboardShell>
   );
 }
