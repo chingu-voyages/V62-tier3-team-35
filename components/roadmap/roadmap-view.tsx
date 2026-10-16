@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  Background,
   ReactFlow,
   useNodesInitialized,
   useNodesState,
@@ -126,9 +125,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
         nodesDraggable={false}
         nodesConnectable={false}
         proOptions={{ hideAttribution: true }}
-      >
-        <Background />
-      </ReactFlow>
+      />
 
       {selectedNode && (
         <NodeOverview
