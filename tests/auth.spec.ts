@@ -191,6 +191,6 @@ test.describe("Sign Up Flow", () => {
     await page.getByRole("button", { name: "Create account", exact: true }).click();
     await responsePromise;
 
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL("/roadmaps");
   });
 });
