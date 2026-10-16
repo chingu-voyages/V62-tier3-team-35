@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Route, Home, Plus, ChevronsLeft, type LucideIcon } from "lucide-react";
 
 import { cn } from "cn";
-import { PathwayLogo } from "../roadmaps/pathway-logo";
+import { Logo } from "../logo";
 import { SidebarUserMenu } from "./sidebar-user-menu";
 
 type SidebarLinkProps = {
@@ -73,7 +73,7 @@ export function AppSidebar({
       >
         <div className="flex items-center gap-2.5">
           <div className={cn(collapsed && "lg:hidden")}>
-            <PathwayLogo width={30} height={30} />
+            <Logo />
           </div>
           <span
             className={cn(
