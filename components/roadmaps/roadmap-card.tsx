@@ -186,9 +186,14 @@ export function RoadmapCard({
 
         <div className="sm:pl-5 w-full flex flex-col gap-4 mt-auto">
           {/* tags */}
-          <div className="mt-6">
-            <TagList tags={roadmap.skills} isDone={isDone} />
-          </div>
+
+          {roadmap.skills.length > 0
+            &&
+            (
+              <div className="mt-6">
+                <TagList tags={roadmap.skills} isDone={isDone} />
+              </div>
+            )}
 
           <Button
             asChild
