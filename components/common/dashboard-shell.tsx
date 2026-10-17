@@ -42,13 +42,14 @@ export function DashboardShell({ children, className }: DashboardShellProps) {
           className,
         )}
       >
-        <header className="flex shrink-0 items-center gap-3 p-4 lg:hidden h-(--navbar-height)">
+        <header className="flex shrink-0 items-center gap-1 p-4 lg:hidden h-(--navbar-height)">
           <Button
             type="button"
             variant="ghost"
             size="icon-lg"
             aria-label="Open sidebar"
             onClick={() => setMobileOpen(true)}
+            className="relative z-30"
           >
             <Menu className="h-5 w-5" />
           </Button>
