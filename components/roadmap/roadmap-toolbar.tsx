@@ -54,7 +54,7 @@ export default function RoadmapToolbar({
   const tabletPairStart = Math.floor(activeSlide / 2) * 2;
 
   return (
-    <div className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6">
+    <div className="fixed inset-x-0 top-0 z-20 px-3 pt-3 sm:px-6">
       <div className="relative mx-auto flex w-full items-start justify-center gap-2">
         <div className="flex h-9 min-w-0 w-fit max-w-[calc(100%-4.5rem)] items-center overflow-hidden rounded-full border border-border bg-card px-1.5 sm:h-11 sm:max-w-[60%] sm:px-6">
           {summaryItems.map(({ label, Icon }, index) => (

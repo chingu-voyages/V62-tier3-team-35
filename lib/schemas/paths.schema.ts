@@ -34,9 +34,11 @@ export const createPathSchema = z.object({
   learningPace: learningPaceSchema,
 });
 
-export const updatePathSchema = createPathSchema
-  .partial()
-  .extend({ status: pathStatusSchema.optional() });
+export const updatePathSchema = createPathSchema.partial().extend({
+  status: pathStatusSchema.optional(),
+  title: z.string().min(1, "Title is required").max(300).optional(),
+  description: z.string().max(2000).nullable().optional(),
+});
 
 export type CreatePathInput = z.infer<typeof createPathSchema>;
 export type UpdatePathInput = z.infer<typeof updatePathSchema>;

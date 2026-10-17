@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import {
-  Background,
   ReactFlow,
   useNodesInitialized,
   useNodesState,
@@ -85,10 +84,12 @@ export function RoadmapView({
           ),
         ) || 0;
 
-      // Keep the roadmap aligned to the top after fitting the view.
+      // Keep the roadmap aligned to the top and nudge it left after fitting.
+      const viewport = getViewport();
       setViewport({
-        ...getViewport(),
-        y: navbarHeight + 62,
+        ...viewport,
+        x: viewport.x - 120,
+        y: navbarHeight + 90,
       });
     });
 
@@ -139,9 +140,7 @@ export function RoadmapView({
         nodesDraggable={false}
         nodesConnectable={false}
         proOptions={{ hideAttribution: true }}
-      >
-        <Background />
-      </ReactFlow>
+      />
 
       {selectedNode && (
         <NodeOverview

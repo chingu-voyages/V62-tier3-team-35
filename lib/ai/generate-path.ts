@@ -29,6 +29,10 @@ export async function generatePath({
         Use your expertise to fill missing information based on the user's goal, level, and available time.
         Create a practical and realistic roadmap. Start from the user's current level and order technologies logically.
 
+        Give the overall learning path:
+        - title: a short course title (max 60 characters) that reflects the user's goal.
+        - description: a 2-3 sentence summary of what the path covers and who it is for.
+
         Include relevant known technologies with only the essential fundamentals needed for the goal, without repeating advanced material they already know.
         For each technology include:
         - title
@@ -58,6 +62,8 @@ export async function generatePath({
         Use exactly this structure:
 
         {
+          "title": "Frontend Developer Roadmap",
+          "description": "A practical path that takes you from web fundamentals to job-ready frontend skills, covering HTML, CSS, JavaScript, and React. Ideal for beginners who can commit a few hours each week.",
           "roadmap": [
             {
               "title": "JavaScript",

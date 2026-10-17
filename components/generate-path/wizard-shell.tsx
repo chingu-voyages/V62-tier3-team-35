@@ -22,7 +22,7 @@ function WizardShellInner({ children }: { children: ReactNode }) {
 
   const handleDiscard = () => {
     clearDraft();
-    router.push("/");
+    router.push("/roadmaps");
   };
 
   return (
