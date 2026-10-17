@@ -46,14 +46,11 @@ export function ActionMenu({
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild disabled={disabled}>
         <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "h-8 w-8 shrink-0 rounded-full text-foreground hover:bg-secondary",
-            className,
-          )}
+          variant="secondary"
+          size="icon-lg"
+          className={className}
         >
-          <MoreHorizontal className="h-5 w-5" />
+          <MoreHorizontal className="size-4" />
           <span className="sr-only">{label}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -73,7 +70,7 @@ export function ActionMenu({
               className={cn(
                 "gap-2 cursor-pointer",
                 destructive &&
-                  "text-destructive focus:bg-destructive-bg focus:text-destructive",
+                "text-destructive focus:bg-destructive-bg focus:text-destructive",
               )}
             >
               {Icon && <Icon className="h-4 w-4" />}
