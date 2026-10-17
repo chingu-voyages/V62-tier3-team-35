@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  //   DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -129,15 +128,6 @@ function EditRoadmapForm({
       )}
 
       <DialogFooter className="mt-10 gap-3 sm:justify-end">
-        {/* <DialogClose asChild>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-12 rounded-full bg-card px-6 text-[15px] font-medium"
-          >
-            Cancel
-          </Button>
-        </DialogClose> */}
         <Button
           type="submit"
           disabled={!isValid || isSaving}
