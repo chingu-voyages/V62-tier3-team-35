@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { firstStepPath } from "@/components/generate-path/step-config";
 import { Button } from "@/components/ui/button";
 import { RoadmapCard, type Roadmap } from "@/components/roadmaps/roadmap-card";
 import { FilterTabs, PathFilter } from "./filter-tabs";
-import { SortMenu, SortValue } from "./sort-menu";
+// SortMenu is temporarily commented out as server-side sorting is not yet implemented
+// import { SortMenu, SortValue } from "./sort-menu";
 import { getRoadmaps } from "@/lib/api/paths";
 import { Spinner } from "@/components/ui/spinner";
 import { Banner } from "@/components/common/banner";
@@ -20,9 +20,8 @@ import {
 import type { RoadmapDetails } from "./edit-roadmap-dialog";
 
 export function RoadmapsDashboard() {
-  const router = useRouter();
   const [filter, setFilter] = useState<PathFilter>("all");
-  const [sort, onSortChange] = useState<SortValue>("recent"); // kept for compatibility with SortMenu but not used for filtering
+  // const [sort, onSortChange] = useState<SortValue>("recent"); // Commented out with SortMenu
   const [paths, setPaths] = useState<LearningPathWithSteps[]>([]);
   const [counts, setCounts] = useState<Record<PathFilter, number>>({
     all: 0,
@@ -179,7 +178,8 @@ export function RoadmapsDashboard() {
             counts={counts}
           />
 
-          <SortMenu sort={sort} onSortChange={onSortChange} />
+          {/* SortMenu is temporarily commented out because sorting is disabled and not yet supported by the backend */}
+          {/* <SortMenu sort={sort} onSortChange={onSortChange} /> */}
         </div>
       </section>
       <section className="mt-10 min-h-0 flex-1 overflow-y-auto">
