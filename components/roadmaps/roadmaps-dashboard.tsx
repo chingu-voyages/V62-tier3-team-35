@@ -147,7 +147,7 @@ export function RoadmapsDashboard() {
   }, [revalidate]);
 
   return (
-    <div className="flex h-screen w-full flex-col px-5 pb-8 lg:pt-8 lg:pr-8">
+    <div className="flex h-[calc(100svh-var(--navbar-height))] lg:h-screen w-full flex-col px-5 pb-8 lg:pt-8 lg:pr-8">
       <header className="flex shrink-0 flex-col items-start gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-[28px] font-semibold tracking-[-0.045em] text-foreground sm:text-[30px]">
@@ -198,7 +198,7 @@ export function RoadmapsDashboard() {
             <p className="text-muted-foreground">
               No learning paths found. Start by creating your first path.
             </p>
-            <Button asChild variant="primary">
+            <Button asChild variant="primary" size="lg">
               <Link href={firstStepPath}>
                 <Plus /> New path
               </Link>
@@ -207,7 +207,7 @@ export function RoadmapsDashboard() {
         )}
 
         {!isLoading && !error && paths.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 px-1">
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-[repeat(auto-fit,410px)] 2xl:grid-cols-3 justify-start px-1">
             {paths.map((path) => (
               <RoadmapCard
                 key={path.id}
