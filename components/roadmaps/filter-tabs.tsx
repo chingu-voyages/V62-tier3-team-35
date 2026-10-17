@@ -35,7 +35,9 @@ export function FilterTabs({
             className="group h-11 flex-none gap-2 rounded-full border-0 sm:px-5 text-xs text-[#475467] shadow-none transition-colors not-data-[state=active]:hover:bg-secondary data-[state=active]:bg-foreground data-[state=active]:text-white data-[state=active]:shadow-none cursor-pointer"
           >
             {label}
-            <span> {counts[value]} </span>
+            <span className="grid h-5 min-w-5 place-items-center rounded-full bg-secondary text-xs font-semibold text-card-foreground group-data-[state=active]:bg-transparent group-data-[state=active]:text-white">
+              {counts[value]}
+            </span>
           </TabsTrigger>
         ))}
       </TabsList>
