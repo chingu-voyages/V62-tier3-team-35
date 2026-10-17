@@ -207,7 +207,7 @@ export function RoadmapsDashboard() {
         )}
 
         {!isLoading && !error && paths.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-[repeat(auto-fit,410px)] 2xl:grid-cols-3 justify-start px-1">
+          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 px-1">
             {paths.map((path) => (
               <RoadmapCard
                 key={path.id}

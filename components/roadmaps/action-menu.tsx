@@ -45,11 +45,14 @@ export function ActionMenu({
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild disabled={disabled}>
         <Button
-          variant="secondary"
-          size="icon-lg"
-          className={className}
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-8 w-8 shrink-0 rounded-full text-foreground hover:bg-secondary",
+            className,
+          )}
         >
-          <MoreHorizontal className="size-4" />
+          <MoreHorizontal className="h-5 w-5" />
           <span className="sr-only">{label}</span>
         </Button>
       </DropdownMenuTrigger>
