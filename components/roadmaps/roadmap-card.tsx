@@ -9,6 +9,7 @@ import {
   FileText,
   Clock3,
   Pencil,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,8 +41,13 @@ type RoadmapCardProps = {
 interface RoadmapCardContent {
   roadmap: Roadmap;
   className?: string;
+  isDone: boolean;
 }
-function RoadmapCardContent({ roadmap, className }: RoadmapCardContent) {
+function RoadmapCardContent({
+  roadmap,
+  className,
+  isDone,
+}: RoadmapCardContent) {
   return (
     <div className={cn("min-w-0 flex-1", className)}>
       <div className="flex min-w-0 items-start justify-between gap-2">
@@ -74,7 +80,12 @@ function RoadmapCardContent({ roadmap, className }: RoadmapCardContent) {
               background: `conic-gradient(#65b82d ${roadmap.progress * 3.6}deg, #e0e3da 0deg)`,
             }}
           >
-            <div className="absolute inset-0.75 flex items-center justify-center rounded-full bg-white" />
+            <div
+              className={cn(
+                "absolute inset-0.75 flex items-center justify-center rounded-full",
+                isDone ? "bg-[#F0FFC4AB]" : "bg-white",
+              )}
+            />
           </div>
           <span className="text-md font-semibold text-foreground">
             {roadmap.progress}%
@@ -85,8 +96,7 @@ function RoadmapCardContent({ roadmap, className }: RoadmapCardContent) {
         </span>
       </section>
     </div>
-
-  )
+  );
 }
 
 export function RoadmapCard({
@@ -113,22 +123,45 @@ export function RoadmapCard({
     }
   }
 
+  const isDone = roadmap.status === "completed" || roadmap.progress === 100;
+
   return (
-    <Card className="max-w-100 sm:max-w-124 2xl:max-w-136 group relative overflow-visible rounded-[18px] border-border bg-white shadow-[0_2px_10px_rgba(17,18,17,0.025)] p-0 w-fit">
+    <Card
+      className={cn(
+        "max-w-100 sm:max-w-124 2xl:max-w-136 group relative overflow-visible rounded-[18px] p-0 w-fit transition-colors",
+        isDone
+          ? "bg-[#F0FFC4AB] border-transparent"
+          : "bg-white border-border shadow-[0_2px_10px_rgba(17,18,17,0.025)]",
+      )}
+    >
       <CardContent className="p-4 h-full overflow-hidden">
         <div className="flex w-full min-w-0 items-start gap-5 justify-between sm:justify-start">
-          <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-background text-foreground">
-            <Pencil className="size-6" strokeWidth={1.8} />
+          <div
+            className={cn(
+              "flex size-14 shrink-0 items-center justify-center rounded-full transition-colors",
+              isDone
+                ? "bg-[#42B229] text-white"
+                : "bg-background text-foreground",
+            )}
+          >
+            {isDone ? (
+              <Check className="size-6" strokeWidth={2.5} />
+            ) : (
+              <Pencil className="size-6" strokeWidth={1.8} />
+            )}
           </div>
-
 
           <RoadmapCardContent
             roadmap={roadmap}
             className="sm:block hidden"
+            isDone={isDone}
           />
           <ActionMenu
             label="Roadmap actions"
-            className="-mr-2 -mt-2"
+            className={cn(
+              "-mr-2 -mt-2",
+              isDone && "bg-[#F0FFC4AB] hover:bg-[#42B229] hover:text-white",
+            )}
             items={[
               {
                 label: "Edit roadmap",
@@ -143,20 +176,18 @@ export function RoadmapCard({
               },
             ]}
           />
-
-          {/* -------- */}
         </div>
-
 
         <RoadmapCardContent
           roadmap={roadmap}
           className="block sm:hidden"
+          isDone={isDone}
         />
 
         <div className="sm:pl-5 w-full flex flex-col gap-4 mt-auto">
           {/* tags */}
           <div className="mt-6">
-            <TagList tags={roadmap.skills} />
+            <TagList tags={roadmap.skills} isDone={isDone} />
           </div>
 
           <Button
@@ -166,7 +197,8 @@ export function RoadmapCard({
             className="justify-start w-fit"
           >
             <Link href={`/roadmaps/${roadmap.id}`}>
-              Continue learning <ArrowRight className="h-4 w-4 ml-auto" />
+              {isDone ? "Review roadmap" : "Continue learning"}{" "}
+              <ArrowRight className="h-4 w-4 ml-auto" />
             </Link>
           </Button>
         </div>
