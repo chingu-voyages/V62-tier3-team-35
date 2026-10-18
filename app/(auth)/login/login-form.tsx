@@ -41,12 +41,11 @@ export default function LoginForm() {
         {
           email: data.email,
           password: data.password,
-          callbackURL: "/",
+          callbackURL: "/roadmaps",
         },
         {
           onSuccess: () => {
-            // TODO: change with the user dashboard
-            router.push("/");
+            router.push("/roadmaps");
           },
           onError: (ctx) => {
             form.setError("root", {
@@ -151,11 +150,7 @@ export default function LoginForm() {
         type="submit"
         disabled={isPending || form.formState.isSubmitting}
       >
-        {isPending ? (
-          <Spinner />
-        ) : (
-          "Log in"
-        )}
+        {isPending ? <Spinner /> : "Log in"}
       </Button>
     </form>
   );

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserId } from "@/lib/auth";
 import { noteSchema, type NoteSchemaType } from "@/lib/schemas/roadmap-notes";
+import type { Topic } from "@/lib/generated/prisma/browser";
 
 export async function addNote(stepId: string, input: NoteSchemaType) {
   const userId = await getCurrentUserId();
@@ -88,7 +89,7 @@ export async function completeTopic(topicId: string, stepId: string) {
     throw new Error("Step not found or unauthorized");
   }
 
-  const topicExists = step.topics.some((t) => t.id === topicId);
+  const topicExists = step.topics.some((t: Topic) => t.id === topicId);
   if (!topicExists) {
     throw new Error("Topic not found in this step");
   }
@@ -102,7 +103,7 @@ export async function completeTopic(topicId: string, stepId: string) {
   });
 
   const allTopicsDone = step.topics.every(
-    (t) => t.id === topicId || t.status === "done",
+    (t: Topic) => t.id === topicId || t.status === "done",
   );
 
   if (allTopicsDone) {
@@ -113,6 +114,25 @@ export async function completeTopic(topicId: string, stepId: string) {
         completedAt: new Date(),
       },
     });
+
+    // Check if other steps are done,
+    // only if this one is done.
+    const remainingSteps = await prisma.step.count({
+      where: {
+        learningPathId: step.learningPathId,
+        id: { not: stepId },
+        status: { not: "done" },
+      },
+    });
+
+    if (remainingSteps === 0) {
+      await prisma.learningPath.update({
+        where: { id: step.learningPathId },
+        data: {
+          status: "completed",
+        },
+      });
+    }
   }
 
   return { success: true, allDone: allTopicsDone };

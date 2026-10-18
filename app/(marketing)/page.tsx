@@ -12,7 +12,7 @@ export default function Home() {
       <a
         data-landing
         href="#main-content"
-        className="sr-only fixed top-2 left-4 z-[100] rounded-md bg-background px-4 py-2 text-foreground focus:not-sr-only"
+        className="sr-only fixed top-2 left-4 z-100 rounded-md bg-background px-4 py-2 text-foreground focus:not-sr-only"
       >
         Skip to content
       </a>
@@ -30,5 +30,10 @@ export default function Home() {
         <LandingFooter />
       </main>
     </>
+    // <main className="flex flex-1 items-center justify-center bg-background">
+    //   <Button asChild variant="primary" size="lg">
+    //     <Link href={firstStepPath}>Create your roadmap</Link>
+    //   </Button>
+    // </main>
   );
 }
