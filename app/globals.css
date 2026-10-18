@@ -76,9 +76,9 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-sans scroll-smooth;
   }
 }
 .react-flow.react-flow {
-  --xy-edge-stroke-default: #788294EB;
+  --xy-edge-stroke-default: #788294eb;
 }
