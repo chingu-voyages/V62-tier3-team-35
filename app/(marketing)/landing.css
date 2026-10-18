@@ -6,15 +6,15 @@
   }
 
   .landing-heading {
-    @apply text-3xl leading-[1.15] font-medium tracking-tight text-balance sm:text-4xl lg:text-5xl;
+    @apply text-2xl leading-[1.15] font-medium tracking-tight text-balance sm:text-4xl lg:text-5xl;
   }
 
   .landing-subheading {
-    @apply text-xl leading-snug font-medium sm:text-2xl;
+    @apply text-lg leading-snug font-medium sm:text-xl;
   }
 
   .landing-body {
-    @apply text-base leading-relaxed sm:text-lg;
+    @apply text-xs leading-relaxed sm:text-base;
   }
 
   .landing-caption {

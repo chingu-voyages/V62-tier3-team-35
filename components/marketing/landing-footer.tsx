@@ -21,23 +21,23 @@ export function LandingFooter() {
         </h2>
 
         <div className="mt-8 flex flex-col gap-8 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-12">
-          <p className="landing-body">
+          <p className="landing-body text-center sm:text-left">
             A personal roadmap. A clear place to start.
           </p>
           <Button
             asChild
             variant="primary"
             size="lg"
-            className="h-14 min-w-52 self-start px-5 sm:self-auto"
+            className="h-14 min-w-52 px-5 sm:self-auto"
           >
-            <Link href="/sign-up">
+            <Link href="/generate-path/career-goal">
               Create my path
               <ArrowUpRight aria-hidden="true" />
             </Link>
           </Button>
         </div>
 
-        <div className="mt-auto flex flex-col gap-8 pt-20 sm:gap-6 lg:flex-row lg:items-center lg:justify-between lg:pt-24">
+        <div className="mt-auto flex flex-col gap-8 pt-20 sm:gap-6 lg:flex-row items-center lg:justify-between lg:pt-24">
           <p className="landing-caption text-secondary-foreground">
             Built with <span className="text-success">♥</span> by a small team
             of learners

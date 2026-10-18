@@ -49,7 +49,7 @@ export function RoadmapBenefitsSection() {
       aria-labelledby="roadmap-benefits-heading"
       className="w-full scroll-mt-(--navbar-height) bg-background text-foreground"
     >
-      <div className="mx-auto flex w-full max-w-screen-2xl flex-col px-[clamp(1.5rem,4.6875vw,4.5rem)] pb-16 sm:pb-20">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-14 lg:gap-20 px-[clamp(1.5rem,4.6875vw,4.5rem)] py-16 sm:py-20">
         <h2 id="roadmap-benefits-heading" className="landing-heading max-w-6xl">
           <span className="block text-muted-foreground">
             You don’t need more things to learn.
@@ -57,12 +57,12 @@ export function RoadmapBenefitsSection() {
           <span className="block">You need a better way through them.</span>
         </h2>
 
-        <div className="mt-16 sm:mt-20 lg:mt-[clamp(7rem,11.523438vw,11.0625rem)]">
-          <p className="landing-caption font-medium text-foreground">
+        <div className="mx-auto ">
+          <p className="landing-eyebrow text-secondary-foreground uppercase">
             Six things your roadmap should do
           </p>
 
-          <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-7 md:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-y-8">
+          <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-7 text-left md:grid-cols-2 lg:mt-10 lg:grid-cols-3 lg:gap-y-8">
             {roadmapBenefits.map(({ title, description, Icon }) => (
               <li key={title} className="flex items-start gap-4 lg:gap-6">
                 <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-accent text-foreground sm:size-16 lg:size-18 lg:rounded-3xl">

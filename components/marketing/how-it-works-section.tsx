@@ -37,7 +37,7 @@ export function HowItWorksSection() {
           A few questions.
           <br />A path that’s yours.
         </h2>
-        <p className="landing-body mt-6 max-w-lg text-background/70">
+        <p className="landing-body mt-6 max-w-lg text-background/70 mx-auto lg:mx-0">
           Turn your ambition into a plan built around what you know and the time
           you have.
         </p>
@@ -47,7 +47,10 @@ export function HowItWorksSection() {
           className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-3 lg:gap-10"
         >
           {steps.map((step, index) => (
-            <li key={step.label} className="flex min-w-0 flex-col">
+            <li
+              key={step.label}
+              className="flex min-w-0 flex-col items-center lg:items-stretch"
+            >
               <span
                 aria-hidden="true"
                 className="landing-caption grid size-11 shrink-0 place-items-center rounded-full border border-accent/40 font-medium text-accent"
@@ -57,7 +60,7 @@ export function HowItWorksSection() {
               <h3 className="landing-subheading mt-6 max-w-sm text-balance">
                 {step.title}
               </h3>
-              <p className="landing-body mt-4 text-background/70">
+              <p className="landing-body mt-4 text-background/70 max-w-2xl lg:max-w-auto">
                 {step.description}
               </p>
             </li>

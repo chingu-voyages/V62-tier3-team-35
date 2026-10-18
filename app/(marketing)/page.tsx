@@ -1,10 +1,10 @@
 import { HeroSection } from "@/components/marketing/hero-section";
 import { LandingFooter } from "@/components/marketing/landing-footer";
-import { LandingHeader } from "@/components/marketing/landing-header";
 import { ProblemSection } from "@/components/marketing/problem-section";
 import { RoadmapBenefitsSection } from "@/components/marketing/roadmap-benefits-section";
 import { HowItWorksSection } from "@/components/marketing/how-it-works-section";
 import "./landing.css";
+import Header from "@/components/header";
 
 export default function Home() {
   return (
@@ -16,12 +16,12 @@ export default function Home() {
       >
         Skip to content
       </a>
-      <LandingHeader />
+      <Header />
       <main
         data-landing
         id="main-content"
         tabIndex={-1}
-        className="flex flex-1 flex-col"
+        className="flex flex-1 flex-col text-center lg:text-left"
       >
         <HeroSection />
         <ProblemSection />
@@ -30,10 +30,5 @@ export default function Home() {
         <LandingFooter />
       </main>
     </>
-    // <main className="flex flex-1 items-center justify-center bg-background">
-    //   <Button asChild variant="primary" size="lg">
-    //     <Link href={firstStepPath}>Create your roadmap</Link>
-    //   </Button>
-    // </main>
   );
 }
