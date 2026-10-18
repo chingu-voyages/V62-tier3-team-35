@@ -6,7 +6,7 @@ export const customHoursMax = 80;
 
 const skillLevelValues = ["beginner", "intermediate", "advanced"] as const;
 const learningPaceValues = ["recommended", "accelerated", "relaxed"] as const;
-const pathStatusValues = ["draft", "active", "completed"] as const;
+const pathStatusValues = ["in_progress", "completed"] as const;
 
 const skillLevelSchema = z.enum(skillLevelValues, {
   error: "Choose your experience level",
@@ -34,9 +34,11 @@ export const createPathSchema = z.object({
   learningPace: learningPaceSchema,
 });
 
-export const updatePathSchema = createPathSchema
-  .partial()
-  .extend({ status: pathStatusSchema.optional() });
+export const updatePathSchema = createPathSchema.partial().extend({
+  status: pathStatusSchema.optional(),
+  title: z.string().min(1, "Title is required").max(300).optional(),
+  description: z.string().max(2000).nullable().optional(),
+});
 
 export type CreatePathInput = z.infer<typeof createPathSchema>;
 export type UpdatePathInput = z.infer<typeof updatePathSchema>;

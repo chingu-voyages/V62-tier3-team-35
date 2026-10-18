@@ -43,7 +43,7 @@ export default function SignUpForm() {
           name: data.fullName,
           email: data.email,
           password: data.password,
-          callbackURL: "/",
+          callbackURL: "/roadmaps",
         },
         {
           onSuccess: () => {
@@ -51,7 +51,7 @@ export default function SignUpForm() {
             // router.push(
             //   `/verify-email?email=${encodeURIComponent(data.email)}`,
             // );
-            router.push("/");
+            router.push("/roadmaps");
           },
           onError: (ctx) => {
             const errorMsg = ctx.error.message?.toLowerCase() || "";

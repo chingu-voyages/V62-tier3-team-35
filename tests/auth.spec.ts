@@ -1,38 +1,31 @@
 import { test, expect } from "@playwright/test";
 
+// Auth flows are exercised while unauthenticated, so opt out of the shared session.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 /* -------------------------------------------------------------------------- */
 /*                         Route Protection (Proxy)                           */
 /* -------------------------------------------------------------------------- */
 
 test.describe("Route Protection (Proxy)", () => {
   test.describe("Protected routes (unauthenticated access)", () => {
-    test("redirects /create-path to /login", async ({ page }) => {
-      await page.goto("/create-path");
+    test("redirects /generate-path to /login", async ({ page }) => {
+      await page.goto("/generate-path");
       await expect(page).toHaveURL(/\/login$/);
     });
 
-    test("redirects nested /create-path/sub-page to /login", async ({ page }) => {
-      await page.goto("/create-path/sub-page");
+    test("redirects nested /generate-path/skill-level to /login", async ({ page }) => {
+      await page.goto("/generate-path/skill-level");
       await expect(page).toHaveURL(/\/login$/);
     });
 
-    test("redirects /dashboard to /login", async ({ page }) => {
-      await page.goto("/dashboard");
+    test("redirects /roadmaps to /login", async ({ page }) => {
+      await page.goto("/roadmaps");
       await expect(page).toHaveURL(/\/login$/);
     });
 
-    test("redirects nested /dashboard/analytics to /login", async ({ page }) => {
-      await page.goto("/dashboard/analytics");
-      await expect(page).toHaveURL(/\/login$/);
-    });
-
-    test("redirects /settings to /login", async ({ page }) => {
-      await page.goto("/settings");
-      await expect(page).toHaveURL(/\/login$/);
-    });
-
-    test("redirects nested /settings/security to /login", async ({ page }) => {
-      await page.goto("/settings/security");
+    test("redirects nested /roadmaps/123 to /login", async ({ page }) => {
+      await page.goto("/roadmaps/123");
       await expect(page).toHaveURL(/\/login$/);
     });
   });
@@ -114,7 +107,9 @@ test.describe("Login Flow", () => {
 
     await page.getByLabel("Email").fill("wrong@example.com");
     await page.getByPlaceholder("Enter your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-in/**");
     await page.getByRole("button", { name: "Log in", exact: true }).click();
+    await responsePromise;
 
     await expect(
       page.getByText(/Email or password is incorrect|Invalid email or password/i)
@@ -164,27 +159,21 @@ test.describe("Sign Up Flow", () => {
     await page.getByLabel("Full name").fill("Test User");
     await page.getByLabel("Email").fill("existing@example.com");
     await page.getByPlaceholder("Create your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-up/**");
     await page.getByRole("button", { name: "Create account", exact: true }).click();
+    await responsePromise;
 
     await expect(page.getByText(/already exists/i)).toBeVisible();
   });
 
-  test("redirects to verify-email on successful registration", async ({ page }) => {
-    await page.route("**/api/auth/sign-up/**", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          user: { id: "1", email: "newuser@example.com", name: "New User" },
-        }),
-      });
-    });
-
+  test("redirects to roadmaps on successful registration", async ({ page }) => {
     await page.getByLabel("Full name").fill("New User");
-    await page.getByLabel("Email").fill("newuser@example.com");
+    await page.getByLabel("Email").fill(`signup-${crypto.randomUUID()}@example.com`);
     await page.getByPlaceholder("Create your password").fill("Password123!");
+    const responsePromise = page.waitForResponse("**/api/auth/sign-up/**");
     await page.getByRole("button", { name: "Create account", exact: true }).click();
+    await responsePromise;
 
-    await expect(page).toHaveURL("/");
+    await expect(page).toHaveURL(/\/roadmaps$/);
   });
 });

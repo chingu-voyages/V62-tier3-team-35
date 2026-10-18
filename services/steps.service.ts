@@ -38,13 +38,13 @@ export async function createSteps(input: unknown) {
           icon: step.icon,
           keyTopics: step.keyTopics,
           estimatedTime: step.estimatedTime,
-          isCompleted: step.isCompleted,
+          status: step.status,
           completedAt: step.completedAt,
           topics: {
             create: step.topics.map((topic) => ({
               name: topic.name,
               resources: topic.resources,
-              isCompleted: topic.isCompleted,
+              status: topic.status,
               completedAt: topic.completedAt,
             })),
           },

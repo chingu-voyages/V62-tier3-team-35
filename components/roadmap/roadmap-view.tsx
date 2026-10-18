@@ -1,30 +1,40 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   ReactFlow,
   useNodesInitialized,
   useNodesState,
   useReactFlow,
   type Edge,
-  type Node,
+  type OnSelectionChangeFunc,
 } from "@xyflow/react";
-import { TechnologyNode } from "./technology-node";
+import { RoadmapNode } from "./node";
+import NodeOverview from "./node-overview";
+import type { RoadmapNodeType } from "@/lib/types/roadmap";
 
 const nodeTypes = {
-  technology: TechnologyNode,
+  roadmapNode: RoadmapNode,
 };
 
 type RoadmapViewProps = {
-  initialNodes: Node[];
+  initialNodes: RoadmapNodeType[];
   edges: Edge[];
+  onStepComplete?: (stepId: string) => void;
 };
 
-export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+export function RoadmapView({
+  initialNodes,
+  edges,
+  onStepComplete,
+}: RoadmapViewProps) {
+  const [nodes, setNodes, onNodesChange] =
+    useNodesState<RoadmapNodeType>(initialNodes);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   const nodesInitialized = useNodesInitialized();
   const { fitView, getViewport, setViewport } = useReactFlow();
+  const [activeTopic, setActiveTopic] = useState<number>(0);
 
   useEffect(() => {
     if (!nodesInitialized) return;
@@ -43,6 +53,7 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
             y,
           },
         };
+
         y += (node.measured?.height ?? 0) + gap;
 
         return updatedNode;
@@ -54,32 +65,97 @@ export function RoadmapView({ initialNodes, edges }: RoadmapViewProps) {
     if (!nodesInitialized) return;
 
     // Fit all roadmap nodes into the available viewport.
-    const fitRoadmap = async () => {
+    const frame = requestAnimationFrame(async () => {
       await fitView({
-        padding: 0.2,
-        minZoom: 0.4,
-        maxZoom: 1,
+        padding: {
+          top: 0.24,
+          bottom: 0.2,
+          left: 0.2,
+          right: 0.2,
+        },
+        minZoom: 0.8,
+        maxZoom: 1.2,
       });
 
-      const viewport = getViewport();
+      const navbarHeight =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--navbar-height",
+          ),
+        ) || 0;
 
-      // Keep the roadmap aligned to the top after fitting the view.
+      // Keep the roadmap aligned to the top and nudge it left after fitting.
+      const viewport = getViewport();
       setViewport({
         ...viewport,
-        y: 0,
+        x: viewport.x - 120,
+        y: navbarHeight + 90,
       });
-    };
+    });
 
-    fitRoadmap();
+    return () => cancelAnimationFrame(frame);
   }, [nodesInitialized, fitView, getViewport, setViewport]);
 
+  const onSelectionChange: OnSelectionChangeFunc<RoadmapNodeType, Edge> =
+    useCallback((all) => {
+      const onlyNodes = all.nodes;
+      if (onlyNodes.length > 0) {
+        const selectedNode = onlyNodes[0];
+        setSelectedNodeId(selectedNode.id);
+        const listTopics = selectedNode.data.overview.topics;
+        const inProgressIdx = listTopics.findIndex(
+          (topic) => topic.status === "in_progress",
+        );
+        const upcomingIdx = listTopics.findIndex(
+          (topic) => topic.status === "upcoming",
+        );
+        const topic =
+          inProgressIdx !== -1
+            ? inProgressIdx
+            : upcomingIdx !== -1
+              ? upcomingIdx
+              : 0;
+        setActiveTopic(topic);
+      } else {
+        setSelectedNodeId(null);
+        setActiveTopic(0);
+      }
+    }, []);
+
+  const onPaneClick = useCallback(() => {
+    setSelectedNodeId(null);
+  }, []);
+
+  const selectedNode = nodes.find((node) => node.id === selectedNodeId);
+
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      nodeTypes={nodeTypes}
-      proOptions={{ hideAttribution: true }}
-    />
+    <div className="relative w-full h-svh">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        nodeTypes={nodeTypes}
+        onSelectionChange={onSelectionChange}
+        onPaneClick={onPaneClick}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        proOptions={{ hideAttribution: true }}
+      />
+
+      {selectedNode && (
+        <NodeOverview
+          nodeData={selectedNode.data}
+          setNodes={setNodes}
+          nodes={nodes}
+          activeNodeID={selectedNode.id}
+          activeTopic={activeTopic}
+          setActiveTopic={setActiveTopic}
+          setSelectedNodeId={setSelectedNodeId}
+          onStepComplete={onStepComplete}
+        />
+      )}
+    </div>
   );
 }
+
+export default RoadmapView;

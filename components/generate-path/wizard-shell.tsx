@@ -2,13 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { useFormContext } from "react-hook-form";
 
 import { ConfirmDialog } from "@/components/common/confirm-dialog";
-import { clearDraft, saveDraft } from "@/lib/generate-path/draft-storage";
+import { clearDraft } from "@/lib/generate-path/draft-storage";
 import { GeneratePathFormProvider } from "@/components/generate-path/generate-path-form-provider";
 import { RoadmapFrame } from "@/components/generate-path/layout/roadmap-frame";
-import type { RoadmapFormValues } from "@/lib/schemas/paths.schema";
 
 export function WizardShell({ children }: { children: ReactNode }) {
   return (
@@ -20,25 +18,16 @@ export function WizardShell({ children }: { children: ReactNode }) {
 
 function WizardShellInner({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const { getValues } = useFormContext<RoadmapFormValues>();
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
-
-  const handleSaveExit = () => {
-    saveDraft(getValues());
-    router.push("/");
-  };
 
   const handleDiscard = () => {
     clearDraft();
-    router.push("/");
+    router.push("/roadmaps");
   };
 
   return (
     <>
-      <RoadmapFrame
-        onClose={() => setConfirmingDiscard(true)}
-        onSaveExit={handleSaveExit}
-      >
+      <RoadmapFrame onClose={() => setConfirmingDiscard(true)}>
         {children}
       </RoadmapFrame>
       <ConfirmDialog

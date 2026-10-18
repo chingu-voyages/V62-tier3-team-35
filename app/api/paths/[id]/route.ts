@@ -20,7 +20,7 @@ export async function GET(
   }
 }
 
-// Update a learning path (e.g. change status, goal, or time commitment).
+// Update a learning path (title, description, or other optional fields).
 // Path params: id (required) — Body: UpdatePathInput (all fields optional)
 // Returns: 200 { success: true, data: LearningPath } | 400 { success: false, error }
 export async function PATCH(

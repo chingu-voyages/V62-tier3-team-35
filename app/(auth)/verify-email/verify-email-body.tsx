@@ -16,7 +16,7 @@ export default function VerifyEmailBody({ email }: { email: string }) {
     startTransition(async () => {
       await authClient.sendVerificationEmail({
         email,
-        callbackURL: "/",
+        callbackURL: "/roadmaps",
       });
       setIsResent(true);
     });

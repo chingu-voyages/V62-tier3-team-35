@@ -10,7 +10,7 @@ function AuthProviderButton() {
   const handleSocialSignIn = async (provider: "google" | "github") => {
     await authClient.signIn.social({
       provider,
-      callbackURL: "/",
+      callbackURL: "/roadmaps",
     });
   };
 

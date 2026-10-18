@@ -89,7 +89,7 @@ export function ReviewScreen() {
                 variant="outline"
                 size="sm"
                 type="button"
-                className="h-11 w-16 shrink-0 rounded-full border-input bg-card px-4 shadow-none hover:bg-muted"
+                className="h-11 w-16 shrink-0 border-input bg-card px-4 shadow-none hover:bg-muted"
                 onClick={() => router.push(`/generate-path/${step.id}`)}
               >
                 Edit

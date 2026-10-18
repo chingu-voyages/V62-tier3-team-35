@@ -1,0 +1,159 @@
+import type { Node, NodeProps } from "@xyflow/react";
+import type { LucideIcon } from "lucide-react";
+import { NoteSchemaType } from "../schemas/roadmap-notes";
+
+export type Status = "done" | "in_progress" | "upcoming";
+
+export interface Topic {
+  id: string;
+  name: string;
+  status: Status;
+  isDone: boolean;
+}
+
+export interface ResourceItem {
+  title: string;
+  type: string;
+  url: string;
+  description: string;
+}
+
+export interface NoteItem {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface NodeOverviewTab {
+  description: string;
+  title: string;
+  topics: Topic[];
+}
+
+export interface NodeResourcesTab {
+  description: string;
+  title: string;
+  items: ResourceItem[];
+}
+
+export interface NodeNotesTab {
+  description: string;
+  title: string;
+  items: NoteItem[];
+}
+
+export interface NodeData {
+  [key: string]: unknown;
+  id: string;
+  title: string;
+  description: string;
+  keyTopics: string;
+  status: Status;
+  icon: LucideIcon | string;
+  estimatedTime: string;
+  isDone: boolean;
+  overview: NodeOverviewTab;
+  resources: NodeResourcesTab;
+  notes: NodeNotesTab;
+}
+
+export interface DbTopic {
+  id: string;
+  name: string;
+  status: Status;
+  resources?: unknown;
+}
+
+export interface DbStep {
+  id: string;
+  title: string;
+  description: string;
+  keyTopics: string;
+  icon?: string | null;
+  estimatedTime: number | string;
+  status: Status;
+  topics: DbTopic[];
+  notes?: NoteItem[];
+}
+
+// Canonical Aliases & Prop Types
+export type StepData = NodeData;
+export type RoadmapStepProps = DbStep;
+export type RoadmapTopicProps = Topic;
+export type RoadmapResourceProps = ResourceItem;
+export type RoadmapNoteProps = NoteItem;
+
+export type RoadmapProps = {
+  roadmap?: DbStep[];
+  onStepComplete?: (stepId: string) => void;
+};
+
+export type RoadmapNodeType = Node<NodeData, "roadmapNode">;
+export type RoadmapNodeProps = NodeProps<RoadmapNodeType>;
+
+export interface NodeOverviewTabs {
+  overview: NodeOverviewTab;
+  resources: NodeResourcesTab;
+  notes: NodeNotesTab;
+}
+
+export interface NodeOverviewProps {
+  nodeData: NodeData;
+  setNodes?: (
+    nodes: RoadmapNodeType[] | ((prev: RoadmapNodeType[]) => RoadmapNodeType[]),
+  ) => void;
+  nodes: RoadmapNodeType[];
+  activeNodeID?: string | null;
+  activeTopic: number;
+  setActiveTopic: (idx: number) => void;
+  setSelectedNodeId?: (id: string | null) => void;
+  onStepComplete?: (stepId: string) => void;
+  [key: string]: unknown;
+}
+
+export interface NodeOverviewBodyProps {
+  tabs: NodeOverviewTabs;
+  activeTopic: number;
+  handleActiveTopic: (idx: number) => void;
+  handleAddNote: (data: NoteSchemaType) => void;
+  handleDeleteNote: (id: string) => void;
+  handleEditNote: (id: string, note: NoteSchemaType) => void;
+}
+
+export type NoteFormHandler =
+  | ((data: NoteSchemaType) => Promise<void> | void)
+  | ((id: string, data: NoteSchemaType) => Promise<void> | void);
+
+export interface NodeAddNoteProps {
+  handleFunction: NoteFormHandler;
+  isEditing?: boolean;
+  note?: NoteItem;
+  noteID?: string;
+  children?: React.ReactNode;
+}
+
+export interface NodeOverviewFooterProps {
+  handleCompleteTopic: () => void;
+  handleAddNote: (data: NoteSchemaType) => void;
+  isDone: boolean;
+}
+
+export interface NodeOverviewHeaderProps {
+  icon: LucideIcon | string;
+  title: string;
+  keyTopics: string;
+  handleClose: () => void;
+}
+
+export interface NodeOverviewStatsProps {
+  status: Status;
+  estimatedTime: string;
+}
+
+export interface RoadmapStats {
+  totalSteps: number;
+  completedSteps: number;
+  progress: number;
+  totalEstimatedMonths: number;
+}
