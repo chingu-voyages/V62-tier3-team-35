@@ -30,7 +30,8 @@ export function UserMenu({ user }: UserMenuProps) {
 
   const initialsName =
     user.name
-      ?.split(/\s+/)
+      ?.trim()
+      .split(/\s+/)
       .map((w) => w[0])
       .slice(0, 2)
       .join("")
@@ -62,17 +63,18 @@ export function UserMenu({ user }: UserMenuProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full cursor-pointer"
+          aria-label="Account menu"
+          className="rounded-full"
         >
-          <Avatar className="justify-center items-center size-11">
-            <AvatarFallback className="text-xs font-semibold">
+          <Avatar className="size-8 lg:size-10">
+            <AvatarFallback className="bg-card text-xs font-semibold text-foreground">
               {initialsName}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="font-normal">
+      <DropdownMenuContent data-landing align="end" className="w-56">
+        <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none text-foreground truncate">
               {user.name || "User"}
@@ -87,13 +89,13 @@ export function UserMenu({ user }: UserMenuProps) {
 
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/create-path" className="cursor-pointer">
+            <Link href="/generate-path/career-goal" className="cursor-pointer">
               <PlusCircleIcon className="size-4 mr-2" />
               Create Roadmap
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard" className="cursor-pointer">
+            <Link href="/roadmaps" className="cursor-pointer">
               <CompassIcon className="size-4 mr-2" />
               My Roadmaps
             </Link>

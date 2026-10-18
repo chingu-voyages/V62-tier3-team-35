@@ -4,63 +4,21 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
-import { X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { UserMenu } from "./user-menu";
 
-{
-  /* //TODO: Uncomment it once the menu design is ready. */
-}
-// interface HamburgerOpenProps {
-//   handleHamburger: () => void;
-// }
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-// function HamburgerOpen({ handleHamburger }: HamburgerOpenProps) {
-//   return (
-//     <div className="fixed inset-0 h-dvh w-screen bg-background z-50 flex flex-col p-4 sm:px-6">
-//       <header className="flex justify-between items-center h-14">
-//         <Logo variant="text" size="sm" className="font-bold text-xl gap-2" />
-
-//         <button
-//           type="button"
-//           onClick={handleHamburger}
-//           className="p-2 text-foreground cursor-pointer outline-none"
-//           aria-label="Close menu"
-//         >
-//           <svg
-//             xmlns="http://www.w3.org/2000/svg"
-//             fill="none"
-//             viewBox="0 0 24 24"
-//             strokeWidth={1.5}
-//             stroke="currentColor"
-//             className="size-6"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M6 18 18 6M6 6l12 12"
-//             />
-//           </svg>
-//         </button>
-//       </header>
-
-//       <div className="mt-8">
-//         <ul className="flex flex-col gap-6">
-//           {navigationLink.map((el, idx) => (
-//             <li key={idx}>
-//               <Link
-//                 href={el.href}
-//                 onClick={handleHamburger}
-//                 className="text-2xl font-semibold text-foreground hover:text-muted-foreground transition-colors"
-//               >
-//                 {el.name}
-//               </Link>
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// }
+const navigationLinks = [
+  { name: "Features", href: "#roadmap-benefits" },
+  { name: "How it works", href: "#how-it-works" },
+];
 
 interface HeaderProps {
   variant?: "default" | "close";
@@ -69,16 +27,11 @@ interface HeaderProps {
 
 export default function Header({ variant = "default", onClose }: HeaderProps) {
   const { data: session } = authClient.useSession();
-  // const [hamburger, setHamburger] = useState<boolean>(false);
-
-  // function handleHamburger() {
-  //   setHamburger(!hamburger);
-  // }
 
   return (
-    <header className="relative flex h-16 bg-transparent sm:h-(--navbar-height) items-center justify-between gap-3 px-4 sm:px-7">
+    <>
       {variant === "close" ? (
-        <div className="flex w-full justify-end">
+        <div className="absolute top-0 right-0 p-4 flex w-full justify-end">
           <Button
             variant="secondary"
             size="icon-lg"
@@ -90,36 +43,66 @@ export default function Header({ variant = "default", onClose }: HeaderProps) {
           </Button>
         </div>
       ) : (
-        <>
-          <Logo variant="text" />
+        <header
+          data-landing
+          className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between gap-3 bg-transparent px-6 text-background mix-blend-difference backdrop-blur-md sm:h-(--navbar-height) sm:px-10 lg:px-18"
+        >
+          <Logo variant="text" className="text-background" />
 
-          {/* //TODO: Uncomment it once the menu design is ready. */}
+          <nav
+            aria-label="Main navigation"
+            className="pointer-events-auto hidden items-center gap-5 md:flex lg:gap-6"
+          >
+            {navigationLinks.map(({ href, name }) => (
+              <Link
+                key={href}
+                href={href}
+                className="landing-caption pointer-events-auto inline-flex min-h-8 items-center rounded-sm text-background"
+              >
+                {name}
+              </Link>
+            ))}
+          </nav>
 
-          {/* <nav className="hidden md:flex items-center gap-4 md:gap-5 lg:gap-6">
-          {navigationLink.map(({ href, name }, idx) => (
-            <Link href={href} key={idx} className="text-sm/6 text-foreground">
-              {name}
-            </Link>
-          ))}
-        </nav>
+          <div className="pointer-events-auto flex items-center justify-self-end gap-4 md:gap-5 lg:gap-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Open menu"
+                  className="text-background hover:bg-background/10 hover:text-background md:hidden"
+                >
+                  <Menu aria-hidden="true" className="text-background size-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent data-landing aria-describedby={undefined}>
+                <DialogTitle>Navigation</DialogTitle>
+                <nav
+                  aria-label="Mobile navigation"
+                  className="flex flex-col gap-4"
+                >
+                  {navigationLinks.map(({ href, name }) => (
+                    <DialogClose asChild key={href}>
+                      <Link href={href} className="landing-body font-medium">
+                        {name}
+                      </Link>
+                    </DialogClose>
+                  ))}
+                </nav>
+              </DialogContent>
+            </Dialog>
 
-        <Button variant="ghost" onClick={handleHamburger} className="md:hidden">
-          <Menu className="size-5" />
-        </Button> */}
-          {/* Divider */}
-          {/* <div className="h-6 w-px bg-foreground/5" /> */}
-
-          {session ? (
-            <UserMenu user={session.user} />
-          ) : (
-            <Button asChild variant="primary" size="lg">
-              <Link href="/login">Log in</Link>
-            </Button>
-          )}
-
-          {/* {hamburger && <HamburgerOpen handleHamburger={handleHamburger} />} */}
-        </>
+            {session ? (
+              <UserMenu user={session.user} />
+            ) : (
+              <Button asChild variant="primary" size="lg">
+                <Link href="/login">Log in</Link>
+              </Button>
+            )}
+          </div>
+        </header>
       )}
-    </header>
+    </>
   );
 }
