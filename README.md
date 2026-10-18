@@ -1,41 +1,93 @@
-# voyage-tasks
+# Learning Path Generator
 
-Your project's `readme` is as important to success as your code. For 
-this reason you should put as much care into its creation and maintenance
-as you would any other component of the application.
+An AI-powered learning path generator that helps users plan and track their learning journey toward a career goal. Built as a collaborative project for Chingu Voyage 62 (Team 35).
 
-If you are unsure of what should go into the `readme` let this article,
-written by an experienced Chingu, be your starting point - 
-[Keys to a well written README](https://tinyurl.com/yk3wubft).
+---
 
-And before we go there's "one more thing"! Once you decide what to include
-in your `readme` feel free to replace the text we've provided here.
+## Key Features
 
-> Own it & Make it your Own!
+- **AI-generated learning paths**: Create personalized learning journeys based on a career goal, current skill level, existing skills, weekly time commitment, and preferred learning pace.
+- **Authentication**: Sign in with email and password, Google, or GitHub.
+- **Interactive learning paths**: View learning paths as a visual canvas organized into steps and topics.
+- **Progress tracking**: Mark topics as completed and track progress as you work through each step. Completed steps are visually distinguished in the learning path.
+- **Learning resources**: Access relevant learning resources through links provided for each step.
+- **Dashboard**: View and manage all saved learning paths in one place.
+- **Path management**: Edit learning path names and descriptions, delete saved paths, and filter paths by status.
 
-## Team Documents
+---
 
-You may find these helpful as you work together to organize your project.
+## Tech Stack
 
-- [Team Project Ideas](./docs/team_project_ideas.md)
-- [Team Decision Log](./docs/team_decision_log.md)
+| Category | Technologies |
+| :---------------------- | :-------------------------------------- | 
+| **Framework**            | Next.js, React, TypeScript |
+| **Styling & UI** | Tailwind CSS, shadcn/ui, Radix UI |
+| **Interactive Canvas** | XYFlow (React Flow) |
+| **Authentication** | Better Auth |
+| **Database & ORM** | Supabase (PostgreSQL), Prisma |
+| **AI Integration** | Google Gemini API |
+| **Forms & Validation** | React Hook Form, Zod |
+| **Testing** | Vitest, Playwright |
+| **Formatting** | ESLint, Prettier |
 
-Meeting Agenda templates (located in the `/docs` directory in this repo):
+---
 
-- Meeting - Voyage Kickoff --> ./docs/meeting-voyage_kickoff.docx
-- Meeting - App Vision & Feature Planning --> ./docs/meeting-vision_and_feature_planning.docx
-- Meeting - Sprint Retrospective, Review, and Planning --> ./docs/meeting-sprint_retrospective_review_and_planning.docx
-- Meeting - Sprint Open Topic Session --> ./docs/meeting-sprint_open_topic_session.docx
+## Prerequisites
+
+- [Node.js](https://nodejs.org/)
+- A [Supabase](https://supabase.com/) project
+- A Google Gemini API key
+- OAuth credentials for Google and GitHub, if using those sign-in providers
+
+---
+
+## Quick Start
+
+1. **Clone & enter the repo**
+
+```bash
+   git clone https://github.com/chingu-voyages/V62-tier3-team-35.git
+   cd V62-tier3-team-35
+```
+
+2. **Install dependencies**
+
+```bash
+   npm install
+```
+
+3. **Configure environment variables**
+
+Create a local environment file from the example:
+
+```bash
+   cp .env.example .env
+```
+
+Obtain the database connection strings, API key, OAuth credentials, and authentication secret before running the application. Add the required values to your .env file.
+
+4. **Set up the database**
+
+- Create a project in Supabase.
+- Get the database connection strings from your Supabase project settings and add them to your .env file as DATABASE_URL and DIRECT_URL.
+- Apply the database migrations.
+
+5. **Start the development server**
+
+```bash
+   npm run dev
+```
+Open http://localhost:3000 in your browser.
+
+---
 
 ## Our Team
 
-Everyone on your team should add their name along with a link to their GitHub
-& optionally their LinkedIn profiles below. Do this in Sprint #1 to validate
-your repo access and to practice PR'ing with your team *before* you start
-coding!
-
-- Teammate name #1: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
-- Teammate name #2: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
-
-   ...
-- Teammate name #n: [GitHub](https://github.com/ghaccountname) / [LinkedIn](https://linkedin.com/in/liaccountname)
+| Name | Links |
+| :------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| **Lilla Toth** | [GitHub](https://github.com/Lilla-ctrl) |
+| **Sarah Dahman** | [GitHub](https://github.com/SaraDahman) |
+| **Nadiia Lashtun** | [GitHub](https://github.com/NadiiaLashtun) |
+| **Eva Langerova** | [GitHub](https://github.com/eva-lng) |
+| **Eduard** | [GitHub](https://github.com/EduardDE7) |
+| **Fabrizio** | [GitHub](https://github.com/fabirez) |
