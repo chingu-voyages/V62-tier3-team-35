@@ -85,7 +85,7 @@ Open http://localhost:3000 in your browser.
 
 | Name | Links |
 | :------------------------- | :-------------------------------------------------------------------------------------------------------- |
-| **Lilla Toth** |  |
+| **Lilla Toth** | [GitHub](https://github.com/Lilla-ctrl) |
 | **Sarah Dahman** | [GitHub](https://github.com/SaraDahman) |
 | **Nadiia Lashtun** | [GitHub](https://github.com/NadiiaLashtun) |
 | **Eva Langerova** | [GitHub](https://github.com/eva-lng) |
